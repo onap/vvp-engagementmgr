@@ -59,7 +59,7 @@ class TestBaseEntity(TestCase):
 
     def setUp(self):
         logger.debug("---------------------- TestCase " + self.__class__.__name__ + " ----------------------")
-        self.urlPrefix = "/ice/v1/engmgr/"
+        self.urlPrefix = "/%s/v1/engmgr/" % settings.PROGRAM_NAME_URL_PREFIX
         self.conn = http.client.HTTPConnection("127.0.0.1", 8000)  # @UndefinedVariable
         self.c = Client()
         self.creator = VvpEntitiesCreator()

@@ -45,11 +45,19 @@ from rest_framework.status import HTTP_200_OK
 from uuid import uuid4
 import json
 from engagementmanager.service.logging_service import LoggingServiceFactory
+from mocks.jenkins_mock.services.jenkins_tests_validation_service import JenkinsTestsResultsSvc
 
 logger = LoggingServiceFactory.get_logger()
 
 
 class TestChecklistSetState(TestBaseEntity):
+    def initCLBody(self):
+        self.clbodydata['checkListName'] = ChecklistDefaultNames.HEAT_TEMPLATES
+        self.clbodydata['checkListTemplateUuid'] = str(self.template.uuid)
+        self.clbodydata['checkListAssociatedFiles'] =\
+            "[\"file0/f69f4ce7-51d5-409c-9d0e-ec6b1e79df28\"," \
+            " \"file1/f69f4ce7-51d5-409c-9d0e-ec6b1e79df28\"," \
+            " \"file2/f69f4ce7-51d5-409c-9d0e-ec6b1e79df28\"]"
 
     def childSetup(self):
         self.createVendors([Constants.service_provider_company_name, 'Amdocs'])
@@ -82,29 +90,22 @@ class TestChecklistSetState(TestBaseEntity):
 
         self.deploymentTarget = self.creator.createDeploymentTarget(
             self.randomGenerator("randomString"), self.randomGenerator("randomString"))
-#         self.asInfrastructure = self.creator.createApplicationServiceInfrastructure(self.randomGenerator("randomString"))
         self.vf = self.creator.createVF(self.randomGenerator("randomString"),
                                         self.engagement, self.deploymentTarget, False, self.vendor)
-#         self.vf.service_infrastructures.add(self.asInfrastructure)
 
         self.clbodydata = dict()
         self.initCLBody()
         self.checklist = Checklist.objects.create(uuid=uuid4(), name=self.clbodydata['checkListName'], validation_cycle=1, associated_files=self.clbodydata[
                                                   'checkListAssociatedFiles'], engagement=self.engagement, template=self.template, creator=self.el_user, owner=self.el_user)
         self.checklist.save()
-        self.section = ChecklistSection.objects.create(uuid=uuid4(), name=self.randomGenerator("randomString"), weight=1.0, description=self.randomGenerator(
-            "randomString"), validation_instructions=self.randomGenerator("randomString"), template=self.template)
-        self.section.save()
-        self.line_item = ChecklistLineItem.objects.create(uuid=uuid4(), name=self.randomGenerator("randomString"), weight=1.0, description=self.randomGenerator(
-            "randomString"), line_type=CheckListLineType.auto.name, validation_instructions=self.randomGenerator("randomString"), template=self.template, section=self.section)  # @UndefinedVariable
-        self.line_item2 = ChecklistLineItem.objects.create(uuid=uuid4(), name=self.randomGenerator("randomString"), weight=1.0, description=self.randomGenerator(
-            "randomString"), line_type=CheckListLineType.auto.name, validation_instructions=self.randomGenerator("randomString"), template=self.template, section=self.section)  # @UndefinedVariable
-        self.line_item.save()
-        self.line_item2.save()
+
+        self.line_items = ChecklistLineItem.objects.filter(
+            template=self.checklist.template)[:JenkinsTestsResultsSvc().num_of_auto_tests]
+
         self.decision = ChecklistDecision.objects.create(
-            uuid=uuid4(), checklist=self.checklist, template=self.template, lineitem=self.line_item)
+            uuid=uuid4(), checklist=self.checklist, template=self.template, lineitem=self.line_items[0])
         self.decision2 = ChecklistDecision.objects.create(
-            uuid=uuid4(), checklist=self.checklist, template=self.template, lineitem=self.line_item2)
+            uuid=uuid4(), checklist=self.checklist, template=self.template, lineitem=self.line_items[1])
         self.decision.save()
         self.decision2.save()
         self.data = dict()

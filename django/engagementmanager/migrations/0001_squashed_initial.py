@@ -54,7 +54,8 @@ logger = LoggingServiceFactory.get_logger()
 
 
 def forwards(apps, schema_editor):
-    if not schema_editor.connection.alias == 'default':
+    if not schema_editor.connection.alias == 'default' \
+            or settings.DATABASES["default"]["ENGINE"] == "django.db.backends.sqlite3":
         return
 
     cursor = connection.cursor()

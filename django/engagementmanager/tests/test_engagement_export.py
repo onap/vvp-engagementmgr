@@ -43,6 +43,7 @@ from engagementmanager.service.engagement_service import get_expanded_engs_for_e
 from engagementmanager.tests.test_base_entity import TestBaseEntity
 from engagementmanager.utils.constants import EngagementStage, Constants
 from engagementmanager.service.logging_service import LoggingServiceFactory
+from django.conf import settings
 
 logger = LoggingServiceFactory.get_logger()
 
@@ -111,6 +112,9 @@ class EngagementExportTestCase(TestBaseEntity):
 
     def testSuccessExport(self):
         self.printTestName("Success export [start]")
+
+        if settings.DATABASES["default"]["ENGINE"] == "django.db.backends.sqlite3":
+            return
 
         urlStr = self.urlPrefix + 'engagement/export/?stage=Active&keyword'
         logger.debug(

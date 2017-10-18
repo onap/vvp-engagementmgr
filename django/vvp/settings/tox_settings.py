@@ -38,12 +38,12 @@ PROGRAM_NAME_URL_PREFIX = os.environ['PROGRAM_NAME_URL_PREFIX']
 # https://docs.djangoproject.com/en/1.10/ref/settings/#allowed-hosts
 # Anything in the Host header that does not match our expected domain should
 # raise SuspiciousOperation exception.
-ALLOWED_HOSTS = ['.d2ice.att.io','em','em.default']
+ALLOWED_HOSTS = ['*']
 
 DEBUG = False
 
 if ENVIRONMENT == 'production':
-    EMAIL_BACKEND = 'django.db.backends.sqlite3'
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = os.environ['EMAIL_HOST']
     EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
     EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
@@ -133,12 +133,16 @@ WSGI_APPLICATION = 'vvp.wsgi.application'
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ['PGDATABASE'],
-        'USER': os.environ['PGUSER'],
-        'PASSWORD': os.environ['PGPASSWORD'],
-        'HOST': os.environ['PGHOST'],
-        'PORT': os.environ['PGPORT'],
+        'NAME': 'emdb.db',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'TEST_NAME': 'emdb.db'
+
+        # 'ENGINE': 'django.db.backends.postgresql',
+        # 'NAME': os.environ['PGDATABASE'],
+        # 'USER': os.environ['PGUSER'],
+        # 'PASSWORD': os.environ['PGPASSWORD'],
+        # 'HOST': os.environ['PGHOST'],
+        # 'PORT': os.environ['PGPORT'],
     }
 }
 
@@ -271,7 +275,7 @@ JENKINS_USERNAME = "admin"
 JENKINS_PASSWORD = os.environ['SECRET_JENKINS_PASSWORD']
 
 IS_CL_CREATED_ON_REVIEW_STATE = False
-IS_SIGNAL_ENABLED = True
+IS_SIGNAL_ENABLED = False
 RECENT_ENG_TTL = 3  # In days
 CMS_URL = "http://cms/api/"
 CMS_APP_CLIENT_ID = os.environ['SECRET_CMS_APP_CLIENT_ID']

@@ -45,6 +45,8 @@ from django.db import connections
 from django.test.client import Client
 from django.test.testcases import TransactionTestCase
 from rest_framework.status import HTTP_401_UNAUTHORIZED, HTTP_200_OK
+
+from django.conf import settings
 from engagementmanager.models import Vendor
 from engagementmanager.tests.vvpEntitiesCreator import VvpEntitiesCreator
 from engagementmanager.utils.authentication import JWTAuthentication
@@ -59,7 +61,7 @@ class TestRequestDataManager(TransactionTestCase):
 
     def childSetup(self):
         logger.debug("---------------------- TestCase " + self.__class__.__name__ + " ----------------------")
-        self.urlPrefix = "/ice/v1/engmgr/"
+        self.urlPrefix = "/%s/v1/engmgr/" % settings.PROGRAM_NAME_URL_PREFIX
         self.c = Client()
         self.creator = VvpEntitiesCreator()
 
