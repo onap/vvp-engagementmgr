@@ -7,8 +7,8 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.openecomp.vvp</groupId>
-  <artifactId>vvp-engagementmgr</artifactId>
+  <groupId>org.openecomp.vvp.engagementmgr</groupId>
+  <artifactId>engagementmgr</artifactId>
   <packaging>pom</packaging>
   <version>1.0.0-SNAPSHOT</version>
   <name>vvp-engagementmgr</name>
@@ -47,7 +47,7 @@
                 <registry>nexus3.onap.org:10003</registry>
                 <images>
                     <image>
-                        <name>openecomp/vvp-engagementmgr</name>
+                        <name>openecomp/vvp/engagementmgr</name>
                         <alias>vvp-engagementmgr</alias>
                         <build>
                             <cleanup>true</cleanup>
@@ -88,7 +88,7 @@
                         <goal>push</goal>
                     </goals>
                     <configuration>
-                        <image>openecomp/vvp-engagementmgr</image>
+                        <image>openecomp/vvp/engagementmgr</image>
                     </configuration>
                 </execution>
             </executions>
