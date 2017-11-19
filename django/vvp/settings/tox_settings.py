@@ -34,7 +34,9 @@ SECRET_KEY = os.getenv('SECRET_KEY', '')
 
 ENVIRONMENT = os.environ['ENVIRONMENT']
 PROGRAM_NAME_URL_PREFIX = os.environ['PROGRAM_NAME_URL_PREFIX']
-
+SERVICE_PROVIDER = os.environ['SERVICE_PROVIDER']
+PROGRAM_NAME = os.environ['PROGRAM_NAME']
+SERVICE_PROVIDER_DOMAIN = os.environ['SERVICE_PROVIDER_DOMAIN']
 # https://docs.djangoproject.com/en/1.10/ref/settings/#allowed-hosts
 # Anything in the Host header that does not match our expected domain should
 # raise SuspiciousOperation exception.
