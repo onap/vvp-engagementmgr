@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -54,116 +54,158 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='activity',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, primary_key=True, serialize=False, unique=True),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, primary_key=True,
+                serialize=False, unique=True),
         ),
         migrations.AlterField(
             model_name='applicationserviceinfrastructure',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, unique=True),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, unique=True),
         ),
         migrations.AlterField(
             model_name='checklist',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, primary_key=True, serialize=False),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, primary_key=True,
+                serialize=False),
         ),
         migrations.AlterField(
             model_name='checklistauditlog',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, primary_key=True, serialize=False),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, primary_key=True,
+                serialize=False),
         ),
         migrations.AlterField(
             model_name='checklistdecision',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, primary_key=True, serialize=False),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, primary_key=True,
+                serialize=False),
         ),
         migrations.AlterField(
             model_name='checklistlineitem',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, primary_key=True, serialize=False),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, primary_key=True,
+                serialize=False),
         ),
         migrations.AlterField(
             model_name='checklistsection',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, primary_key=True, serialize=False),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, primary_key=True,
+                serialize=False),
         ),
         migrations.AlterField(
             model_name='checklisttemplate',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, primary_key=True, serialize=False),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, primary_key=True,
+                serialize=False),
         ),
         migrations.AlterField(
             model_name='deploymenttarget',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, primary_key=True, serialize=False),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, primary_key=True,
+                serialize=False),
         ),
         migrations.AlterField(
             model_name='deploymenttargetsite',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, primary_key=True, serialize=False),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, primary_key=True,
+                serialize=False),
         ),
         migrations.AlterField(
             model_name='ecomprelease',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, primary_key=True, serialize=False),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, primary_key=True,
+                serialize=False),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=64, primary_key=True, serialize=False),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=64, primary_key=True,
+                serialize=False),
         ),
         migrations.AlterField(
             model_name='engagementstatus',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=64, primary_key=True, serialize=False),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=64, primary_key=True,
+                serialize=False),
         ),
         migrations.AlterField(
             model_name='feedback',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, primary_key=True, serialize=False, unique=True),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, primary_key=True,
+                serialize=False, unique=True),
         ),
         migrations.AlterField(
             model_name='iceuserprofile',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, unique=True),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, unique=True),
         ),
         migrations.AlterField(
             model_name='invitation',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, primary_key=True, serialize=False),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, primary_key=True,
+                serialize=False),
         ),
         migrations.AlterField(
             model_name='nextstep',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, primary_key=True, serialize=False),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, primary_key=True,
+                serialize=False),
         ),
         migrations.AlterField(
             model_name='notification',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, primary_key=True, serialize=False, unique=True),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, primary_key=True,
+                serialize=False, unique=True),
         ),
         migrations.AlterField(
             model_name='recentengagement',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=64, primary_key=True, serialize=False),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=64, primary_key=True,
+                serialize=False),
         ),
         migrations.AlterField(
             model_name='role',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, unique=True),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, unique=True),
         ),
         migrations.AlterField(
             model_name='vendor',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, unique=True),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, unique=True),
         ),
         migrations.AlterField(
             model_name='vf',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, primary_key=True, serialize=False, unique=True),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, primary_key=True,
+                serialize=False, unique=True),
         ),
         migrations.AlterField(
             model_name='vfc',
             name='uuid',
-            field=models.CharField(default=uuid.uuid4, max_length=36, primary_key=True, serialize=False, unique=True),
+            field=models.CharField(
+                default=uuid.uuid4, max_length=36, primary_key=True,
+                serialize=False, unique=True),
         ),
     ]

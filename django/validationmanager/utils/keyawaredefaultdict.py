@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -40,14 +40,16 @@ from collections import defaultdict
 
 
 class KeyAwareDefaultDict(defaultdict):
-    """A defaultdict whose missing-key factory is passed the missing key as its only argument.
+    """A defaultdict whose missing-key factory
+    is passed the missing key as its only argument.
 
     See https://docs.python.org/3/library/collections.html#defaultdict-objects
 
     """
 
     def __missing__(self, key):
-        # This code is modified copypasta from help(collections.defaultdict.__missing__).
+        # This code is modified copypasta from help
+        # (collections.defaultdict.__missing__).
         # Unfortunately there is no simpler way to override its behavior.
         if self.default_factory is None:
             raise KeyError((key,))

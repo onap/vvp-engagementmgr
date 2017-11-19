@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -48,16 +48,144 @@ logger = LoggingServiceFactory.get_logger()
 
 
 def get_posts_mock(offset=0, limit=10, category="", date_min=""):
-    result = [{u'updated': u'2017-01-17T15:57:19.567778Z', u'title': u'announcement..new.1', u'url': u'http://127.0.0.1:8001/blog/announcementnew1/', u'short_url': u'/blog/announcementnew1/', u'tags': u'', u'excerpt': u'announcement..new.announcement..new.', u'allow_comments': True, u'comments': [], u'slug': u'announcementnew1', u'content': u'<p>announcement..new.announcement..new.</p>', u'publish_date': u'2017-01-14T19:53:52Z', u'user': {u'username': u'al942u', u'first_name': u'', u'last_name': u'', u'email': u'al942u@mail.com', u'is_staff': True, u'id': 1}, u'featured_image': u'', u'comments_count': 0, u'id': 1, u'categories': [{u'slug': u'announcement', u'id': 1, u'title': u'Announcement'}]},
-              {u'updated': u'2017-01-16T15:57:19.567778Z', u'title': u'announcement..new.2', u'url': u'http://127.0.0.1:8001/blog/announcementnew2/', u'short_url': u'/blog/announcementnew2/', u'tags': u'', u'excerpt': u'announcement..new.announcement..new.', u'allow_comments': True, u'comments': [], u'slug': u'announcementnew2',
-                  u'content': u'<p>announcement..new.announcement..new.</p>', u'publish_date': u'2017-01-15T19:53:52Z', u'user': {u'username': u'al942u', u'first_name': u'', u'last_name': u'', u'email': u'al942u@mail.com', u'is_staff': True, u'id': 1}, u'featured_image': u'', u'comments_count': 0, u'id': 2, u'categories': [{u'slug': u'announcement', u'id': 1, u'title': u'Announcement'}]},
-              {u'updated': u'2017-01-15T15:57:19.567778Z', u'title': u'announcement..new.3', u'url': u'http://127.0.0.1:8001/blog/announcementnew3/', u'short_url': u'/blog/announcementnew3/', u'tags': u'', u'excerpt': u'announcement..new.announcement..new.', u'allow_comments': True, u'comments': [], u'slug': u'announcementnew3',
-                  u'content': u'<p>announcement..new.announcement..new.</p>', u'publish_date': u'2017-01-16T19:53:52Z', u'user': {u'username': u'al942u', u'first_name': u'', u'last_name': u'', u'email': u'al942u@mail.com', u'is_staff': True, u'id': 1}, u'featured_image': u'', u'comments_count': 0, u'id': 3, u'categories': [{u'slug': u'announcement', u'id': 1, u'title': u'Announcement'}]},
-              {u'updated': u'2017-01-14T15:57:19.567778Z', u'title': u'news..new.1', u'url': u'http://127.0.0.1:8001/blog/news1/', u'short_url': u'/blog/news1/', u'tags': u'', u'excerpt': u'news..new.news..new.', u'allow_comments': True, u'comments': [], u'slug': u'news1', u'content': u'<p>news..new.news..new.</p>',
-               u'publish_date': u'2017-01-14T19:53:52Z', u'user': {u'username': u'al942u', u'first_name': u'', u'last_name': u'', u'email': u'al942u@mail.com', u'is_staff': True, u'id': 1}, u'featured_image': u'', u'comments_count': 0, u'id': 4, u'categories': [{u'slug': u'news', u'id': 1, u'title': u'News'}]},
-              {u'updated': u'2017-01-13T15:57:19.567778Z', u'title': u'news..new.2', u'url': u'http://127.0.0.1:8001/blog/news2/', u'short_url': u'/blog/news2/', u'tags': u'', u'excerpt': u'news..new.news..new.', u'allow_comments': True, u'comments': [], u'slug': u'news2', u'content': u'<p>news..new.news..new.</p>',
-               u'publish_date': u'2017-01-15T19:53:52Z', u'user': {u'username': u'al942u', u'first_name': u'', u'last_name': u'', u'email': u'al942u@mail.com', u'is_staff': True, u'id': 1}, u'featured_image': u'', u'comments_count': 0, u'id': 5, u'categories': [{u'slug': u'news', u'id': 1, u'title': u'News'}]},
-              {u'updated': u'2017-01-12T15:57:19.567778Z', u'title': u'news..new.3', u'url': u'http://127.0.0.1:8001/blog/news3/', u'short_url': u'/blog/news3/', u'tags': u'', u'excerpt': u'news..new.news..new.', u'allow_comments': True, u'comments': [], u'slug': u'news3', u'content': u'<p>news..new.news..new.</p>', u'publish_date': u'2017-01-16T19:53:52Z', u'user': {u'username': u'al942u', u'first_name': u'', u'last_name': u'', u'email': u'al942u@mail.com', u'is_staff': True, u'id': 1}, u'featured_image': u'', u'comments_count': 0, u'id': 6, u'categories': [{u'slug': u'news', u'id': 1, u'title': u'News'}]}]
+    result = [{u'updated': u'2017-01-17T15:57:19.567778Z',
+               u'title': u'announcement..new.1',
+               u'url': u'http://127.0.0.1:8001/blog/announcementnew1/',
+               u'short_url': u'/blog/announcementnew1/',
+               u'tags': u'',
+               u'excerpt': u'announcement..new.announcement..new.',
+               u'allow_comments': True,
+               u'comments': [],
+               u'slug': u'announcementnew1',
+               u'content': u'<p>announcement..new.announcement..new.</p>',
+               u'publish_date': u'2017-01-14T19:53:52Z',
+               u'user': {u'username': u'al942u',
+                         u'first_name': u'',
+                         u'last_name': u'',
+                         u'email': u'al942u@mail.com',
+                         u'is_staff': True,
+                         u'id': 1},
+               u'featured_image': u'',
+               u'comments_count': 0,
+               u'id': 1,
+               u'categories': [{u'slug': u'announcement',
+                                u'id': 1,
+                                u'title': u'Announcement'}]},
+              {u'updated': u'2017-01-16T15:57:19.567778Z',
+               u'title': u'announcement..new.2',
+               u'url': u'http://127.0.0.1:8001/blog/announcementnew2/',
+               u'short_url': u'/blog/announcementnew2/',
+               u'tags': u'',
+               u'excerpt': u'announcement..new.announcement..new.',
+               u'allow_comments': True,
+               u'comments': [],
+               u'slug': u'announcementnew2',
+               u'content': u'<p>announcement..new.announcement..new.</p>',
+               u'publish_date': u'2017-01-15T19:53:52Z',
+               u'user': {u'username': u'al942u',
+                         u'first_name': u'',
+                         u'last_name': u'',
+                         u'email': u'al942u@mail.com',
+                         u'is_staff': True,
+                         u'id': 1},
+               u'featured_image': u'',
+               u'comments_count': 0,
+               u'id': 2,
+               u'categories': [{u'slug': u'announcement',
+                                u'id': 1,
+                                u'title': u'Announcement'}]},
+              {u'updated': u'2017-01-15T15:57:19.567778Z',
+               u'title': u'announcement..new.3',
+               u'url': u'http://127.0.0.1:8001/blog/announcementnew3/',
+               u'short_url': u'/blog/announcementnew3/',
+               u'tags': u'',
+               u'excerpt': u'announcement..new.announcement..new.',
+               u'allow_comments': True,
+               u'comments': [],
+               u'slug': u'announcementnew3',
+               u'content': u'<p>announcement..new.announcement..new.</p>',
+               u'publish_date': u'2017-01-16T19:53:52Z',
+               u'user': {u'username': u'al942u',
+                         u'first_name': u'',
+                         u'last_name': u'',
+                         u'email': u'al942u@mail.com',
+                         u'is_staff': True,
+                         u'id': 1},
+               u'featured_image': u'',
+               u'comments_count': 0,
+               u'id': 3,
+               u'categories': [{u'slug': u'announcement',
+                                u'id': 1,
+                                u'title': u'Announcement'}]},
+              {u'updated': u'2017-01-14T15:57:19.567778Z',
+               u'title': u'news..new.1',
+               u'url': u'http://127.0.0.1:8001/blog/news1/',
+               u'short_url': u'/blog/news1/',
+               u'tags': u'',
+               u'excerpt': u'news..new.news..new.',
+               u'allow_comments': True,
+               u'comments': [],
+               u'slug': u'news1',
+               u'content': u'<p>news..new.news..new.</p>',
+               u'publish_date': u'2017-01-14T19:53:52Z',
+               u'user': {u'username': u'al942u',
+                         u'first_name': u'',
+                         u'last_name': u'',
+                         u'email': u'al942u@mail.com',
+                         u'is_staff': True,
+                         u'id': 1},
+               u'featured_image': u'',
+               u'comments_count': 0,
+               u'id': 4,
+               u'categories': [{u'slug': u'news',
+                                u'id': 1,
+                                u'title': u'News'}]},
+              {u'updated': u'2017-01-13T15:57:19.567778Z',
+               u'title': u'news..new.2',
+               u'url': u'http://127.0.0.1:8001/blog/news2/',
+               u'short_url': u'/blog/news2/',
+               u'tags': u'',
+               u'excerpt': u'news..new.news..new.',
+               u'allow_comments': True,
+               u'comments': [],
+               u'slug': u'news2',
+               u'content': u'<p>news..new.news..new.</p>',
+               u'publish_date': u'2017-01-15T19:53:52Z',
+               u'user': {u'username': u'al942u',
+                         u'first_name': u'',
+                         u'last_name': u'',
+                         u'email': u'al942u@mail.com',
+                         u'is_staff': True,
+                         u'id': 1},
+               u'featured_image': u'',
+               u'comments_count': 0,
+               u'id': 5,
+               u'categories': [{u'slug': u'news',
+                                u'id': 1,
+                                u'title': u'News'}]},
+              {u'updated': u'2017-01-12T15:57:19.567778Z',
+               u'title': u'news..new.3',
+               u'url': u'http://127.0.0.1:8001/blog/news3/',
+               u'short_url': u'/blog/news3/',
+               u'tags': u'',
+               u'excerpt': u'news..new.news..new.',
+               u'allow_comments': True,
+               u'comments': [],
+               u'slug': u'news3',
+               u'content': u'<p>news..new.news..new.</p>',
+               u'publish_date': u'2017-01-16T19:53:52Z',
+               u'user': {u'username': u'al942u',
+                         u'first_name': u'',
+                         u'last_name': u'',
+                         u'email': u'al942u@mail.com',
+                         u'is_staff': True,
+                         u'id': 1},
+               u'featured_image': u'',
+               u'comments_count': 0,
+               u'id': 6,
+               u'categories': [{u'slug': u'news',
+                                u'id': 1,
+                                u'title': u'News'}]}]
 
     if category == "News":
         return [result[3], result[4], result[5]]
@@ -77,10 +205,16 @@ class CMSGetPostsTestCase(TestBaseEntity):
     def childSetup(self):
         self.createVendors([Constants.service_provider_company_name, 'Other'])
         self.createDefaultRoles()
-        self.admin, self.el, self.standard_user = self.creator.createAndGetDefaultRoles()
-        self.user = self.creator.createUser(Vendor.objects.get(name='Other'),
-                                            self.randomGenerator("main-vendor-email"), 'Aa123456',
-                                            'user', self.standard_user, True)
+        self.admin, self.el, self.standard_user = \
+            self.creator.createAndGetDefaultRoles()
+        self.user = self.creator.createUser(
+            Vendor.objects.get(
+                name='Other'),
+            self.randomGenerator("main-vendor-email"),
+            'Aa123456',
+            'user',
+            self.standard_user,
+            True)
         self.token = self.loginAndCreateSessionToken(self.user)
 
     def testGetPostsByCategory(self):
@@ -88,17 +222,20 @@ class CMSGetPostsTestCase(TestBaseEntity):
         print(urlStr)
         self.printTestName("GetPostsByCategoryTest [Start]")
         logger.debug("action should success (200), and return filtered posts")
-        response = self.c.get(urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.get(
+            urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertEqual(len(json.loads(response.content)), 3)  # Suppose to be 3 The amount of News in the mock.
+        # Suppose to be 3 The amount of News in the mock.
+        self.assertEqual(len(json.loads(response.content)), 3)
         self.printTestName("GetPostsByCategoryTest [End]")
 
     def testGetAllPosts(self):
         urlStr = self.urlPrefix + 'cms/posts/?limit=10'
         self.printTestName("GetAllPostsTest [Start]")
         logger.debug("action should success (200), and return all posts")
-        response = self.c.get(urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.get(
+            urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
         # Suppose to be 6 items like the amount of items of the mock.
@@ -109,29 +246,37 @@ class CMSGetPostsTestCase(TestBaseEntity):
         limit = 2
         urlStr = self.urlPrefix + 'cms/posts/?limit=' + str(limit)
         self.printTestName("GetLimitedPostsTest [Start]")
-        logger.debug("action should success (200), and filtered with limit all posts")
-        response = self.c.get(urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
+        logger.debug(
+            "action should success (200), and filtered with limit all posts")
+        response = self.c.get(
+            urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertEqual(len(json.loads(response.content)), limit)  # Suppose to be {{limit}} amount of items
+        # Suppose to be {{limit}} amount of items
+        self.assertEqual(len(json.loads(response.content)), limit)
         self.printTestName("GetLimitedPostsTest [End]")
 
     def testGetPostsByDateMin(self):
         urlStr = self.urlPrefix + 'cms/posts/?fromLastDays=2&limit=10'
         self.printTestName("GetPostsByDateMinTest [Start]")
         logger.debug("action should success (200), and return filtered posts")
-        response = self.c.get(urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.get(
+            urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertEqual(len(json.loads(response.content)), 2)  # Suppose to be 2 items that are after this date
+        # Suppose to be 2 items that are after this date
+        self.assertEqual(len(json.loads(response.content)), 2)
         self.printTestName("GetPostsByDateMinTest [End]")
 
     def testGetOneAnnouncementPost(self):
         urlStr = self.urlPrefix + 'cms/posts/?limit=1&category=Announcement'
         self.printTestName("GetOneAnnouncementPostTest [Start]")
-        logger.debug("action should success (200), and return one announcement post")
-        response = self.c.get(urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
+        logger.debug(
+            "action should success (200), and return one announcement post")
+        response = self.c.get(
+            urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertEqual(len(json.loads(response.content)), 1)  # Suppose to be just 1 item like that.
+        # Suppose to be just 1 item like that.
+        self.assertEqual(len(json.loads(response.content)), 1)
         self.printTestName("GetOneAnnouncementPostTest [End]")

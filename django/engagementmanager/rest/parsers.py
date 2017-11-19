@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -47,10 +47,10 @@ sanitizer = Cleaner(
     styles=[
         'color', 'font-family', 'font-style', 'font-weight',
         'text-decoration-line',
-        ],
+    ],
     protocols=['http'],
     strip=True,
-    )
+)
 
 
 def clean_r(obj):
@@ -94,6 +94,7 @@ class XSSParserMixin(parsers.BaseParser):
     cause clean_r() to be run against the parsed data.
 
     """
+
     def parse(self, stream, media_type=None, parser_context=None):
         return clean_r(
             super().parse(

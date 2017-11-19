@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -39,7 +39,8 @@
 from rest_framework.status import HTTP_200_OK,\
     HTTP_500_INTERNAL_SERVER_ERROR
 from engagementmanager.models import Vendor, ECOMPRelease
-from engagementmanager.service.engagement_service import get_expanded_engs_for_export
+from engagementmanager.service.engagement_service \
+    import get_expanded_engs_for_export
 from engagementmanager.tests.test_base_entity import TestBaseEntity
 from engagementmanager.utils.constants import EngagementStage, Constants
 from engagementmanager.service.logging_service import LoggingServiceFactory
@@ -53,13 +54,19 @@ class EngagementExportTestCase(TestBaseEntity):
     def childSetup(self):
         self.createVendors([Constants.service_provider_company_name, 'Other'])
         self.createDefaultRoles()
-        self.admin, self.el, self.standard_user = self.creator.createAndGetDefaultRoles()
+        self.admin, self.el, self.standard_user = \
+            self.creator.createAndGetDefaultRoles()
         self.peer_reviewer = self.creator.createUser(Vendor.objects.get(
             name='Other'), self.randomGenerator("main-vendor-email"),
             '55501000199', 'peer-reviewer user', self.el, True)
-        self.admin = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), Constants.service_provider_admin_mail,
-            'Aa123456', 'admin user', self.el, True)
+        self.admin = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            Constants.service_provider_admin_mail,
+            'Aa123456',
+            'admin user',
+            self.el,
+            True)
         self.user = self.creator.createUser(Vendor.objects.get(
             name='Other'), self.randomGenerator("main-vendor-email"),
             'Aa123456', 'user', self.standard_user, True)
@@ -73,9 +80,15 @@ class EngagementExportTestCase(TestBaseEntity):
         self.engagement.engagement_stage = EngagementStage.Active.name
         self.engagement.save()
         self.deploymentTarget = self.creator.createDeploymentTarget(
-            self.randomGenerator("randomString"), self.randomGenerator("randomString"))
-        self.vf = self.creator.createVF(self.randomGenerator("randomString"), self.engagement,
-                                        self.deploymentTarget, False, Vendor.objects.get(name=Constants.service_provider_company_name))
+            self.randomGenerator("randomString"),
+            self.randomGenerator("randomString"))
+        self.vf = self.creator.createVF(
+            self.randomGenerator("randomString"),
+            self.engagement,
+            self.deploymentTarget,
+            False,
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name))
         self.vf.ecomp_release = ECOMPRelease.objects.create(
             uuid='uuid1', name='ActiveECOMPRelease')
         self.vf.save()
@@ -89,9 +102,15 @@ class EngagementExportTestCase(TestBaseEntity):
         self.engagement2.engagement_stage = EngagementStage.Intake.name
         self.engagement2.save()
         self.deploymentTarget = self.creator.createDeploymentTarget(
-            self.randomGenerator("randomString"), self.randomGenerator("randomString"))
-        self.vf2 = self.creator.createVF(self.randomGenerator("randomString"), self.engagement2,
-                                         self.deploymentTarget, False, Vendor.objects.get(name='Other'))
+            self.randomGenerator("randomString"),
+            self.randomGenerator("randomString"))
+        self.vf2 = self.creator.createVF(
+            self.randomGenerator("randomString"),
+            self.engagement2,
+            self.deploymentTarget,
+            False,
+            Vendor.objects.get(
+                name='Other'))
         self.vf2.ecomp_release = ECOMPRelease.objects.create(
             uuid='uuid2', name='IntakeECOMPRelease')
         self.vf2.save()
@@ -113,7 +132,8 @@ class EngagementExportTestCase(TestBaseEntity):
     def testSuccessExport(self):
         self.printTestName("Success export [start]")
 
-        if settings.DATABASES["default"]["ENGINE"] == "django.db.backends.sqlite3":
+        if settings.DATABASES["default"]["ENGINE"] == \
+                "django.db.backends.sqlite3":
             return
 
         urlStr = self.urlPrefix + 'engagement/export/?stage=Active&keyword'
@@ -158,8 +178,10 @@ class EngagementExportTestCase(TestBaseEntity):
         self.assertEqual(len(vfs) == 0, True)
 
         # Check overview sheet data procedure:
-        logger.debug("Check if the store procedure return data as expected (suppose to return 4 rows of overview "
-                     "sheet) and by that assume that it exists")
+        logger.debug(
+            "Check if the store procedure return data as expected \
+            (suppose to return 4 rows of overview "
+            "sheet) and by that assume that it exists")
         self.assertEqual(len(deployment_targets), 4)
 
         self.printTestName("Success export [end]")

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -40,7 +40,9 @@ from boto.s3.connection import S3Connection
 
 from engagementmanager.tests.test_base_entity import TestBaseEntity
 from validationmanager.rados.rgwa_client import RGWAClient
-from validationmanager.rados.rgwa_client_factory import RGWAClientFactory as RGWAClientFactorySing
+from validationmanager.rados.rgwa_client_factory import \
+    RGWAClientFactory as RGWAClientFactorySing
+
 
 class TestRGWAClientFactory(TestBaseEntity):
     def childSetup(self):
@@ -52,4 +54,5 @@ class TestRGWAClientFactory(TestBaseEntity):
 
     def testStandardClientCreation(self):
         client = RGWAClientFactorySing.standard()
-        self.assertTrue(client is not None and isinstance(client, S3Connection))
+        self.assertTrue(
+            client is not None and isinstance(client, S3Connection))

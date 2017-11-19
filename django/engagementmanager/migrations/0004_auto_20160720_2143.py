@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -57,12 +57,27 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='iceuser',
             name='temp_password',
-            field=models.CharField(blank=True, default=None, max_length=256, null=True, unique=True),
+            field=models.CharField(
+                blank=True,
+                default=None,
+                max_length=256,
+                null=True,
+                unique=True),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='target_completion_date',
-            field=models.DateField(blank=True, default=datetime.datetime(
-                2016, 8, 5, 18, 43, 43, 473000, tzinfo=utc), null=True),
+            field=models.DateField(
+                blank=True,
+                default=datetime.datetime(
+                    2016,
+                    8,
+                    5,
+                    18,
+                    43,
+                    43,
+                    473000,
+                    tzinfo=utc),
+                null=True),
         ),
     ]

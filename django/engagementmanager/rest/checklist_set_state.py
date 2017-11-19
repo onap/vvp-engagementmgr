@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -59,9 +59,13 @@ class ChecklistState(VvpApiView):
         decline = data['decline']
         if decline == "True":
             checklist = set_state(True, request_data_mgr.get_cl_uuid(),
-                                  isMoveToAutomation=False, description=data['description'])
+                                  isMoveToAutomation=False,
+                                  description=data['description'])
         else:
-            checklist = set_state(False, request_data_mgr.get_cl_uuid(), description=data['description'])
+            checklist = set_state(
+                False, request_data_mgr.get_cl_uuid(),
+                description=data['description'])
 
-        cldata = json.dumps(SuperThinChecklistModelSerializer(checklist).data, ensure_ascii=False)
+        cldata = json.dumps(SuperThinChecklistModelSerializer(
+            checklist).data, ensure_ascii=False)
         return Response(cldata)

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -53,7 +53,19 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='engagement',
             name='engagement_stage',
-            field=models.CharField(choices=[(b'Active', b'Active'), (b'Archived', b'Archived'), (b'Completed', b'Completed'), (
-                b'Intake', b'Intake'), (b'Validated', b'Validated')], default=b'Intake', max_length=15),
+            field=models.CharField(
+                choices=[
+                    (b'Active',
+                     b'Active'),
+                    (b'Archived',
+                     b'Archived'),
+                    (b'Completed',
+                     b'Completed'),
+                    (b'Intake',
+                     b'Intake'),
+                    (b'Validated',
+                     b'Validated')],
+                default=b'Intake',
+                max_length=15),
         ),
     ]

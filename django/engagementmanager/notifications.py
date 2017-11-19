@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -45,7 +45,8 @@ logger = LoggingServiceFactory.get_logger()
 
 def num_of_notifications_for_user(user_uuid):
     user = IceUserProfile.objects.get(uuid=user_uuid)
-    amountOfnotificationForUser = Notification.objects.filter(user=user, is_read=False).filter().count()
+    amountOfnotificationForUser = Notification.objects.filter(
+        user=user, is_read=False).filter().count()
     return amountOfnotificationForUser
 
 
@@ -53,7 +54,9 @@ def pull_recent_notifications(user_uuid, offset, limit):
     ModifiedNotificationsSet = []
     logger.debug("Pulling unread notifications from DB")
     user = IceUserProfile.objects.get(uuid=user_uuid)
-    notificationsList = Notification.objects.filter(user=user).order_by('is_read', '-activity__create_time')[int(offset):int(offset) + int(limit)]
+    notificationsList = Notification.objects.filter(user=user).order_by(
+        'is_read', '-activity__create_time')[
+            int(offset):int(offset) + int(limit)]
     num_of_objects = Notification.objects.filter(user=user).count()
     for notif in notificationsList:
         serializedNotification = ThinNotificationModelSerializer(notif).data

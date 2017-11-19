@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -53,9 +53,15 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
 
         self.createDefaultRoles()
         # Create a user with role el
-        vendor = Vendor.objects.get(name=Constants.service_provider_company_name)
-        self.el_user = self.creator.createUser(vendor, self.randomGenerator(
-            "main-vendor-email"), self.randomGenerator("randomNumber"), self.randomGenerator("randomString"), self.el, True)
+        vendor = Vendor.objects.get(
+            name=Constants.service_provider_company_name)
+        self.el_user = self.creator.createUser(
+            vendor,
+            self.randomGenerator("main-vendor-email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.el,
+            True)
         self.peer_reviewer = self.creator.createUser(Vendor.objects.get(
             name='Other'), self.randomGenerator("main-vendor-email"),
             '55501000199', 'peer-reviewer user', self.el, True)
@@ -67,16 +73,27 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
 
         # Create a user with role standard_user
         self.vendor = Vendor.objects.get(name='Other')
-        self.user = self.creator.createUser(self.vendor, "Johnny@d2ice.com", self.randomGenerator(
-            "randomNumber"), self.randomGenerator("randomString"), self.standard_user, True)
+        self.user = self.creator.createUser(
+            self.vendor,
+            "Johnny@d2ice.com",
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.standard_user,
+            True)
         print('-----------------------------------------------------')
         print('Created User:')
         print('UUID: ' + str(self.user.uuid))
         print('Full Name: ' + self.user.full_name)
         print('-----------------------------------------------------')
-        self.service_provider = Vendor.objects.get(name=Constants.service_provider_company_name)
-        self.peer_reviewer = self.creator.createUser(self.service_provider, self.randomGenerator(
-            "main-vendor-email"), self.randomGenerator("randomNumber"), self.randomGenerator("randomString"), self.el, True)
+        self.service_provider = Vendor.objects.get(
+            name=Constants.service_provider_company_name)
+        self.peer_reviewer = self.creator.createUser(
+            self.service_provider,
+            self.randomGenerator("main-vendor-email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.el,
+            True)
         logger.debug('-----------------------------------------------------')
         logger.debug('Created Peer Reviewer:')
         logger.debug('UUID: ' + str(self.peer_reviewer.uuid))
@@ -84,13 +101,18 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
         logger.debug('-----------------------------------------------------')
 
         # Create an Engagement with team
-        engStageList = [EngagementStage.Intake.name, EngagementStage.Active.name,
-                        EngagementStage.Validated.name, EngagementStage.Completed.name]  # @UndefinedVariable
+        engStageList = [
+            EngagementStage.Intake.name,
+            EngagementStage.Active.name,
+            EngagementStage.Validated.name,
+            EngagementStage.Completed.name]  # @UndefinedVariable
         self.random_stage = engStageList[(random.randint(0, 3) * 2 + 1) % 4]
         self.names_array = list()
         for i in range(0, 14):
             self.engagement = self.creator.createEngagement(
-                self.randomGenerator("randomString"), self.randomGenerator("randomString"), None)
+                self.randomGenerator(
+                    "randomString"),
+                self.randomGenerator("randomString"), None)
             self.engagement.reviewer = self.el_user
             self.engagement.peer_reviewer = self.peer_reviewer
             self.engagement.engagement_manual_id = self.randomGenerator(
@@ -107,10 +129,14 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
             self.names_array.append(self.engagement.engagement_manual_id)
             # Create a VF
             self.deploymentTarget = self.creator.createDeploymentTarget(
-                self.randomGenerator("randomString"), self.randomGenerator("randomString"))
-    #         self.asInfrastructure = self.creator.createApplicationServiceInfrastructure(self.randomGenerator("randomString"))
+                self.randomGenerator("randomString"),
+                self.randomGenerator("randomString"))
             self.vf = self.creator.createVF(
-                "vf_" + str(i), self.engagement, self.deploymentTarget, False, vendor)
+                "vf_" + str(i),
+                self.engagement,
+                self.deploymentTarget,
+                False,
+                vendor)
             self.vf.save()
             self.names_array.append(self.vf.name)
             print('-----------------------------------------------------')
@@ -120,7 +146,11 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
             if (i % 2 == 0):
                 self.engagement.engagement_team.add(self.user)
                 vfc = self.creator.createVFC(
-                    "vfc_" + str(i), self.randomGenerator("randomNumber"), self.vendor, self.vf, self.el_user)
+                    "vfc_" + str(i),
+                    self.randomGenerator("randomNumber"),
+                    self.vendor,
+                    self.vf,
+                    self.el_user)
                 self.names_array.append(vfc.name)
                 self.engagement.save()
 
@@ -128,8 +158,8 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
             random.randint(0, len(self.names_array) - 1))]
         self.token = self.loginAndCreateSessionToken(self.user)
 
-    def loggerTestFailedOrSucceded(self, bool):
-        if bool:
+    def loggerTestFailedOrSucceded(self, bool_flag):
+        if bool_flag:
             logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             logger.debug(" Test Succeeded")
             logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n")
@@ -142,13 +172,16 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
         urlStr = self.urlPrefix + 'engagement/expanded/'
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.debug(
-            " Test started: test_get_expanded_even_numbered_engs_by_standard_user_no_keyword")
+            " Test started: test_get_expanded_even_numbered_\
+            engs_by_standard_user_no_keyword")
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n")
 
         postData = {'stage': 'All', 'keyword': '', 'offset': 0, 'limit': 15}
         datajson = json.dumps(postData, ensure_ascii=False)
-        response = self.c.post(
-            urlStr, datajson, content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.post(urlStr,
+                               datajson,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token " + self.token})
         status = response.status_code
         logger.debug("Got response : " + str(status))
         if (status != 200):
@@ -180,8 +213,10 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
         postData = {'stage': self.random_stage,
                     'keyword': '', 'offset': 0, 'limit': 15}
         datajson = json.dumps(postData, ensure_ascii=False)
-        response = self.c.post(
-            urlStr, datajson, content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.post(urlStr,
+                               datajson,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token " + self.token})
         status = response.status_code
         logger.debug("Got response : " + str(status))
         if (status != 200):
@@ -196,7 +231,8 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
             if (x['engagement__engagement_stage'] != self.random_stage):
                 self.loggerTestFailedOrSucceded(False)
                 logger.error(
-                    "VF With different stage than defined filter was retrieved")
+                    "VF With different stage than \
+                    defined filter was retrieved")
                 self.assertEqual(
                     x['engagement__engagement_stage'], self.random_stage)
         self.loggerTestFailedOrSucceded(True)
@@ -212,7 +248,10 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
                     'offset': 0, 'limit': 15}
         datajson = json.dumps(postData, ensure_ascii=False)
         response = self.c.post(
-            urlStr, datajson, content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.token})
+            urlStr,
+            datajson,
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.token})
         status = response.status_code
         logger.debug("Got response : " + str(status))
         self.assertEqual(response.status_code, 200)
@@ -220,8 +259,10 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
         data = json.loads(response.content)
         print("random keyword chosen: " + self.random_keyword)
         for x in data['array']:
-            bool = False
-            if (x['engagement__engagement_manual_id'] != self.random_keyword and x['vf__name'] != self.random_keyword):
+            bool_flag = False
+            if (
+                x['engagement__engagement_manual_id'] != self.random_keyword
+                    and x['vf__name'] != self.random_keyword):
                 vf = VF.objects.get(engagement__uuid=x['engagement__uuid'])
                 urlStr = self.urlPrefix + 'vf/' + str(vf.uuid) + '/vfcs/'
                 vfc_of_x_response = self.c.get(
@@ -229,13 +270,13 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
                 vfc_list = json.loads(vfc_of_x_response.content)
                 for vfc in vfc_list:
                     if vfc['name'] == self.random_keyword:
-                        bool = True
+                        bool_flag = True
                         break
                     else:
                         continue
             else:
-                bool = True
-            if (not bool):
+                bool_flag = True
+            if (not bool_flag):
                 self.loggerTestFailedOrSucceded(False)
                 logger.error(
                     "VF With different stage than filter was retrieved")
@@ -253,8 +294,10 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
         postData = {'stage': self.random_stage,
                     'keyword': self.random_keyword, 'offset': 0, 'limit': 15}
         datajson = json.dumps(postData, ensure_ascii=False)
-        response = self.c.post(
-            urlStr, datajson, content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.post(urlStr,
+                               datajson,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token " + self.token})
         status = response.status_code
         logger.debug("Got response : " + str(status))
         if (status != 200):
@@ -265,14 +308,17 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
         data = json.loads(response.content)
         print("random keyword chosen: " + self.random_keyword)
         for x in data['array']:
-            bool = False
+            bool_flag = False
             if (x['engagement__engagement_stage'] != self.random_stage):
                 self.loggerTestFailedOrSucceded(False)
                 logger.error(
-                    "VF With different stage than defined filter was retrieved")
+                    "VF With different stage than \
+                    defined filter was retrieved")
                 self.assertEqual(
                     x['engagement__engagement_stage'], self.random_stage)
-            if (x['engagement__engagement_manual_id'] != self.random_keyword and x['vf__name'] != self.random_keyword):
+            if (
+                x['engagement__engagement_manual_id'] != self.random_keyword
+                    and x['vf__name'] != self.random_keyword):
                 vf = VF.objects.get(engagement__uuid=x['engagement__uuid'])
                 urlStr = self.urlPrefix + 'vf' + str(vf.uuid) + '/vfcs/'
                 vfc_of_x_response = self.c.get(
@@ -280,13 +326,13 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
                 vfc_list = json.loads(vfc_of_x_response.content)
                 for vfc in vfc_list:
                     if (vfc['name'] == self.random_keyword):
-                        bool = True
+                        bool_flag = True
                         break
                     else:
                         continue
             else:
-                bool = True
-            if (not bool):
+                bool_flag = True
+            if (not bool_flag):
                 self.loggerTestFailedOrSucceded(False)
                 logger.error(
                     "VF With different stage than filter was retrieved")
@@ -304,8 +350,10 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
         postData = {'stage': 'All', 'keyword': email_test,
                     'offset': 0, 'limit': 15}
         datajson = json.dumps(postData, ensure_ascii=False)
-        response = self.c.post(
-            urlStr, datajson, content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.post(urlStr,
+                               datajson,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token " + self.token})
         status = response.status_code
         logger.debug("Got response : " + str(status))
         self.assertEqual(response.status_code, 200)
@@ -316,7 +364,8 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
             for vf_record in data['array']:
                 vf = VF.objects.get(
                     engagement__uuid=vf_record['engagement__uuid'])
-                if (not vf.engagement.engagement_team.filter(uuid=self.user.uuid).exists()):
+                if (not vf.engagement.engagement_team.filter(
+                        uuid=self.user.uuid).exists()):
                     self.loggerTestFailedOrSucceded(False)
                     logger.error(
                         "VF With different stage than filter was retrieved")

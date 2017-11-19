@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,7 +36,6 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-import json
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -59,15 +58,18 @@ class InviteTeamMember(VvpApiView):
         inviterUser = request_data_mgr.get_user()
         msg = "OK"
         sts = status.HTTP_200_OK
-        if (inviterUser != None):
+        if (inviterUser):
             dataList = []
             dataList = request.data
 
             for data in dataList:
-                if 'eng_uuid' in data and data['eng_uuid'] and 'email' in data and data['email']:
-                    inviteUserToSignUpOrLogin(inviterUser, data, is_contact_user=False)
+                if 'eng_uuid' in data and data['eng_uuid'] and \
+                        'email' in data and data['email']:
+                    inviteUserToSignUpOrLogin(
+                        inviterUser, data, is_contact_user=False)
                 else:
-                    msg = "No eng_uuid or no email found on the request body to invite-team-members. data=" + str(data)
+                    msg = "No eng_uuid or no email found on the request \
+                    body to invite-team-members. data=" + str(data)
                     self.logger.error(logEncoding(msg))
                     sts = status.HTTP_500_INTERNAL_SERVER_ERROR
 
@@ -84,9 +86,9 @@ class InviteContact(VvpApiView):
         data = request.data
 
         if ('full_name' not in data or not data['full_name'] or
-           'email' not in data or not data['email'] or
-           'phone_number' not in data or not data['phone_number'] or
-           'eng_uuid' not in data or not data['eng_uuid']):
+            'email' not in data or not data['email'] or
+            'phone_number' not in data or not data['phone_number'] or
+                'eng_uuid' not in data or not data['eng_uuid']):
             msg = "One of the input parameters is missing"
             self.logger.error(msg)
             return Response(msg, status=status.HTTP_400_BAD_REQUEST)

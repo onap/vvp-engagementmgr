@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -39,7 +39,8 @@
 import traceback
 from rest_framework.response import Response
 from rest_framework.views import exception_handler
-from engagementmanager.utils.exception_message_factory import ExceptionMessageFactory
+from engagementmanager.utils.exception_message_factory import \
+    ExceptionMessageFactory
 from engagementmanager.service.logging_service import LoggingServiceFactory
 
 logger = LoggingServiceFactory.get_logger()
@@ -47,7 +48,8 @@ logger = LoggingServiceFactory.get_logger()
 
 def ice_exception_handler(exc, context):
     """
-    our own exception handler so we will catch every exception occurred in rest and print it's stack into log
+    our own exception handler so we will catch every exception \
+    occurred in rest and print it's stack into log
     :param exc: The exception
     :param context: The context which the exception occurred in.
     """
@@ -60,14 +62,17 @@ def ice_exception_handler(exc, context):
 
         if exception_msg_obj['include_exception']:
             data['detail'] += str(exc)
-        if 'include_additional_exc_str' in exception_msg_obj and exception_msg_obj['include_additional_exc_str']:
+        if 'include_additional_exc_str' in exception_msg_obj and \
+                exception_msg_obj['include_additional_exc_str']:
             data['exception_message'] = str(exc)
 
         response = Response(data, status=exception_msg_obj['status'])
 
         logger.error("General exception occurred in rest framework: %s", exc)
-        logger.debug("*******************************************************************************************")
+        logger.debug(
+            "***************************************************************")
         logger.debug(traceback.format_exc())
-        logger.debug("*******************************************************************************************")
+        logger.debug(
+            "***************************************************************")
 
     return response

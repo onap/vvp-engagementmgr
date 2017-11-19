@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -39,7 +39,8 @@
 """ intial_populate_db
 Will create initial content to use this system.
 
-This command is creating users, templates, companies, deployment targets, sites and much more.
+This command is creating users, templates, companies,
+deployment targets, sites and much more.
 Will run at the state of a clean system so it won't cause data collisions.
 
 WARNING: Do not run while there is data at the system.
@@ -49,7 +50,8 @@ import random
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from engagementmanager.models import Role, Vendor, IceUserProfile, DeploymentTarget, \
+from engagementmanager.models import Role, Vendor, \
+    IceUserProfile, DeploymentTarget, \
     DeploymentTargetSite, Checklist, ChecklistDecision, ChecklistLineItem, \
     ChecklistTemplate, ChecklistSection, ECOMPRelease, Engagement, \
     CustomUser
@@ -68,7 +70,8 @@ logger = LoggingServiceFactory.get_logger()
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        if (settings.ENVIRONMENT == "local" or settings.ENVIRONMENT == "development"):
+        if (settings.ENVIRONMENT == "local" or
+                settings.ENVIRONMENT == "development"):
             execute_bootstrap_actions()
 
 
@@ -92,19 +95,26 @@ companies_not_public = [
     'Mitel',
 ]
 
-admin_dummy_users = [['admin bogus user', Constants.service_provider_admin_mail, '+1-23-456-78901']]
+admin_dummy_users = [['admin bogus user',
+                      Constants.service_provider_admin_mail,
+                      '+1-23-456-78901']]
 
 admin_ro_dummy_users = [
-    ['ro admin bogus user', Constants.service_provider_admin_ro_mail, '+1-23-456-78901']]
+    ['ro admin bogus user', Constants.service_provider_admin_ro_mail,
+     '+1-23-456-78901']]
 
 dummy_users = [
-    ['Bugs Bunny', 'bb@' + Constants.service_provider_mail_domain[0], '+1-404-986-9624'],
-    ['CI Standard 1', 'ci_standard_1@' + Constants.service_provider_mail_domain[0], '+1-404-986-9624'],
+    ['Bugs Bunny', 'bb@' + Constants.service_provider_mail_domain[0],
+     '+1-404-986-9624'],
+    ['CI Standard 1', 'ci_standard_1@' +
+        Constants.service_provider_mail_domain[0], '+1-404-986-9624'],
 ]
 
 el_dummy_users = [
-    ['Donald Duck', 'dd1122@' + Constants.service_provider_mail_domain[0], '+1-404-986-9624'],
-    ['Homer Simpson', 'hs0007@' + Constants.service_provider_mail_domain[0], '+1-425-281-3547']
+    ['Donald Duck', 'dd1122@' +
+        Constants.service_provider_mail_domain[0], '+1-404-986-9624'],
+    ['Homer Simpson', 'hs0007@' +
+        Constants.service_provider_mail_domain[0], '+1-425-281-3547']
 ]
 
 checklist_templates = [
@@ -123,14 +133,22 @@ checklist_templates = [
                         'name': 'Filenames',
                         'weight': 1,
                         'description': 'description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some \
+                        useful tips for how to validate this item in \
+                        the most awesome way:<br><br><ul><li>Here is \
+                        my awesome tip 1</li><li>Here is my awesome tip \
+                        2</li><li>Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Valid YAML and HEAT',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     }
                 ]
@@ -145,28 +163,44 @@ checklist_templates = [
                         'name': 'Parameters',
                         'weight': 1,
                         'description': 'description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Resources',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Unique Names for Resources',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Outputs',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     }
                 ]
@@ -182,77 +216,121 @@ checklist_templates = [
                         'name': 'Name, Flavor, and Image Assignments',
                         'weight': 1,
                         'description': 'description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Availability Zones',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Required Metadata',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Optional Metadata',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Volumes',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Keys and Keypairs',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Networks',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Subnet',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Fixed IPs',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome tip 1\
+                        </li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Allowed Address Pairs',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Ports',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     }
                 ]
@@ -268,28 +346,44 @@ checklist_templates = [
                         'name': 'HEAT Files Support (get_file)',
                         'weight': 1,
                         'description': 'description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'HTTP-based references',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Anti-Affinity and Affinity Rules',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Resource Data Synchronization',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     }
                 ]
@@ -312,14 +406,22 @@ checklist_templates = [
                         'name': 'Image Source',
                         'weight': 1,
                         'description': 'description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Vendor Provided Image',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     }
                 ]
@@ -334,7 +436,11 @@ checklist_templates = [
                         'name': 'Clam AV Scan',
                         'weight': 1,
                         'description': 'description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                 ]
@@ -356,14 +462,22 @@ checklist_templates = [
                         'name': 'Validated Heat Template(s)',
                         'weight': 1,
                         'description': 'description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Validated Glance Image(s)',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     }
                 ]
@@ -378,14 +492,22 @@ checklist_templates = [
                         'name': 'Create the HEAT Stack',
                         'weight': 1,
                         'description': 'description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Delete the HEAT Stack',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     }
                 ]
@@ -407,21 +529,33 @@ checklist_templates = [
                         'name': 'Validated Heat Template(s)',
                         'weight': 1,
                         'description': 'description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Validated Glance Image(s)',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome tip\
+                         1</li><li>Here is my awesome tip 2</li><li>\
+                         Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                     {
                         'name': 'Successful Manual Instantiation',
                         'weight': 1,
                         'description': 'Description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     }
                 ]
@@ -436,7 +570,11 @@ checklist_templates = [
                         'name': 'Create the VNF',
                         'weight': 1,
                         'description': 'description',
-                        'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                        'validation_instructions': 'Here are some useful \
+                        tips for how to validate this item in the most \
+                        awesome way:<br><br><ul><li>Here is my awesome \
+                        tip 1</li><li>Here is my awesome tip 2</li><li>\
+                        Here is my awesome tip 3</li></ul>',
                         'line_type': 'manual',
                     },
                 ]
@@ -453,7 +591,7 @@ checklist_templates = [
 #   for vt in vts:
 #       for li in vt.line_items.all():
 #           print("['" + vt.name + "', '" + li.name + "'],")
-validation_tests = [
+heat_validation_tests = [
     ['test_all_nested_templates_provided', 'Filenames'],
     ['test_all_referenced_resources_exists', 'Resources'],
     ['test_allowed_address_pairs_format', 'Allowed Address Pairs'],
@@ -468,9 +606,11 @@ validation_tests = [
     ['test_default_values', 'Parameters'],
     ['test_env_and_yaml_same_name', 'Filenames'],
     ['test_env_files_provided', 'Filenames'],
-    ['test_environment_file_contains_required_sections', 'Valid YAML and HEAT'],
+    ['test_environment_file_contains_required_sections',
+     'Valid YAML and HEAT'],
     ['test_environment_file_extension', 'Filenames'],
-    ['test_environment_file_sections_have_the_right_format', 'Valid YAML and HEAT'],
+    ['test_environment_file_sections_have_the_right_format',
+     'Valid YAML and HEAT'],
     ['test_environment_structure', 'Valid YAML and HEAT'],
     ['test_fixed_ips_format', 'Fixed IPs'],
     ['test_fixed_ips_format', 'Ports'],
@@ -478,20 +618,25 @@ validation_tests = [
     ['test_fixed_ips_format_use_get_parm', 'Ports'],
     ['test_fixed_ips_include_vm_type_network_role', 'Ports'],
     ['test_fixed_ips_include_vm_type_network_role', 'Ports'],
-    ['test_get_file_only_reference_local_files', 'HEAT Files Support (get_file)'],
+    ['test_get_file_only_reference_local_files',
+        'HEAT Files Support (get_file)'],
     ['test_heat_pairs_provided', 'Filenames'],
     ['test_heat_template_file_extension', 'Filenames'],
-    ['test_heat_template_parameters_contain_required_fields', 'Valid YAML and HEAT'],
+    ['test_heat_template_parameters_contain_required_fields',
+     'Valid YAML and HEAT'],
     ['test_heat_template_structure', 'Valid YAML and HEAT'],
-    ['test_heat_template_structure_contains_required_sections', 'Valid YAML and HEAT'],
-    ['test_heat_template_structure_sections_have_the_right_format', 'Valid YAML and HEAT'],
+    ['test_heat_template_structure_contains_required_sections',
+     'Valid YAML and HEAT'],
+    ['test_heat_template_structure_sections_have_the_right_format',
+     'Valid YAML and HEAT'],
     ['test_heat_templates_provided', 'Filenames'],
     ['test_network_format', 'Networks'],
     ['test_network_format', 'Ports'],
     ['test_network_format_use_get_param_or_get_resource', 'Networks'],
     ['test_network_format_use_get_param_or_get_resource', 'Ports'],
     ['test_no_unused_parameters_between_env_and_templates', 'Parameters'],
-    ['test_nova_servers_correct_parameter_types', 'Name, Flavor, and Image Assignments'],
+    ['test_nova_servers_correct_parameter_types',
+        'Name, Flavor, and Image Assignments'],
     ['test_nova_servers_valid_resource_ids', 'Resources'],
     ['test_numeric_parameter', 'Parameters'],
     ['test_parameter_valid_keys', 'Valid YAML and HEAT'],
@@ -502,8 +647,10 @@ validation_tests = [
     ['test_referenced_and_defined_parameters_match', 'Parameters'],
     ['test_required_parameters_no_constraints', 'Required Metadata'],
     ['test_required_parameters_provided_in_env_file', 'Required Metadata'],
-    ['test_required_parameters_provided_in_heat_template', 'Required Metadata'],
-    ['test_required_parameters_provided_in_heat_template', 'Required Metadata'],
+    ['test_required_parameters_provided_in_heat_template',
+     'Required Metadata'],
+    ['test_required_parameters_provided_in_heat_template',
+     'Required Metadata'],
     ['test_servers_have_optional_metadata', 'Optional Metadata'],
     ['test_servers_have_required_metadata', 'Required Metadata'],
     ['test_servers_metadata_use_get_param', 'Required Metadata'],
@@ -512,14 +659,18 @@ validation_tests = [
     ['test_subnet_format_use_get_param_or_get_resource', 'Subnet'],
     ['test_subnet_format_use_get_param_or_get_resource', 'Ports'],
     ['test_unique_name_resources', 'Unique Names for Resources'],
-    ['test_unique_name_str_replace_use_req_params', 'Unique Names for Resources'],
-    ['test_unique_name_str_replace_use_req_params_in_tmpl', 'Unique Names for Resources'],
+    ['test_unique_name_str_replace_use_req_params',
+     'Unique Names for Resources'],
+    ['test_unique_name_str_replace_use_req_params_in_tmpl',
+        'Unique Names for Resources'],
     ['test_unique_resources_across_all_yaml_files', 'Resources'],
     ['test_unique_resources_across_yaml_file', 'Unique Names for Resources'],
     ['test_unique_resources_across_yaml_file', 'Resources'],
     ['test_valid_nesting', 'Filenames'],
-    ['test_vm_type_assignments_on_nova_servers_only_use_get_param', 'Name, Flavor, and Image Assignments'],
-    ['test_vm_type_consistent_on_nova_servers', 'Name, Flavor, and Image Assignments'],
+    ['test_vm_type_assignments_on_nova_servers_only_use_get_param',
+        'Name, Flavor, and Image Assignments'],
+    ['test_vm_type_consistent_on_nova_servers',
+        'Name, Flavor, and Image Assignments'],
     ['test_volume_format_outputs', 'Volumes'],
     ['test_volume_outputs_consumed', 'Volumes'],
     ['test_volume_resource_ids', 'Resources'],
@@ -527,6 +678,10 @@ validation_tests = [
     ['test_volume_templates_contains_outputs', 'Volumes'],
     ['test_volume_templates_only_contains_cinder', 'Volumes'],
     ['test_volume_templates_outputs_match_resources', 'Volumes'],
+]
+
+glance_validation_tests = [
+    ['test_image_scan_complete', 'Clam AV Scan'],
 ]
 
 deployment_targets = [
@@ -624,7 +779,8 @@ def populate_checklist_automation_value():
     for outerframe in outerframes:
         if ('unittest' in str(outerframe)):
             logger.error(
-                "Avoiding setting checklists in automation to be review since this is a test run: " + logEncoding(outerframe))
+                "Avoiding setting checklists in automation to be \
+                review since this is a test run: " + logEncoding(outerframe))
             return
 
     checklists = Checklist.objects.filter(state='automation')
@@ -638,10 +794,10 @@ def populate_checklist_automation_value():
         checklist.save()
     #    first = False
         decisions = ChecklistDecision.objects.filter(checklist=checklist)
-        first_decision = True
         for decision in decisions:
             decision = ChecklistDecision.objects.get(uuid=decision.uuid)
-            line_item = ChecklistLineItem.objects.get(uuid=decision.line_item_id)
+            line_item = ChecklistLineItem.objects.get(
+                uuid=decision.line_item_id)
             if line_item.line_type == 'auto':
                 rand_decision_value = bool(random.getrandbits(1))
                 if rand_decision_value:
@@ -654,44 +810,56 @@ def populate_checklist_automation_value():
 def create_templates():
     logger.info('Creating Checklist templates')
     for template in checklist_templates:
-        created_template, created = ChecklistTemplate.objects.get_or_create(name=template['name'],
-                                                                            defaults={
-            'category': template['category'],
-            'version': template['version'],
-            'create_time': timezone.now()
-        })
-        for section in template['sections']:
-            created_section = ChecklistSection.objects.get_or_create(name=section['name'],
-                                                                     template_id=created_template.uuid,
-                                                                     defaults={
-                'weight': section['weight'],
-                'description': section['description'],
-                'validation_instructions': section['validation_instructions']
-
+        created_template, created = ChecklistTemplate.objects.get_or_create(
+            name=template['name'],
+            defaults={
+                'category': template['category'],
+                'version': template['version'],
+                'create_time': timezone.now()
             })
+        for section in template['sections']:
+            created_section = ChecklistSection.objects.get_or_create(
+                name=section['name'],
+                template_id=created_template.uuid,
+                defaults={
+                    'weight': section['weight'],
+                    'description': section['description'],
+                    'validation_instructions':
+                    section['validation_instructions']
+
+                })
             created_section = ChecklistSection.objects.get(
                 name=section['name'], template_id=created_template.uuid)
             for line_item in section['line_items']:
-                created_line_item = ChecklistLineItem.objects.get_or_create(name=line_item['name'],
-                                                                            section_id=created_section.uuid,
-                                                                            template_id=created_template.uuid,
-                                                                            defaults={
-                    'weight': line_item['weight'],
-                    'description': line_item['description'],
-                    'validation_instructions': line_item['validation_instructions'],
-                    'line_type': line_item['line_type'],
-                    'section_id': created_section.uuid,
-                })
+                ChecklistLineItem.objects.get_or_create(
+                    name=line_item['name'],
+                    section_id=created_section.uuid,
+                    template_id=created_template.uuid,
+                    defaults={
+                        'weight': line_item['weight'],
+                        'description': line_item['description'],
+                        'validation_instructions':
+                        line_item['validation_instructions'],
+                        'line_type': line_item['line_type'],
+                        'section_id': created_section.uuid,
+                    })
 
 
 def create_validation_tests():
     logger.info('Creating Validation Tests')
-    template = ChecklistTemplate.objects.get(category='heat')
-    for test_name, line_item_name in validation_tests:
-        line_item = ChecklistLineItem.objects.get(name=line_item_name, template=template)
-        if line_item:
-            validation_test, status = ValidationTest.objects.get_or_create(name=test_name)
-            validation_test.line_items.add(line_item)
+    validation_tests = {
+        'heat': heat_validation_tests,
+        'glance': glance_validation_tests,
+    }
+    for category in validation_tests:
+        template = ChecklistTemplate.objects.get(category=category)
+        for test_name, line_item_name in validation_tests[category]:
+            line_item = ChecklistLineItem.objects.get(
+                name=line_item_name, template=template)
+            if line_item:
+                validation_test, status = ValidationTest.objects.get_or_create(
+                    name=test_name)
+                validation_test.line_items.add(line_item)
 
 
 def create_roles():
@@ -724,11 +892,13 @@ def create_companies():
         service_provider_company, created = Vendor.objects.get_or_create(
             name=Constants.service_provider_company_name, public=True)
         Constants.service_provider_company = service_provider_company
-        logger.info('The company was found or created : ' + str(service_provider_company))
+        logger.info('The company was found or created : ' +
+                    str(service_provider_company))
     except Exception as e:
         logger.error("bootstrap_actions - create_companies error:")
         logger.error(e)
-        logger.error('The company could not be found or created : ' + Constants.service_provider_company_name)
+        logger.error('The company could not be found or created : ' +
+                     Constants.service_provider_company_name)
 
     for company in companies_not_public:
         try:
@@ -766,22 +936,30 @@ def create_companies():
 
 
 def create_standard_users():
-    service_provider_company = Vendor.objects.get(name=Constants.service_provider_company_name)
+    service_provider_company = Vendor.objects.get(
+        name=Constants.service_provider_company_name)
     user_role = Role.objects.get(name="standard_user")
     user_list = dummy_users
 
     for user in user_list:
         try:
-            user_object, created = CustomUser.objects.get_or_create(username=user[1], defaults={
-                                                                    'is_active': True, 'email': user[1], 'activation_token': uuid4(), 'activation_token_create_time': timezone.now()})
+            user_object, created = CustomUser.objects.get_or_create(
+                username=user[1], defaults={
+                    'is_active': True, 'email': user[1],
+                    'activation_token': uuid4(),
+                    'activation_token_create_time': timezone.now()})
             user_object.set_password('iceusers')
             user_object.save()
             data = createUserTemplate(
-                service_provider_company, user[0], user_role, user[2], True, None, True, user_object)
-            standard_user, profile_created = IceUserProfile.objects.update_or_create(
-                email=user_object.email, defaults=data)
+                service_provider_company, user[0],
+                user_role, user[2], True, None,
+                True, user_object)
+            standard_user, profile_created = \
+                IceUserProfile.objects.update_or_create(
+                    email=user_object.email, defaults=data)
             logger.info(
-                'The Standard user was found or created: ' + str(standard_user.full_name))
+                'The Standard user was found or created: ' +
+                str(standard_user.full_name))
         except Exception as e:
             logger.error("bootstrap_actions - create_el_users error:")
             logger.error(e)
@@ -789,18 +967,23 @@ def create_standard_users():
 
 
 def create_el_users():
-    service_provider_company = Vendor.objects.get(name=Constants.service_provider_company_name)
+    service_provider_company = Vendor.objects.get(
+        name=Constants.service_provider_company_name)
     el_role = Role.objects.get(name="el")
     el_list = el_dummy_users
 
     for user in el_list:
         try:
-            user_object, created = CustomUser.objects.get_or_create(username=user[1], defaults={
-                                                                    'is_active': True, 'email': user[1], 'activation_token': uuid4(), 'activation_token_create_time': timezone.now()})
+            user_object, created = CustomUser.objects.get_or_create(
+                username=user[1], defaults={
+                    'is_active': True, 'email': user[1],
+                    'activation_token': uuid4(),
+                    'activation_token_create_time': timezone.now()})
             user_object.set_password('iceusers')
             user_object.save()
             data = createUserTemplate(
-                service_provider_company, user[0], el_role, user[2], True, None, True, user_object)
+                service_provider_company, user[0], el_role,
+                user[2], True, None, True, user_object)
             el_user, profile_created = IceUserProfile.objects.update_or_create(
                 email=user_object.email, defaults=data)
             logger.info(
@@ -812,23 +995,29 @@ def create_el_users():
 
 
 def create_admin_users():
-    service_provider_company = Vendor.objects.get(name=Constants.service_provider_company_name)
+    service_provider_company = Vendor.objects.get(
+        name=Constants.service_provider_company_name)
     admin_role = Role.objects.get(name=Roles.admin.name)  # @UndefinedVariable
 
     admin_list = admin_dummy_users
 
     for user in admin_list:
         try:
-            user_object, created = CustomUser.objects.get_or_create(username=user[1], defaults={'is_active': True, 'email': user[
-                                                                    1], 'password': "iceusers", 'activation_token': uuid4(), 'activation_token_create_time': timezone.now()})
+            user_object, created = CustomUser.objects.get_or_create(
+                username=user[1], defaults={'is_active': True, 'email': user[
+                    1], 'password': "iceusers", 'activation_token': uuid4(),
+                    'activation_token_create_time': timezone.now()})
             user_object.set_password('iceusers')
             user_object.save()
             data = createUserTemplate(
-                service_provider_company, user[0], admin_role, user[2], True, None, True, user_object)
-            admin_user, profile_created = IceUserProfile.objects.update_or_create(
-                email=user_object.email, defaults=data)
+                service_provider_company, user[0], admin_role, user[2],
+                True, None, True, user_object)
+            admin_user, profile_created = \
+                IceUserProfile.objects.update_or_create(
+                    email=user_object.email, defaults=data)
             logger.info(
-                'The admin user was found or created: ' + str(admin_user.full_name))
+                'The admin user was found or created: ' +
+                str(admin_user.full_name))
         except Exception as e:
             logger.error("bootstrap_actions - create_admin_users error:")
             logger.error(e)
@@ -836,7 +1025,8 @@ def create_admin_users():
 
 
 def create_admin_ro_users():
-    service_provider_company = Vendor.objects.get(name=Constants.service_provider_company_name)
+    service_provider_company = Vendor.objects.get(
+        name=Constants.service_provider_company_name)
     admin_ro_role = Role.objects.get(
         name=Roles.admin_ro.name)  # @UndefinedVariable
 
@@ -844,16 +1034,22 @@ def create_admin_ro_users():
 
     for user in admin_ro_list:
         try:
-            user_object, created = CustomUser.objects.get_or_create(username=user[1], defaults={'is_active': True, 'email': user[
-                                                                    1], 'password': "iceusers", 'activation_token': uuid4(), 'activation_token_create_time': timezone.now()})
+            user_object, created = CustomUser.objects.get_or_create(
+                username=user[1],
+                defaults={'is_active': True, 'email': user[
+                    1], 'password': "iceusers", 'activation_token': uuid4(),
+                    'activation_token_create_time': timezone.now()})
             user_object.set_password('iceusers')
             user_object.save()
             data = createUserTemplate(
-                service_provider_company, user[0], admin_ro_role, user[2], True, None, True, user_object)
-            admin_ro_user, profile_created = IceUserProfile.objects.update_or_create(
-                email=user_object.email, defaults=data)
+                service_provider_company, user[0], admin_ro_role, user[2],
+                True, None, True, user_object)
+            admin_ro_user, profile_created = \
+                IceUserProfile.objects.update_or_create(
+                    email=user_object.email, defaults=data)
             logger.info(
-                'The admin_ro user was found or created: ' + str(admin_ro_user.full_name))
+                'The admin_ro user was found or created: ' +
+                str(admin_ro_user.full_name))
         except Exception as e:
             logger.error("bootstrap_actions - create_admin_ro_users error:")
             logger.error(e)
@@ -866,10 +1062,12 @@ def create_admin_ro_users():
 def create_deployment_targets():
     for dt in deployment_targets:
         try:
-            deployment_target, created = DeploymentTarget.objects.get_or_create(
-                name=dt[0], version=dt[1], defaults={'version': dt[1]})
+            deployment_target, created = \
+                DeploymentTarget.objects.get_or_create(
+                    name=dt[0], version=dt[1], defaults={'version': dt[1]})
             logger.info(
-                'Deployment Target found or created: ' + str(deployment_target))
+                'Deployment Target found or created: ' +
+                str(deployment_target))
         except Exception as e:
             logger.error(
                 "bootstrap_actions - create_deployment_targets error:")
@@ -900,10 +1098,12 @@ def create_ecomp():
 def create_deployment_targets_sites():
     for dt in deployment_targets_sites:
         try:
-            deployment_target_site, created = DeploymentTargetSite.objects.get_or_create(
-                name=dt)
+            deployment_target_site, created = \
+                DeploymentTargetSite.objects.get_or_create(
+                    name=dt)
             logger.info(
-                'Deployment Target found or created: ' + str(deployment_target_site.name))
+                'Deployment Target found or created: ' +
+                str(deployment_target_site.name))
         except Exception as e:
             logger.error(
                 "bootstrap_actions - create_deployment_targets_sites error:")

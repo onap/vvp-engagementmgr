@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -48,30 +48,72 @@ logger = LoggingServiceFactory.get_logger()
 
 
 def get_pages_mock(title=""):
-    result = [{u'meta_description': u'Content of page #1', u'parent': None, u'title': u'Page #1',
-               u'login_required': True, u'children': [], u'id': 1,
-               u'content': u'<p>Content of page #1</p>', u'content_model': u'richtextpage',
-               u'publish_date': u'2017-01-01T13:47:15Z', u'slug': u'documentation/page#1', u'tags': u''},
-              {u'meta_description': u'Content of page #2', u'parent': None, u'title': u'Page #2',
-               u'login_required': True, u'children': [], u'id': 2,
-               u'content': u'<p>Content of page #2</p>', u'content_model': u'richtextpage',
-               u'publish_date': u'2017-01-01T13:47:15Z', u'slug': u'documentation/page#2', u'tags': u''},
-              {u'meta_description': u'Content of page #3', u'parent': None, u'title': u'Page #3',
-               u'login_required': True, u'children': [], u'id': 3,
-               u'content': u'<p>Content of page #3</p>', u'content_model': u'richtextpage',
-               u'publish_date': u'2017-01-01T13:47:15Z', u'slug': u'documentation/page#3', u'tags': u''},
-              {u'meta_description': u'Content of page #4', u'parent': None, u'title': u'Page #4',
-               u'login_required': True, u'children': [], u'id': 4,
-               u'content': u'<p>Content of page #4</p>', u'content_model': u'richtextpage',
-               u'publish_date': u'2017-01-01T13:47:15Z', u'slug': u'documentation/page#4', u'tags': u''},
-              {u'meta_description': u'Content of page #5', u'parent': None, u'title': u'Page #5',
-               u'login_required': True, u'children': [], u'id': 5,
-               u'content': u'<p>Content of page #5</p>', u'content_model': u'richtextpage',
-               u'publish_date': u'2017-01-01T13:47:15Z', u'slug': u'documentation/page#5', u'tags': u''},
-              {u'meta_description': u'Content of page #6', u'parent': None, u'title': u'Page #6',
-               u'login_required': True, u'children': [], u'id': 6,
-               u'content': u'<p>Content of page #6</p>', u'content_model': u'richtextpage',
-               u'publish_date': u'2017-01-01T13:47:15Z', u'slug': u'documentation/page#6', u'tags': u''}]
+    result = [{u'meta_description': u'Content of page #1',
+               u'parent': None,
+               u'title': u'Page #1',
+               u'login_required': True,
+               u'children': [],
+               u'id': 1,
+               u'content': u'<p>Content of page #1</p>',
+               u'content_model': u'richtextpage',
+               u'publish_date': u'2017-01-01T13:47:15Z',
+               u'slug': u'documentation/page#1',
+               u'tags': u''},
+              {u'meta_description': u'Content of page #2',
+               u'parent': None,
+               u'title': u'Page #2',
+               u'login_required': True,
+               u'children': [],
+               u'id': 2,
+               u'content': u'<p>Content of page #2</p>',
+               u'content_model': u'richtextpage',
+               u'publish_date': u'2017-01-01T13:47:15Z',
+               u'slug': u'documentation/page#2',
+               u'tags': u''},
+              {u'meta_description': u'Content of page #3',
+               u'parent': None,
+               u'title': u'Page #3',
+               u'login_required': True,
+               u'children': [],
+               u'id': 3,
+               u'content': u'<p>Content of page #3</p>',
+               u'content_model': u'richtextpage',
+               u'publish_date': u'2017-01-01T13:47:15Z',
+               u'slug': u'documentation/page#3',
+               u'tags': u''},
+              {u'meta_description': u'Content of page #4',
+               u'parent': None,
+               u'title': u'Page #4',
+               u'login_required': True,
+               u'children': [],
+               u'id': 4,
+               u'content': u'<p>Content of page #4</p>',
+               u'content_model': u'richtextpage',
+               u'publish_date': u'2017-01-01T13:47:15Z',
+               u'slug': u'documentation/page#4',
+               u'tags': u''},
+              {u'meta_description': u'Content of page #5',
+               u'parent': None,
+               u'title': u'Page #5',
+               u'login_required': True,
+               u'children': [],
+               u'id': 5,
+               u'content': u'<p>Content of page #5</p>',
+               u'content_model': u'richtextpage',
+               u'publish_date': u'2017-01-01T13:47:15Z',
+               u'slug': u'documentation/page#5',
+               u'tags': u''},
+              {u'meta_description': u'Content of page #6',
+               u'parent': None,
+               u'title': u'Page #6',
+               u'login_required': True,
+               u'children': [],
+               u'id': 6,
+               u'content': u'<p>Content of page #6</p>',
+               u'content_model': u'richtextpage',
+               u'publish_date': u'2017-01-01T13:47:15Z',
+               u'slug': u'documentation/page#6',
+               u'tags': u''}]
     if title != "":
         return [result[0]]
     else:
@@ -79,10 +121,18 @@ def get_pages_mock(title=""):
 
 
 def get_page_mock(id):
-    result = {u'meta_description': u'Content of page #1', u'parent': None, u'title': u'Page #1',
-              u'login_required': True, u'children': [], u'id': 1,
-              u'content': u'<p>Content of page #1</p>', u'content_model': u'richtextpage',
-              u'publish_date': u'2017-01-01T13:47:15Z', u'slug': u'documentation/page#1', u'tags': u''}
+    result = {
+        u'meta_description': u'Content of page #1',
+        u'parent': None,
+        u'title': u'Page #1',
+        u'login_required': True,
+        u'children': [],
+        u'id': 1,
+        u'content': u'<p>Content of page #1</p>',
+        u'content_model': u'richtextpage',
+        u'publish_date': u'2017-01-01T13:47:15Z',
+        u'slug': u'documentation/page#1',
+        u'tags': u''}
 
     return result
 
@@ -94,17 +144,24 @@ class CMSGetPagesTestCase(TestBaseEntity):
     def childSetup(self):
         self.createVendors([Constants.service_provider_company_name, 'Other'])
         self.createDefaultRoles()
-        self.admin, self.el, self.standard_user = self.creator.createAndGetDefaultRoles()
-        self.user = self.creator.createUser(Vendor.objects.get(name='Other'),
-                                            self.randomGenerator("main-vendor-email"), 'Aa123456',
-                                            'user', self.standard_user, True)
+        self.admin, self.el, self.standard_user = \
+            self.creator.createAndGetDefaultRoles()
+        self.user = self.creator.createUser(
+            Vendor.objects.get(
+                name='Other'),
+            self.randomGenerator("main-vendor-email"),
+            'Aa123456',
+            'user',
+            self.standard_user,
+            True)
         self.token = self.loginAndCreateSessionToken(self.user)
 
     def testGetPageById(self):
         urlStr = self.urlPrefix + 'cms/pages/1/'
         self.printTestName("testGetPageById [Start]")
         logger.debug("action should success (200), and return page by id")
-        response = self.c.get(urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.get(
+            urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
         content = json.loads(response.content)
@@ -115,10 +172,12 @@ class CMSGetPagesTestCase(TestBaseEntity):
         urlStr = self.urlPrefix + 'cms/pages/'
         self.printTestName("testGetPages [Start]")
         logger.debug("action should success (200), and return all pages")
-        response = self.c.get(urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.get(
+            urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertEqual(len(json.loads(response.content)), 6)  # Suppose to be 6 The amount of Pages in the mock.
+        # Suppose to be 6 The amount of Pages in the mock.
+        self.assertEqual(len(json.loads(response.content)), 6)
         self.printTestName("testGetPages [End]")
 
     def testGetPagesByTitle(self):
@@ -126,10 +185,12 @@ class CMSGetPagesTestCase(TestBaseEntity):
         print(urlStr)
         self.printTestName("testGetPagesByTitle [Start]")
         logger.debug("action should success (200), and return filtered pages")
-        response = self.c.get(urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.get(
+            urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
         content = json.loads(response.content)
-        self.assertEqual(len(content), 1)  # Suppose to be 1 The amount of Documentation titled pages in the mock.
+        # Suppose to be 1 The amount of Documentation titled pages in the mock.
+        self.assertEqual(len(content), 1)
         self.assertEqual(content[0]["title"], 'Page #1')
         self.printTestName("testGetPagesByTitle [End]")

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -82,8 +82,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='iceuserprofile',
             name='company',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT,
-                                    to='engagementmanager.Vendor'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.PROTECT,
+                to='engagementmanager.Vendor'),
         ),
         migrations.AlterField(
             model_name='iceuserprofile',
@@ -93,13 +94,16 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='iceuserprofile',
             name='role',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT,
-                                    to='engagementmanager.Role'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.PROTECT,
+                to='engagementmanager.Role'),
         ),
         migrations.AlterField(
             model_name='iceuserprofile',
             name='user',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='engagementmanager.CustomUser'),
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='engagementmanager.CustomUser'),
         ),
         migrations.AlterModelTable(
             name='customuser',

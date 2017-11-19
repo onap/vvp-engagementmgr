@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -51,8 +51,10 @@ class CMSPostsService(BaseCms):
         from_last_days_param = ""
 
         if (fromLastDays is not None and fromLastDays != ""):
-            from_last_days_param = (datetime.now() - timedelta(days=int(fromLastDays))).strftime('%Y-%m-%d')
+            from_last_days_param = (datetime.now() - timedelta(
+                days=int(fromLastDays))).strftime('%Y-%m-%d')
 
-        posts = cms_client.get_posts(offset, limit, category, from_last_days_param)
+        posts = cms_client.get_posts(
+            offset, limit, category, from_last_days_param)
 
         return posts

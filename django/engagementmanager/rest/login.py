@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,7 +36,6 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-import json
 
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -64,7 +63,9 @@ class Login(VvpApiView):
         if param:
             reset_password_param = param
 
-        reset_password_email, is_reset_pwd_flow = login_svc.identify_reset_password(jwt_obj, reset_password_param)
+        reset_password_email, is_reset_pwd_flow = login_svc.\
+            identify_reset_password(
+                jwt_obj, reset_password_param)
 
         if not user_profile.user.is_active:
             msg = login_svc.render_user_not_active_message(data['email'])
@@ -82,7 +83,9 @@ class Login(VvpApiView):
             if 'invitation' in data:
                 login_svc.handle_invite_token(data, msg, user_profile)
 
-            self.logger.debug("login has passed successfully for [email=" + data['email'] + "]")
+            self.logger.debug(
+                "login has passed successfully for [email=" + data['email']
+                + "]")
             login_svc.update_last_login(user_profile)
 
         return Response(msg)

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -53,54 +53,88 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='activity',
             name='activity_type',
-            field=models.CharField(choices=[(b'change_checklist_state', b'change_checklist_state'), (b'eng_validation_request', b'eng_validation_request'), (
-                b'next_steps', b'next_steps'), (b'ssh_key_added', b'ssh_key_added'), (b'user_joined_eng', b'user_joined_eng'), (b'vfc', b'vfc')], max_length=36),
+            field=models.CharField(
+                choices=[(b'change_checklist_state',
+                          b'change_checklist_state'),
+                         (b'eng_validation_request',
+                          b'eng_validation_request'), (
+                    b'next_steps', b'next_steps'),
+                    (b'ssh_key_added', b'ssh_key_added'),
+                    (b'user_joined_eng', b'user_joined_eng'),
+                    (b'vfc', b'vfc')], max_length=36),
         ),
         migrations.AlterField(
             model_name='checklist',
             name='state',
-            field=models.CharField(choices=[(b'approval', b'approval'), (b'archive', b'archive'), (b'automation', b'automation'), (b'closed', b'closed'), (
-                b'handoff', b'handoff'), (b'peer_review', b'peer_review'), (b'pending', b'pending'), (b'review', b'review')], default=b'pending', max_length=36),
+            field=models.CharField(
+                choices=[(b'approval', b'approval'),
+                         (b'archive', b'archive'),
+                         (b'automation', b'automation'),
+                         (b'closed', b'closed'), (
+                    b'handoff', b'handoff'), (b'peer_review', b'peer_review'),
+                    (b'pending', b'pending'), (b'review', b'review')],
+                default=b'pending', max_length=36),
         ),
         migrations.AlterField(
             model_name='checklistdecision',
             name='peer_review_value',
-            field=models.CharField(choices=[(b'approved', b'approved'), (b'denied', b'denied'),
-                                            (b'na', b'na'), (b'not_relevant', b'not_relevant')], max_length=36),
+            field=models.CharField(
+                choices=[(b'approved', b'approved'), (b'denied', b'denied'),
+                         (b'na', b'na'), (b'not_relevant', b'not_relevant')],
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='checklistdecision',
             name='review_value',
-            field=models.CharField(choices=[(b'approved', b'approved'), (b'denied', b'denied'),
-                                            (b'na', b'na'), (b'not_relevant', b'not_relevant')], max_length=36),
+            field=models.CharField(
+                choices=[(b'approved', b'approved'), (b'denied', b'denied'),
+                         (b'na', b'na'), (b'not_relevant', b'not_relevant')],
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='checklistlineitem',
             name='line_type',
-            field=models.CharField(choices=[(b'auto', b'auto'), (b'manual', b'manual')],
-                                   default=b'auto', max_length=36),
+            field=models.CharField(
+                choices=[(b'auto', b'auto'), (b'manual', b'manual')],
+                default=b'auto', max_length=36),
         ),
         migrations.AlterField(
             model_name='checklisttemplate',
             name='category',
-            field=models.CharField(choices=[(b'glance', b'glance'), (b'heat', b'heat'),
-                                            (b'overall', b'overall')], default=b'overall', max_length=36),
+            field=models.CharField(
+                choices=[(b'glance', b'glance'), (b'heat', b'heat'),
+                         (b'overall', b'overall')], default=b'overall',
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='starred_engagement',
-            field=models.ManyToManyField(blank=True, to='engagementmanager.IceUser'),
+            field=models.ManyToManyField(
+                blank=True, to='engagementmanager.IceUser'),
         ),
         migrations.AlterField(
             model_name='nextstep',
             name='next_step_type',
-            field=models.CharField(choices=[(b'add_contact_person', b'add_contact_person'), (b'el_handoff', b'el_handoff'), (b'set_ssh', b'set_ssh'), (
-                b'submit_vf_package', b'submit_vf_package'), (b'trial_agreements', b'trial_agreements'), (b'user_defined', b'user_defined')], default=b'user_defined', max_length=36),
+            field=models.CharField(
+                choices=[(b'add_contact_person', b'add_contact_person'),
+                         (b'el_handoff', b'el_handoff'),
+                         (b'set_ssh', b'set_ssh'), (
+                    b'submit_vf_package', b'submit_vf_package'),
+                    (b'trial_agreements', b'trial_agreements'),
+                    (b'user_defined', b'user_defined')],
+                default=b'user_defined', max_length=36),
         ),
         migrations.AlterField(
             model_name='recentengagement',
             name='action_type',
-            field=models.CharField(choices=[(b'GOT_OWNERSHIP_OVER_ENGAGEMENT', b'GOT_OWNERSHIP_OVER_ENGAGEMENT'), (b'JOINED_TO_ENGAGEMENT', b'JOINED_TO_ENGAGEMENT'), (
-                b'NAVIGATED_INTO_ENGAGEMENT', b'NAVIGATED_INTO_ENGAGEMENT'), (b'NEW_VF_CREATED', b'NEW_VF_CREATED'), (b'NEXT_STEP_ASSIGNED', b'NEXT_STEP_ASSIGNED')], max_length=36),
+            field=models.CharField(
+                choices=[(b'GOT_OWNERSHIP_OVER_ENGAGEMENT',
+                          b'GOT_OWNERSHIP_OVER_ENGAGEMENT'),
+                         (b'JOINED_TO_ENGAGEMENT', b'JOINED_TO_ENGAGEMENT'), (
+                    b'NAVIGATED_INTO_ENGAGEMENT',
+                    b'NAVIGATED_INTO_ENGAGEMENT'),
+                    (b'NEW_VF_CREATED', b'NEW_VF_CREATED'),
+                    (b'NEXT_STEP_ASSIGNED', b'NEXT_STEP_ASSIGNED')],
+                max_length=36),
         ),
     ]

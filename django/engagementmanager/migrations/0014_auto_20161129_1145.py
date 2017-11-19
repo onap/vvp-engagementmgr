@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -53,52 +53,96 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='activity',
             name='activity_type',
-            field=models.CharField(choices=[(b'change_checklist_state', b'change_checklist_state'), (b'eng_validation_request', b'eng_validation_request'), (b'next_steps', b'next_steps'), (b'ssh_key_added', b'ssh_key_added'), (
-                b'test_finished_event', b'test_finished_event'), (b'user_joined_eng', b'user_joined_eng'), (b'vf_provisioing_event', b'vf_provisioing_event'), (b'vfc', b'vfc')], max_length=36),
+            field=models.CharField(
+                choices=[
+                    (b'change_checklist_state',
+                     b'change_checklist_state'),
+                    (b'eng_validation_request',
+                     b'eng_validation_request'),
+                    (b'next_steps',
+                     b'next_steps'),
+                    (b'ssh_key_added',
+                     b'ssh_key_added'),
+                    (b'test_finished_event',
+                     b'test_finished_event'),
+                    (b'user_joined_eng',
+                     b'user_joined_eng'),
+                    (b'vf_provisioing_event',
+                     b'vf_provisioing_event'),
+                    (b'vfc',
+                     b'vfc')],
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='active_time',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='active time'),
+            field=models.DateTimeField(
+                blank=True,
+                null=True,
+                verbose_name='active time'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='aic_instantiation_time',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='aic instantiation time'),
+            field=models.DateTimeField(
+                blank=True,
+                null=True,
+                verbose_name='aic instantiation time'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='asdc_onboarding_time',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='asdc onboarding time'),
+            field=models.DateTimeField(
+                blank=True,
+                null=True,
+                verbose_name='asdc onboarding time'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='completed_time',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='completed time'),
+            field=models.DateTimeField(
+                blank=True,
+                null=True,
+                verbose_name='completed time'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='heat_validated_time',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='heat validated time'),
+            field=models.DateTimeField(
+                blank=True,
+                null=True,
+                verbose_name='heat validated time'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='image_scan_time',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='image scan time'),
+            field=models.DateTimeField(
+                blank=True,
+                null=True,
+                verbose_name='image scan time'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='intake_time',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='intake time'),
+            field=models.DateTimeField(
+                blank=True,
+                null=True,
+                verbose_name='intake time'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='started_state_time',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='started state time'),
+            field=models.DateTimeField(
+                blank=True,
+                null=True,
+                verbose_name='started state time'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='validated_time',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='validated time'),
+            field=models.DateTimeField(
+                blank=True,
+                null=True,
+                verbose_name='validated time'),
         ),
     ]

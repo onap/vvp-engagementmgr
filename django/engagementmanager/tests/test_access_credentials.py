@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -45,7 +45,8 @@ from django.utils import timezone
 from engagementmanager.utils.constants import Constants
 from engagementmanager.vm_integration import vm_client
 from validationmanager.rados.rgwa_client import RGWAClient
-from validationmanager.tests.test_rgwa_client_factory import TestRGWAClientFactory
+from validationmanager.tests.test_rgwa_client_factory import \
+    TestRGWAClientFactory
 
 
 class ActivateTestCase(TestBaseEntity):
@@ -56,25 +57,41 @@ class ActivateTestCase(TestBaseEntity):
 
         self.urlStr = self.urlPrefix + "signup/"
         self.createDefaultRoles()
-        uuid, vendor = self.creator.createVendor(Constants.service_provider_company_name)
+        uuid, vendor = self.creator.createVendor(
+            Constants.service_provider_company_name)
         self.activation_token_time = timezone.now()
         self.activation_token_time = self.activation_token_time.replace(
             2012, 1, 2, 13, 48, 25)
-        print("This is the time that is going to be added to expiredTokenUser: " +
+        print("This is the time that is going to be " +
+              "added to expiredTokenUser: " +
               str(self.activation_token_time))
-        self.user = self.creator.createUser(vendor, self.randomGenerator("email"), self.randomGenerator(
-            "randomNumber"), self.randomGenerator("randomString"), self.standard_user, True)
-        self.new_user = self.creator.createUser(vendor, self.randomGenerator("email"), self.randomGenerator(
-            "randomNumber"), self.randomGenerator("randomString"), self.standard_user, True)
+        self.user = self.creator.createUser(
+            vendor,
+            self.randomGenerator("email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.standard_user,
+            True)
+        self.new_user = self.creator.createUser(
+            vendor,
+            self.randomGenerator("email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.standard_user,
+            True)
         print('-----------------------------------------------------')
         print('Created User:')
         print('UUID: ' + str(self.user.uuid))
         print('Full Name: ' + self.user.full_name)
         print('-----------------------------------------------------')
-        self.params = '{"company":"' + str(self.user.company) + '","full_name":"' + self.user.full_name + '","email":"' + self.user.email + '","phone_number":"' + self.user.phone_number + \
-            '","password":"' + self.user.user.password + '","regular_email_updates":"' + \
+        self.params = '{"company":"' + str(self.user.company) \
+            + '","full_name":"' + self.user.full_name + '","email":"' + \
+            self.user.email + '","phone_number":"' + self.user.phone_number + \
+            '","password":"' + self.user.user.password \
+            + '","regular_email_updates":"' + \
             str(self.user.regular_email_updates) + \
-            '","is_service_provider_contact":"' + str(self.user.is_service_provider_contact) + '"}'
+            '","is_service_provider_contact":"' + \
+            str(self.user.is_service_provider_contact) + '"}'
         self.userToken = self.loginAndCreateSessionToken(self.user)
         self.new_user_token = self.loginAndCreateSessionToken(self.new_user)
 
@@ -83,7 +100,7 @@ class ActivateTestCase(TestBaseEntity):
             vm_client.fire_event_in_bg(
                 'send_create_user_in_rgwa_event', self.user)
             rgwa = TestRGWAClientFactory.admin()
-            rgwa_user = rgwa.get_user(self.user.full_name)
+            rgwa_user = rgwa.get_user(self.user.uuid)
             if rgwa_user is None:
                 print("Test Failed!")
             else:
@@ -91,15 +108,15 @@ class ActivateTestCase(TestBaseEntity):
                 print("######access_key#################= ", access_key)
                 secret_key = rgwa_user['secret_key']
                 print("######secret_key#################= ", secret_key)
-                self.assertTrue(access_key and secret_key != None)
+                self.assertTrue(access_key and secret_key is not None)
                 print("#################################")
                 print("Test PASS!")
                 self.printTestName("Test ended")
 
 
 # Whenever a new user is configured, we should create a RadosGW user for them.
-# If unspecified, the access keys are generated on the server and returned here
-# in the response.
+# If unspecified, the access keys are generated
+# on the server and returned here in the response.
     def testCreateAndGetRgwaUser(self):
         if settings.IS_SIGNAL_ENABLED:
             base_url = 'http://{S3_HOST}:{S3_PORT}/admin'.format(
@@ -116,7 +133,7 @@ class ActivateTestCase(TestBaseEntity):
             new_user = admin_conn.create_user(
                 uid=username, display_name='User "%s"' % username)
             print("new_user = " + str(new_user))
-            self.assertTrue(new_user['user_id'] != None)
+            self.assertTrue(new_user['user_id'] is not None)
             get_user = admin_conn.get_user(new_user['user_id'])
             self.assertTrue(new_user['user_id'] == get_user['user_id'])
 
@@ -129,17 +146,18 @@ class ActivateTestCase(TestBaseEntity):
             print("S3_HOST = " + self.s3_host)
             print("s3_port =" + str(self.s3_port))
 
-            boto_conn = S3Connection(host=self.s3_host,
-                                     port=self.s3_port,
-                                     aws_access_key_id=s3aws_access_key_id,
-                                     aws_secret_access_key=s3aws_secret_access_key,
-                                     calling_format=OrdinaryCallingFormat(),
-                                     is_secure=False,
-                                     )
+            boto_conn = S3Connection(
+                host=self.s3_host,
+                port=self.s3_port,
+                aws_access_key_id=s3aws_access_key_id,
+                aws_secret_access_key=s3aws_secret_access_key,
+                calling_format=OrdinaryCallingFormat(),
+                is_secure=False,
+            )
             boto_conn.num_retries = 0
             bucketname = self.randomGenerator("randomString").lower()
             new_bucket = boto_conn.create_bucket(bucketname)
-            assertTrue(new_bucket != None)
+            assertTrue(new_bucket is not None)
             print("new_bucket = " + str(new_bucket))
             bucket = boto_conn.get_bucket(bucketname)
             print("bucket = " + str(bucket))
@@ -149,27 +167,34 @@ class ActivateTestCase(TestBaseEntity):
     def testGetSecretKey(self):
         vm_client.send_create_user_in_rgwa_event(self.user)
         urlStr = self.urlPrefix + 'users/account/rgwa/'
-        print("urlStr of get secret key",urlStr)
+        print("urlStr of get secret key", urlStr)
         self.printTestName("testGetSecretKey [Start]")
-        response = self.c.get(urlStr, data={}, content_type='application/json',
-                              **{'HTTP_AUTHORIZATION': "token " + self.userToken})
+        response = self.c.get(
+            urlStr,
+            data={},
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.userToken})
         print('Got response : ' + str(response.status_code))
         dict_response = json.loads(response.content)
-        print("api response",dict_response)
+        print("api response", dict_response)
         self.assertTrue(dict_response["rgwa_secret_key"] is not None)
         self.printTestName("testGetSecretKey [End]")
 
     def testNegativeGetSecretKeyInvalidToken(self):
         vm_client.send_create_user_in_rgwa_event(self.user)
         urlStr = self.urlPrefix + 'users/account/rgwa/'
-        print("urlStr of get secret key",urlStr)
+        print("urlStr of get secret key", urlStr)
         self.printTestName("testGetSecretKey [Start]")
-        response = self.c.get(urlStr, data={}, content_type='application/json',
-                              **{'HTTP_AUTHORIZATION': 'token' + self.new_user_token})
+        response = self.c.get(
+            urlStr,
+            data={},
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': 'token' + self.new_user_token})
         print('Got response : ' + str(response.status_code))
         dict_response = json.loads(response.content)
-        print("api response",dict_response)
-        self.assertTrue(dict_response[
-                        "detail"] == 'You must authenticate in order to ' +
-                        'perform this action: Authentication credentials were not provided.')
+        print("api response", dict_response)
+        self.assertTrue(
+            dict_response["detail"] == 'You must authenticate in order to ' +
+            'perform this action: Authentication ' +
+            'credentials were not provided.')
         self.printTestName("testGetSecretKey [End]")

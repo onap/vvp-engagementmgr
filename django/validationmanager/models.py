@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -52,7 +52,8 @@ class ValidationTest(models.Model):
     as the first word in the TAP description.
 
     """
-    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4,
+                            editable=False)
     name = models.CharField(max_length=128)
     line_items = models.ManyToManyField(ChecklistLineItem,
                                         verbose_name="Satisfies Line Items")

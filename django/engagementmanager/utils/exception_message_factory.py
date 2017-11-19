@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -49,36 +49,70 @@ from rest_framework.exceptions import MethodNotAllowed, NotAuthenticated, \
 
 class ExceptionMessageFactory:
     messages_dictionary = {
-        ObjectDoesNotExist.__name__: {'msg': 'User or Password does not match', 'include_exception': False,
-                                      'status': status.HTTP_404_NOT_FOUND},
-        MethodNotAllowed.__name__: {'msg': 'Method not allowed: ', 'include_exception': True,
-                                    'status': status.HTTP_405_METHOD_NOT_ALLOWED},
-        NotAuthenticated.__name__: {'msg': 'You must authenticate in order to perform this action: ',
-                                    'include_exception': True, 'status': status.HTTP_403_FORBIDDEN},
-        SignatureExpired.__name__: {'msg': 'Signature expired for this token: ', 'include_exception': True,
-                                    'status': status.HTTP_405_METHOD_NOT_ALLOWED},
-        KeyError.__name__: {'msg': 'KeyError occurred over the backend.', 'include_exception': True,
-                            'include_additional_exc_str': True, 'status': status.HTTP_400_BAD_REQUEST},
-        ValueError.__name__: {'msg': 'ValueError occurred over the backend: ', 'include_exception': True,
-                              'status': status.HTTP_500_INTERNAL_SERVER_ERROR},
-        ConnectionError.__name__: {'msg': 'ConnectionError occurred over the backend: ', 'include_exception': True,
-                                   'status': status.HTTP_500_INTERNAL_SERVER_ERROR},
-        ImportError.__name__: {'msg': 'ImportError occurred over the backend: ', 'include_exception': True,
-                               'status': status.HTTP_500_INTERNAL_SERVER_ERROR},
-        CommandError.__name__: {'msg': 'CommandError occurred over the backend: ', 'include_exception': True,
-                                'status': status.HTTP_500_INTERNAL_SERVER_ERROR},
-        PermissionDenied.__name__: {'msg': 'PermissionDenied occurred over the backend: ', 'include_exception': True,
-                                    'status': status.HTTP_401_UNAUTHORIZED},
-        VvpObjectNotAvailable.__name__: {'msg': '', 'include_exception': True, 'status': status.HTTP_410_GONE},
-        NotAcceptable.__name__: {'msg': '', 'include_exception': True, 'status': status.HTTP_403_FORBIDDEN},
-        VvpGeneralException.__name__: {'msg': '', 'include_exception': True,
-                                       'status': status.HTTP_500_INTERNAL_SERVER_ERROR},
-        FileExistsError.__name__: {'msg': 'Not modified due to: ', 'include_exception': True,
-                                   'status': status.HTTP_304_NOT_MODIFIED},
-        VvpBadRequest.__name__: {'msg': '', 'include_exception': True, 'status': status.HTTP_400_BAD_REQUEST},
-        VvpConflict.__name__: {'msg': '', 'include_exception': True, 'status': status.HTTP_409_CONFLICT},
-        Exception.__name__: {'msg': 'General error on backend: ', 'include_exception': True,
-                             'status': status.HTTP_500_INTERNAL_SERVER_ERROR},
+        ObjectDoesNotExist.__name__: {
+            'msg': 'User or Password does not match',
+            'include_exception': False,
+            'status': status.HTTP_404_NOT_FOUND},
+        MethodNotAllowed.__name__: {
+            'msg': 'Method not allowed: ',
+            'include_exception': True,
+            'status':
+            status.HTTP_405_METHOD_NOT_ALLOWED},
+        NotAuthenticated.__name__: {
+            'msg': 'You must authenticate in order to perform this action: ',
+            'include_exception': True, 'status': status.HTTP_403_FORBIDDEN},
+        SignatureExpired.__name__: {
+            'msg': 'Signature expired for this token: ',
+            'include_exception': True,
+            'status':
+            status.HTTP_405_METHOD_NOT_ALLOWED},
+        KeyError.__name__: {
+            'msg': 'KeyError occurred over the backend.',
+            'include_exception': True,
+            'include_additional_exc_str': True, 'status':
+            status.HTTP_400_BAD_REQUEST},
+        ValueError.__name__: {
+            'msg': 'ValueError occurred over the backend: ',
+            'include_exception': True,
+            'status': status.HTTP_500_INTERNAL_SERVER_ERROR},
+        ConnectionError.__name__: {
+            'msg': 'ConnectionError occurred over the backend: ',
+            'include_exception': True,
+            'status': status.HTTP_500_INTERNAL_SERVER_ERROR},
+        ImportError.__name__: {
+            'msg': 'ImportError occurred over the backend: ',
+            'include_exception': True,
+            'status': status.HTTP_500_INTERNAL_SERVER_ERROR},
+        CommandError.__name__: {
+            'msg': 'CommandError occurred over the backend: ',
+            'include_exception': True,
+            'status': status.HTTP_500_INTERNAL_SERVER_ERROR},
+        PermissionDenied.__name__: {
+            'msg': 'PermissionDenied occurred over the backend: ',
+            'include_exception': True,
+            'status': status.HTTP_401_UNAUTHORIZED},
+        VvpObjectNotAvailable.__name__: {
+            'msg': '', 'include_exception': True,
+            'status': status.HTTP_410_GONE},
+        NotAcceptable.__name__: {
+            'msg': '', 'include_exception': True,
+            'status': status.HTTP_403_FORBIDDEN},
+        VvpGeneralException.__name__: {
+            'msg': '', 'include_exception': True,
+            'status': status.HTTP_500_INTERNAL_SERVER_ERROR},
+        FileExistsError.__name__: {
+            'msg': 'Not modified due to: ', 'include_exception': True,
+            'status': status.HTTP_304_NOT_MODIFIED},
+        VvpBadRequest.__name__: {
+            'msg': '', 'include_exception': True,
+            'status': status.HTTP_400_BAD_REQUEST},
+        VvpConflict.__name__: {
+            'msg': '', 'include_exception': True,
+            'status': status.HTTP_409_CONFLICT},
+        Exception.__name__: {
+            'msg': 'General error on backend: ',
+            'include_exception': True,
+            'status': status.HTTP_500_INTERNAL_SERVER_ERROR},
     }
 
     def get_exception_message(self, exception):

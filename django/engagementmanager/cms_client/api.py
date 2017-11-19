@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -79,8 +79,11 @@ class CMSClient(object):
         try:
             client = BackendApplicationClient(client_id=client_id)
             oatuh = OAuth2Session(client=client)
-            token = oatuh.fetch_token(token_url=self.api_url + 'oauth2/token/', client_id=client_id,
-                                      client_secret=client_secret)
+            token = oatuh.fetch_token(
+                token_url=self.api_url +
+                'oauth2/token/',
+                client_id=client_id,
+                client_secret=client_secret)
         except Exception as exception:
             logger.error(
                 'Could not create CMS token, error message: ' + str(exception))
@@ -107,16 +110,22 @@ class CMSClient(object):
         """
         response = None
         try:
-            response = self.session.get(self.api_url + resource, params=params)
+            response = self.session.get(self.api_url + resource,
+                                        params=params)
             if response.status_code == HTTP_401_UNAUTHORIZED:
-                logger.error('Token expired (401 status excepted), will renew cms token now')
+                logger.error(
+                    'Token expired (401 status excepted), \
+                    will renew cms token now')
                 self.__init__()
-                response = self.session.get(self.api_url + resource, params=params)
+                response = self.session.get(
+                    self.api_url + resource, params=params)
         except TokenExpiredError as exception:
-            logger.error('Token expired (TokenExpiredError exception excepted),'
-                              ' will renew cms token now: ' + str(exception))
+            logger.error(
+                'Token expired (TokenExpiredError exception excepted),'
+                ' will renew cms token now: ' + str(exception))
             self.__init__()
-            response = self.session.get(self.api_url + resource, params=params)
+            response = self.session.get(self.api_url + resource,
+                                        params=params)
         item = self.json_deserialize(response.content.decode('utf-8'))
         return item
 
@@ -130,8 +139,12 @@ class CMSClient(object):
         :param limit: date_min of posts to return
         :return: list of dicts for most recently published blog posts
         """
-        return self.get('posts?offset={}&limit={}&category_name={}&date_min={}'.format(int(offset), int(limit),
-                                                                                       category, date_min))['results']
+        return self.get(
+            'posts?offset={}&limit={}&category_name={}&date_min={}'.format(
+                int(offset),
+                int(limit),
+                category,
+                date_min))['results']
 
     def get_pages(self, title=""):
         """

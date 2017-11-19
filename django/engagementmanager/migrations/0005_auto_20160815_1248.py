@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -56,7 +56,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DeploymentTargetSite',
             fields=[
-                ('uuid', models.CharField(max_length=36, primary_key=True, serialize=False)),
+                ('uuid', models.CharField(max_length=36,
+                                          primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=45)),
             ],
             options={
@@ -72,24 +73,30 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='vfc',
             name='company',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL,
-                                    to='engagementmanager.Vendor'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL,
+                to='engagementmanager.Vendor'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='target_completion_date',
             field=models.DateField(
-                blank=True, default=engagementmanager.models.get_default_target_completion_date, null=True),
+                blank=True,
+                default=engagementmanager.models.
+                get_default_target_completion_date, null=True),
         ),
         migrations.AlterField(
             model_name='iceuser',
             name='temp_password',
-            field=models.CharField(blank=True, default=None, max_length=256, null=True),
+            field=models.CharField(
+                blank=True, default=None, max_length=256, null=True),
         ),
         migrations.AddField(
             model_name='vf',
             name='deployment_target_sites',
-            field=models.ManyToManyField(blank=True, default=None, related_name='DeployTarget_sites',
-                                         to='engagementmanager.DeploymentTargetSite'),
+            field=models.ManyToManyField(
+                blank=True, default=None,
+                related_name='DeployTarget_sites',
+                to='engagementmanager.DeploymentTargetSite'),
         ),
     ]

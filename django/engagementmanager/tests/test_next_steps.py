@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -53,7 +53,7 @@ class NextStepTest(unittest.TestCase):
         pass
 
     def testStandardUserActions(self):
-        print('---------------------------------- Testing standard_user Actions ------------------------------------')
+        print('----- Testing standard_user Actions ----- ')
         user = MagicMock()
         user.role.name = 'standard_user'
 
@@ -64,7 +64,7 @@ class NextStepTest(unittest.TestCase):
             user, NextStepState.Completed, NextStepState.Incomplete)
 
     def testELUserActions(self):
-        print('---------------------------------- Testing EL Actions ------------------------------------')
+        print('----- Testing EL Actions ----- ')
         user = MagicMock()
         user.role.name = 'el'
 

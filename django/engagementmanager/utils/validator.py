@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -84,7 +84,7 @@ def logEncoding(data):
     try:
         clean_data = bleach.clean(str(data))
         clean_data += " (User Input)"
-    except Exception as e:
+    except Exception:
         clean_data = "couldnt bleach data"
         pass
     return clean_data

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -55,10 +55,12 @@ class CMSPagesService(BaseCms):
     def getPage(self, id):
         page = cms_client.get_page(id)
 
-        # Handling static files address (like images) to get the full address of the CMS static file:
+        # Handling static files address (like images) to get the full
+        # address of the CMS static file:
         if 'content' in page and page['content']:
             cmsAddress = re.sub('\/api/$', '', cms_client.api_url)
-            page['content'] = page['content'].replace('src="/static/media/', 'src="%s/static/media/' % cmsAddress)
+            page['content'] = page['content'].replace(
+                'src="/static/media/', 'src="%s/static/media/' % cmsAddress)
 
         return page
 

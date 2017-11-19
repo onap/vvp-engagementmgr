@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -39,7 +39,8 @@
 import json
 from uuid import uuid4
 
-from rest_framework.status import HTTP_200_OK, HTTP_401_UNAUTHORIZED, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_200_OK, HTTP_401_UNAUTHORIZED, \
+    HTTP_400_BAD_REQUEST
 
 from engagementmanager.models import ChecklistTemplate, ChecklistLineItem
 from engagementmanager.models import Vendor
@@ -51,24 +52,34 @@ class TestChecklistTestCase(TestBaseEntity):
 
     def childSetup(self):
 
-        self.createVendors([Constants.service_provider_company_name, 'Amdocs', 'Other'])
+        self.createVendors(
+            [Constants.service_provider_company_name, 'Amdocs', 'Other'])
         self.createDefaultRoles()
 
         # Create a user with role el
-        self.el_user = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.randomGenerator("main-vendor-email"),
-            '55501000199', 'el user', self.el, True)
+        self.el_user = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
+            '55501000199',
+            'el user',
+            self.el,
+            True)
         self.peer_reviewer = self.creator.createUser(Vendor.objects.get(
             name='Other'), self.randomGenerator("main-vendor-email"),
             '55501000199', 'peer-reviewer user', self.el, True)
         # For negative tests
-        self.user = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.randomGenerator("main-vendor-email"),
-            '55501000199', 'user', self.standard_user, True)
+        self.user = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
+            '55501000199',
+            'user',
+            self.standard_user,
+            True)
         self.urlStr = self.urlPrefix + "engagement/@eng_uuid/checklist/new/"
         self.data = dict()
         self.template = self.creator.createDefaultCheckListTemplate()
-#         self.engagement = Engagement.objects.create(uuid='just-a-fake-uuid',engagement_stage='Validation')
         self.engagement = self.creator.createEngagement(
             uuid4(), 'Validation', None)
         self.engagement.reviewer = self.el_user
@@ -78,9 +89,14 @@ class TestChecklistTestCase(TestBaseEntity):
         self.engagement.save()
         self.vendor = Vendor.objects.get(name='Other')
         self.deploymentTarget = self.creator.createDeploymentTarget(
-            self.randomGenerator("randomString"), self.randomGenerator("randomString"))
-        self.vf = self.creator.createVF(self.randomGenerator("randomString"),
-                                        self.engagement, self.deploymentTarget, False, self.vendor)
+            self.randomGenerator("randomString"),
+            self.randomGenerator("randomString"))
+        self.vf = self.creator.createVF(
+            self.randomGenerator("randomString"),
+            self.engagement,
+            self.deploymentTarget,
+            False,
+            self.vendor)
 
     def initBody(self):
         self.data['checkListName'] = "ice checklist for test"
@@ -90,14 +106,20 @@ class TestChecklistTestCase(TestBaseEntity):
         self.data['checkListAssociatedFiles'].append("file1")
         self.data['checkListAssociatedFiles'].append("file2")
 
-    def getOrCreateChecklist(self, expectedStatus=HTTP_200_OK, httpMethod="GET"):
+    def getOrCreateChecklist(
+            self, expectedStatus=HTTP_200_OK, httpMethod="GET"):
         if (httpMethod == "GET"):
-            response = self.c.get(self.urlStr.replace("@eng_uuid", str(self.engagement.uuid)),
-                                  **{'HTTP_AUTHORIZATION': "token " + self.token})
+            response = self.c.get(self.urlStr.replace("@eng_uuid", str(
+                self.engagement.uuid)), **{'HTTP_AUTHORIZATION': "token "
+                                           + self.token})
         elif (httpMethod == "POST"):
             datajson = json.dumps(self.data, ensure_ascii=False)
-            response = self.c.post(self.urlStr.replace("@eng_uuid", str(self.engagement.uuid)), datajson,
-                                   content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.token})
+            response = self.c.post(
+                self.urlStr.replace("@eng_uuid", str(self.engagement.uuid)),
+                datajson,
+                content_type='application/json',
+                **{'HTTP_AUTHORIZATION': "token "
+                   + self.token})
 
         print('Got response : ' + str(response.status_code) +
               " Expecting " + str(expectedStatus))
@@ -163,8 +185,10 @@ class TestChecklistTestCase(TestBaseEntity):
         self.data = dict()
         self.data['decisions'] = "{123}"
         datajson = json.dumps(self.data, ensure_ascii=False)
-        response = self.c.get(self.urlStr.replace("@checklist_uuid", str(checklist['uuid'])),
-                              content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.get(self.urlStr.replace("@checklist_uuid",
+                                                  str(checklist['uuid'])),
+                              content_type='application/json',
+                              **{'HTTP_AUTHORIZATION': "token " + self.token})
 
         print(json.loads(response.content))
 
@@ -173,5 +197,8 @@ class TestChecklistTestCase(TestBaseEntity):
         self.data = dict()
         self.data['decisions'] = "{123}"
         datajson = json.dumps(self.data, ensure_ascii=False)
-        response = self.c.post(self.urlStr.replace("@checklist_uuid", str(checklist['uuid'])), datajson,
-                               content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.post(self.urlStr.replace("@checklist_uuid",
+                                                   str(checklist['uuid'])),
+                               datajson,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token " + self.token})

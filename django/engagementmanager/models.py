@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -45,7 +45,9 @@ from django.db.models.signals import post_save
 from django.utils import timezone
 from django.utils.timezone import timedelta
 from engagementmanager.service.logging_service import LoggingServiceFactory
-from engagementmanager.utils.constants import EngagementStage, ActivityType, NextStepType, CheckListState, CheckListCategory, CheckListDecisionValue, CheckListLineType, \
+from engagementmanager.utils.constants import EngagementStage, ActivityType, \
+    NextStepType, CheckListState, CheckListCategory, CheckListDecisionValue, \
+    CheckListLineType, \
     RecentEngagementActionType, NextStepState
 
 
@@ -188,21 +190,45 @@ class Engagement(models.Model):
     engagement_team = models.ManyToManyField(
         IceUserProfile, related_name='members')
     creator = models.ForeignKey(
-        IceUserProfile, on_delete=models.PROTECT, null=True, blank=True, related_name='Engagement_creator')
+        IceUserProfile,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='Engagement_creator')
     contact_user = models.ForeignKey(
-        IceUserProfile, on_delete=models.PROTECT, null=True, blank=True, related_name='Engagement_contact_user')
+        IceUserProfile,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='Engagement_contact_user')
     engagement_manual_id = models.CharField(
-        max_length=36, null=False, blank=False, default=-1, db_index=True)  # index in favor of dashboard search
+        max_length=36,
+        null=False,
+        blank=False,
+        default=-1,
+        db_index=True)  # index in favor of dashboard search
     progress = models.IntegerField(default=0)
     target_completion_date = models.DateField(
         null=True, blank=True, default=get_default_target_completion_date)
-    engagement_stage = models.CharField(max_length=15, default=EngagementStage.Intake.name, choices=EngagementStage.choices(
-    ), db_index=True)  # Can be: Intake, Active, Validated, Completed @UndefinedVariable
+    engagement_stage = models.CharField(
+        max_length=15,
+        default=EngagementStage.Intake.name,
+        choices=EngagementStage.choices(),
+        db_index=True)
+    # Can be: Intake, Active, Validated, Completed @UndefinedVariable
     create_time = models.DateTimeField('creation time', default=timezone.now)
     peer_reviewer = models.ForeignKey(
-        IceUserProfile, on_delete=models.PROTECT, null=True, blank=True, related_name='Engagement_peer_reviewer')
+        IceUserProfile,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='Engagement_peer_reviewer')
     reviewer = models.ForeignKey(
-        IceUserProfile, on_delete=models.PROTECT, null=True, blank=True, related_name='Engagement_el_reviewer')
+        IceUserProfile,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='Engagement_el_reviewer')
     starred_engagement = models.ManyToManyField(
         IceUserProfile, default=None, blank=True)
     heat_validated_time = models.DateTimeField(
@@ -239,7 +265,11 @@ class EngagementStatus(models.Model):
     engagement = models.ForeignKey(Engagement, on_delete=models.PROTECT)
     description = models.CharField(max_length=256)
     creator = models.ForeignKey(
-        IceUserProfile, on_delete=models.PROTECT, null=True, blank=True, related_name='status_creator')
+        IceUserProfile,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='status_creator')
     create_time = models.DateTimeField(default=timezone.now)
     update_time = models.DateTimeField(default=timezone.now)
 
@@ -261,7 +291,10 @@ class Activity(models.Model):
     metadata = models.CharField(max_length=1024)
 
     def __str__(self):
-        return 'Activity created at ' + str(self.create_time) + ', Description: ' + self.description + ', Notification:' + str(self.is_notification) + ', ActivityType=' + str(self.activity_type)
+        return 'Activity created at ' + str(self.create_time) \
+            + ', Description: ' + self.description + \
+            ', Notification:' + str(self.is_notification) + \
+            ', ActivityType=' + str(self.activity_type)
 
     class Meta:
         ordering = ['-create_time']
@@ -279,7 +312,8 @@ class Notification(models.Model):
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return str(self.user) + ' ' + str(self.is_sent) + ' ' + str(self.is_read)
+        return str(self.user) + ' ' + str(self.is_sent) + \
+            ' ' + str(self.is_read)
 
     class Meta:
         db_table = "ice_notification"
@@ -296,7 +330,9 @@ class Feedback(models.Model):
     description = models.TextField('feedback_description')
 
     def __str__(self):
-        return 'Feedback created at ' + str(self.create_time) + ' ' + str(self.user) + ', Description: ' + self.description
+        return 'Feedback created at ' + \
+            str(self.create_time) + ' ' + str(self.user) + \
+            ', Description: ' + self.description
 
     class Meta:
         db_table = "ice_feedback"
@@ -331,7 +367,10 @@ class VF(models.Model):
         DeploymentTarget, on_delete=models.SET_NULL, null=True, blank=True)
     ecomp_release = models.ForeignKey(ECOMPRelease, null=True, blank=False)
     deployment_target_sites = models.ManyToManyField(
-        DeploymentTargetSite, default=None, blank=True, related_name='DeployTarget_sites')
+        DeploymentTargetSite,
+        default=None,
+        blank=True,
+        related_name='DeployTarget_sites')
     is_service_provider_internal = models.BooleanField(default=False)
     vendor = models.ForeignKey(Vendor, on_delete=models.PROTECT)
     git_repo_url = models.CharField(max_length=512, blank=False, default=-1)
@@ -341,8 +380,10 @@ class VF(models.Model):
     def jenkins_job_name(self):
         if not self.engagement.engagement_manual_id:
             raise ValueError(
-                "engagement_manual_id (%s) is not valid for jenkins job name" % self.engagement.engagement_manual_id)
-        return "{self.name}_{self.engagement.engagement_manual_id}".format(self=self)
+                "engagement_manual_id (%s) is not valid for jenkins job name" %
+                self.engagement.engagement_manual_id)
+        return "{self.name}_{self.engagement.engagement_manual_id}".format(
+            self=self)
 
     def __str__(self):
         return self.name
@@ -362,7 +403,11 @@ class VFC(models.Model):
     company = models.ForeignKey(Vendor, on_delete=SET_NULL, null=True)
     create_time = models.DateTimeField('creation time', default=timezone.now)
     creator = models.ForeignKey(
-        IceUserProfile, on_delete=models.PROTECT, null=True, blank=True, related_name='Vfc_creator')
+        IceUserProfile,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='Vfc_creator')
 
     def __str__(self):
         return self.name
@@ -393,8 +438,10 @@ class ChecklistTemplate(models.Model):  # Reference Table
     uuid = models.CharField(
         default=uuid.uuid4, max_length=36, primary_key=True)
     name = models.CharField('template name', max_length=255)
-    category = models.CharField(max_length=36, choices=CheckListCategory.choices(
-    ), default=CheckListCategory.overall.name)  # @UndefinedVariable
+    category = models.CharField(
+        max_length=36,
+        choices=CheckListCategory.choices(),
+        default=CheckListCategory.overall.name)  # @UndefinedVariable
     version = models.IntegerField('template version')
     create_time = models.DateTimeField('creation time', default=timezone.now)
     update_time = models.DateTimeField(
@@ -435,8 +482,10 @@ class ChecklistLineItem(models.Model):  # Reference Table
     name = models.CharField('line name', max_length=255)
     weight = models.FloatField('line weight')
     description = models.TextField('line description')
-    line_type = models.CharField(max_length=36, choices=CheckListLineType.choices(
-    ), default=CheckListLineType.auto.name)  # @UndefinedVariable
+    line_type = models.CharField(
+        max_length=36,
+        choices=CheckListLineType.choices(),
+        default=CheckListLineType.auto.name)  # @UndefinedVariable
     validation_instructions = models.TextField('line validation instructions')
     create_time = models.DateTimeField('creation time', default=timezone.now)
     update_time = models.DateTimeField(
@@ -447,9 +496,13 @@ class ChecklistLineItem(models.Model):  # Reference Table
         ChecklistSection, on_delete=models.CASCADE, null=False, blank=False)
 
     def save(self, *args, **kwargs):
-        if (self.template != self.section.template != None):
-            raise ValueError("ChecklistLineItem can't be saved/updated since the template " +
-                             self.template.name + " is not equal to its section's template " + self.section.template.name)
+        if (self.template != self.section.template is not None):
+            raise ValueError(
+                "ChecklistLineItem can't be saved/updated \
+                since the template " +
+                self.template.name +
+                " is not equal to its section's template " +
+                self.section.template.name)
         super(ChecklistLineItem, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -478,10 +531,14 @@ class Checklist(models.Model):
     template = models.ForeignKey(ChecklistTemplate, on_delete=models.PROTECT)
     # The EL that opened the modal.
     creator = models.ForeignKey(
-        IceUserProfile, on_delete=models.CASCADE, related_name='checklist_creator')
+        IceUserProfile,
+        on_delete=models.CASCADE,
+        related_name='checklist_creator')
     # The user who currently validates the checklist
     owner = models.ForeignKey(
-        IceUserProfile, on_delete=models.CASCADE, related_name='checklist_owner')
+        IceUserProfile,
+        on_delete=models.CASCADE,
+        related_name='checklist_owner')
 
     def __str__(self):
         return self.name + ' ' + self.state
@@ -495,11 +552,16 @@ class NextStep(models.Model):
         default=uuid.uuid4, max_length=36, primary_key=True)
     create_time = models.DateTimeField('creation time', default=timezone.now)
     creator = models.ForeignKey(
-        IceUserProfile, on_delete=models.PROTECT, related_name="NextStep_creator")
+        IceUserProfile,
+        on_delete=models.PROTECT,
+        related_name="NextStep_creator")
     last_update_time = models.DateTimeField(
         'last update time', default=timezone.now)
     last_updater = models.ForeignKey(
-        IceUserProfile, on_delete=models.PROTECT, null=True, related_name="NextStep_last_updater")
+        IceUserProfile,
+        on_delete=models.PROTECT,
+        null=True,
+        related_name="NextStep_last_updater")
     # Can be: Modified, Added, Completed, Denied
     last_update_type = models.CharField(max_length=15, default='Added')
     position = models.IntegerField()
@@ -514,15 +576,18 @@ class NextStep(models.Model):
         Engagement, on_delete=models.PROTECT, null=True, blank=True)
     owner = models.ForeignKey(
         IceUserProfile, on_delete=models.PROTECT, null=True, blank=True)
-    next_step_type = models.CharField(max_length=36, choices=NextStepType.choices(
-    ), default=NextStepType.user_defined.name)  # @UndefinedVariable
+    next_step_type = models.CharField(
+        max_length=36,
+        choices=NextStepType.choices(),
+        default=NextStepType.user_defined.name)  # @UndefinedVariable
     files = models.TextField('list of files', null=True)
     assignees = models.ManyToManyField(
         IceUserProfile, related_name='assignees')
     due_date = models.DateField('due_date', null=True)
 
     def __str__(self):
-        return self.engagement_stage + ' ' + self.state + ' ' + self.description
+        return self.engagement_stage + ' ' + self.state + \
+            ' ' + self.description
 
     class Meta:
         db_table = "ice_next_step"
@@ -535,9 +600,10 @@ class ChecklistDecision(models.Model):
     uuid = models.CharField(
         default=uuid.uuid4, max_length=36, primary_key=True)
     review_value = models.CharField(
-        max_length=36, choices=CheckListDecisionValue.choices())  # @UndefinedVariable
+        max_length=36,
+        choices=CheckListDecisionValue.choices())
     peer_review_value = models.CharField(
-        max_length=36, choices=CheckListDecisionValue.choices())  # @UndefinedVariable
+        max_length=36, choices=CheckListDecisionValue.choices())
     create_time = models.DateTimeField('creation time', default=timezone.now)
     update_time = models.DateTimeField(
         'last update time', null=True, blank=True)
@@ -546,19 +612,33 @@ class ChecklistDecision(models.Model):
     lineitem = models.ForeignKey(ChecklistLineItem, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
-        if (self.template != self.checklist.template != None):
-            raise ValueError("ChecklistDecision can't be saved/updated since the template " +
-                             self.template.name + " is not equal to its checklist's template " + self.checklist.template.name)
-        if (self.template != self.lineitem.section.template != None):
-            raise ValueError("ChecklistDecision can't be saved/updated since the template " + self.template.name +
-                             " is not equal to its lineitem/section's template " + self.lineitem.section.template)
-        if (self.checklist.template != self.lineitem.section.template != None):
-            raise ValueError("ChecklistDecision can't be saved/updated since its checklist's template " +
-                             self.checklist.template + " is not equal to its lineitem/section's template " + self.lineitem.section.template)
+        if (self.template != self.checklist.template is not None):
+            raise ValueError(
+                "ChecklistDecision can't be saved/updated \
+                since the template " +
+                self.template.name +
+                " is not equal to its checklist's template " +
+                self.checklist.template.name)
+        if (self.template != self.lineitem.section.template is not None):
+            raise ValueError(
+                "ChecklistDecision can't be saved/updated \
+                since the template " +
+                self.template.name +
+                " is not equal to its lineitem/section's template " +
+                self.lineitem.section.template)
+        if (self.checklist.template != self.lineitem.section.template
+                is not None):
+            raise ValueError(
+                "ChecklistDecision can't be saved/updated since \
+                its checklist's template " +
+                self.checklist.template +
+                " is not equal to its lineitem/section's template " +
+                self.lineitem.section.template)
         super(ChecklistDecision, self).save(*args, **kwargs)
 
     def __str__(self):
-        return 'decision:' + self.uuid + ' ' + self.template.name + ' ' + self.review_value + ' ' + self.peer_review_value
+        return 'decision:' + self.uuid + ' ' + self.template.name + \
+            ' ' + self.review_value + ' ' + self.peer_review_value
 
     class Meta:
         db_table = "ice_checklist_decision"
@@ -581,9 +661,11 @@ class ChecklistAuditLog(models.Model):
         ChecklistDecision, on_delete=models.CASCADE, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        if (self.checklist != None and self.decision != None):
+        if (self.checklist is not None and self.decision is not None):
             raise ValueError(
-                "ChecklistAuditLog can't be attached to both checklist and decision. Please remove one of them and retry the operation")
+                "ChecklistAuditLog can't be attached \
+                to both checklist and decision. Please \
+                remove one of them and retry the operation")
         super(ChecklistAuditLog, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -602,13 +684,17 @@ class Invitation(models.Model):
         max_length=64, null=False, blank=False, db_index=True)
     email = models.CharField(max_length=255, null=False, blank=False)
     invitation_token = models.CharField(
-        max_length=1024, null=False, blank=False, db_index=True)  # index in favor of signup
+        max_length=1024,
+        null=False,
+        blank=False,
+        db_index=True)  # index in favor of signup
     accepted = models.BooleanField(default=False)
     create_time = models.DateTimeField(
         'invitation creation time', default=timezone.now)
 
     def __str__(self):
-        return "Invite from " + self.invited_by_user_uuid + " to " + self.email + " for joining engagement " + self.engagement_uuid
+        return "Invite from " + self.invited_by_user_uuid + " to " + \
+            self.email + " for joining engagement " + self.engagement_uuid
 
     class Meta:
         db_table = "ice_invitation"

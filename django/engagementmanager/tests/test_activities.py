@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,9 +36,11 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-from engagementmanager.bus.messages.activity_event_message import ActivityEventMessage
+from engagementmanager.bus.messages.activity_event_message \
+    import ActivityEventMessage
 from engagementmanager.models import Vendor
-from engagementmanager.utils.activities_data import UserJoinedEngagementActivityData
+from engagementmanager.utils.activities_data import \
+    UserJoinedEngagementActivityData
 from engagementmanager.tests.test_base_entity import TestBaseEntity
 from engagementmanager.utils.constants import Constants
 from engagementmanager.apps import bus_service
@@ -54,14 +56,30 @@ class ActivityTestCase(TestBaseEntity):
 
         self.createDefaultRoles()
         # Create a user with role el
-        vendor = Vendor.objects.get(name=Constants.service_provider_company_name)
-        self.el_user = self.creator.createUser(vendor, self.randomGenerator(
-            "main-vendor-email"), self.randomGenerator("randomNumber"), self.randomGenerator("randomString"), self.el, True)
+        vendor = Vendor.objects.get(
+            name=Constants.service_provider_company_name)
+        self.el_user = self.creator.createUser(
+            vendor,
+            self.randomGenerator("main-vendor-email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.el,
+            True)
         vendor = Vendor.objects.get(name='Other')
-        self.user = self.creator.createUser(vendor, self.randomGenerator("email"), self.randomGenerator(
-            "randomNumber"), self.randomGenerator("randomString"), self.standard_user, True)
-        self.pruser = self.creator.createUser(vendor, self.randomGenerator("email"), self.randomGenerator(
-            "randomNumber"), self.randomGenerator("randomString"), self.standard_user, True)
+        self.user = self.creator.createUser(
+            vendor,
+            self.randomGenerator("email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.standard_user,
+            True)
+        self.pruser = self.creator.createUser(
+            vendor,
+            self.randomGenerator("email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.standard_user,
+            True)
 
         # Create an Engagement with team
         self.engagement = self.creator.createEngagement(self.randomGenerator(
@@ -73,9 +91,14 @@ class ActivityTestCase(TestBaseEntity):
 
         # Create a VF
         self.deploymentTarget = self.creator.createDeploymentTarget(
-            self.randomGenerator("randomString"), self.randomGenerator("randomString"))
-        self.vf = self.creator.createVF(self.randomGenerator("randomString"),
-                                        self.engagement, self.deploymentTarget, False, vendor)
+            self.randomGenerator("randomString"),
+            self.randomGenerator("randomString"))
+        self.vf = self.creator.createVF(
+            self.randomGenerator("randomString"),
+            self.engagement,
+            self.deploymentTarget,
+            False,
+            vendor)
         self.token = self.loginAndCreateSessionToken(self.user)
 
     def testCreateActivity(self):
@@ -84,42 +107,57 @@ class ActivityTestCase(TestBaseEntity):
 
         logger.debug("Starting activity test: User joined")
         vendor = Vendor.objects.get(name='Other')
-        randomUser = self.creator.createUser(vendor, self.randomGenerator("email"), self.randomGenerator(
-            "randomNumber"), self.randomGenerator("randomString"), self.standard_user, True)
+        randomUser = self.creator.createUser(
+            vendor,
+            self.randomGenerator("email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.standard_user,
+            True)
         self.engagement.engagement_team.add(randomUser)
         self.engagement.save()
 
         logger.debug(
-            "created a new user & added them to the engagement team, going to create the activity and consider it as a notification")
+            "created a new user & added them to the engagement team, \
+            going to create the activity and consider it as a notification")
         usersList = []
         usersList.append(randomUser)
-        activity_data = UserJoinedEngagementActivityData(self.vf, usersList, self.engagement)
+        activity_data = UserJoinedEngagementActivityData(
+            self.vf, usersList, self.engagement)
         bus_service.send_message(ActivityEventMessage(activity_data))
         logger.debug(
-            "activity & notification created successfully, please manually verify that an email was sent / MX server tried to send")
+            "activity & notification created successfully, \
+            please manually verify that an email was sent / MX server \
+            tried to send")
         logger.debug("Ended activity test: User joined ")
 
         logger.debug("Starting pullActivities test")
-        response = self.c.get(urlStr.replace('${uuid}', str(self.engagement.uuid)),
+        response = self.c.get(urlStr.replace('${uuid}',
+                                             str(self.engagement.uuid)),
                               **{'HTTP_AUTHORIZATION': "token " + self.token})
         content = response.content
         status = response.status_code
         logger.debug("Got response : " + str(status))
         logger.debug("Got content : " + str(content))
         if (status != 200):
-            logger.error("Got response : " + str(status) + " , wrong http response returned ")
+            logger.error("Got response : " + str(status) +
+                         " , wrong http response returned ")
             self.assertEqual(response.status_code, 200)
         logger.debug("Ended pullActivities test ")
 
         logger.debug("Starting activity test: delete user")
-        logger.debug("Verify that the 'User Joined' activity is deleted from the recent activities")
-        response = self.c.get(urlStr.replace('${uuid}', str(self.engagement.uuid)),
+        logger.debug(
+            "Verify that the 'User Joined' activity \
+            is deleted from the recent activities")
+        response = self.c.get(urlStr.replace('${uuid}',
+                                             str(self.engagement.uuid)),
                               **{'HTTP_AUTHORIZATION': "token " + self.token})
         content = response.content
         status = response.status_code
         logger.debug("Got response : " + str(status))
         logger.debug("Got content : " + str(content))
         if (status != 200):
-            logger.error("Got response : " + str(status) + " , wrong http response returned ")
+            logger.error("Got response : " + str(status) +
+                         " , wrong http response returned ")
             self.assertEqual(response.status_code, 200)
         logger.debug("Ended activity test: delete user ")

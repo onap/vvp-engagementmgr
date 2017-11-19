@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -43,7 +43,8 @@ from engagementmanager.service.logging_service import LoggingServiceFactory
 
 class BaseSvc():
     '''
-    classdocs This is the base abstract class of all ice Services delegated from the Rest layer
+    classdocs This is the base abstract class of all ice Services \
+    delegated from the Rest layer
     '''
     __metaclass__ = ABCMeta
 

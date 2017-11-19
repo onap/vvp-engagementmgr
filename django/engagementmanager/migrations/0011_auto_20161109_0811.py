@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -54,28 +54,38 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='engagement',
             name='engagement_manual_id',
-            field=models.CharField(max_length=36),
+            field=models.CharField(
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='starred_engagement',
-            field=models.ManyToManyField(blank=True, default=None, to='engagementmanager.IceUser'),
+            field=models.ManyToManyField(
+                blank=True,
+                default=None,
+                to='engagementmanager.IceUser'),
         ),
         migrations.AlterField(
             model_name='vf',
             name='ecomp_release',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
-                                    to='engagementmanager.ECOMPRelease'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to='engagementmanager.ECOMPRelease'),
         ),
         migrations.AlterField(
             model_name='vf',
             name='engagement',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='engagementmanager.Engagement'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='engagementmanager.Engagement'),
         ),
         migrations.AlterField(
             model_name='vf',
             name='git_repo_url',
-            field=models.CharField(default='', max_length=512),
+            field=models.CharField(
+                default='',
+                max_length=512),
             preserve_default=False,
         ),
     ]

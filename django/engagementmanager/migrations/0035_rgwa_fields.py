@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -53,16 +53,50 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='iceuserprofile',
             name='rgwa_access_key',
-            field=models.CharField(blank=True, max_length=1024, null=True, unique=True),
+            field=models.CharField(
+                blank=True,
+                max_length=1024,
+                null=True,
+                unique=True),
         ),
         migrations.AddField(
             model_name='iceuserprofile',
             name='rgwa_secret_key',
-            field=models.CharField(blank=True, max_length=1024, null=True, unique=True),
+            field=models.CharField(
+                blank=True,
+                max_length=1024,
+                null=True,
+                unique=True),
         ),
         migrations.AlterField(
             model_name='activity',
             name='activity_type',
-            field=models.CharField(choices=[('user_joined_eng', 'user_joined_eng'), ('ssh_key_added', 'ssh_key_added'), ('eng_validation_request', 'eng_validation_request'), ('update_next_steps', 'update_next_steps'), ('vfc', 'vfc'), ('change_checklist_state', 'change_checklist_state'), ('vf_provisioning_event', 'vf_provisioning_event'), ('test_finished_event', 'test_finished_event'), ('change_engagement_stage', 'change_engagement_stage'), ('add_next_steps', 'add_next_steps'), ('delete_next_steps', 'delete_next_steps'), ('notice_empty_engagement', 'notice_empty_engagement')], max_length=36),
+            field=models.CharField(
+                choices=[
+                    ('user_joined_eng',
+                     'user_joined_eng'),
+                    ('ssh_key_added',
+                     'ssh_key_added'),
+                    ('eng_validation_request',
+                     'eng_validation_request'),
+                    ('update_next_steps',
+                     'update_next_steps'),
+                    ('vfc',
+                     'vfc'),
+                    ('change_checklist_state',
+                     'change_checklist_state'),
+                    ('vf_provisioning_event',
+                     'vf_provisioning_event'),
+                    ('test_finished_event',
+                     'test_finished_event'),
+                    ('change_engagement_stage',
+                     'change_engagement_stage'),
+                    ('add_next_steps',
+                     'add_next_steps'),
+                    ('delete_next_steps',
+                     'delete_next_steps'),
+                    ('notice_empty_engagement',
+                     'notice_empty_engagement')],
+                max_length=36),
         ),
     ]

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -65,13 +65,19 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='engagement',
             name='engagement_stage',
-            field=models.CharField(choices=[(b'Active', b'Active'), (b'Archived', b'Archived'), (b'Completed', b'Completed'), (
-                b'Intake', b'Intake'), (b'Validated', b'Validated')], db_index=True, default=b'Intake', max_length=15),
+            field=models.CharField(
+                choices=[(b'Active', b'Active'), (b'Archived', b'Archived'),
+                         (b'Completed', b'Completed'), (
+                    b'Intake', b'Intake'), (b'Validated', b'Validated')],
+                db_index=True, default=b'Intake',
+                max_length=15),
         ),
         migrations.AlterField(
             model_name='iceuser',
             name='email',
-            field=models.EmailField(db_index=True, max_length=254, unique=True, verbose_name='email'),
+            field=models.EmailField(
+                db_index=True, max_length=254, unique=True,
+                verbose_name='email'),
         ),
         migrations.AlterField(
             model_name='invitation',
@@ -81,8 +87,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='vf',
             name='engagement',
-            field=models.OneToOneField(default=-1, on_delete=django.db.models.deletion.CASCADE,
-                                       to='engagementmanager.Engagement'),
+            field=models.OneToOneField(
+                default=-1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to='engagementmanager.Engagement'),
         ),
         migrations.AlterField(
             model_name='vf',

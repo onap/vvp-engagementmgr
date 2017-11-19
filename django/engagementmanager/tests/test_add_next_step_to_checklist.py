@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -50,13 +50,19 @@ class TestAddNextStepToChecklistTestCase(TestBaseEntity):
 
     def childSetup(self):
         self.createVendors([Constants.service_provider_company_name, 'Other'])
-        self.vendor = Vendor.objects.get(name=Constants.service_provider_company_name)
+        self.vendor = Vendor.objects.get(
+            name=Constants.service_provider_company_name)
         self.createDefaultRoles()
 
         # Create a user with role el
-        self.el_user = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.randomGenerator("main-vendor-email"),
-            '55501000199', 'el user', self.el, True)
+        self.el_user = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
+            '55501000199',
+            'el user',
+            self.el,
+            True)
         print('-----------------------------------------------------')
         print('Created User:')
         print('UUID: ' + str(self.el_user.uuid))
@@ -64,17 +70,28 @@ class TestAddNextStepToChecklistTestCase(TestBaseEntity):
         print('-----------------------------------------------------')
 
         # Create a user with role el
-        self.peer_reviewer_user = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.randomGenerator("main-vendor-email"),
-            '55501000199', 'peer-reviewer user', self.el, True)
+        self.peer_reviewer_user = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
+            '55501000199',
+            'peer-reviewer user',
+            self.el,
+            True)
         print('-----------------------------------------------------')
         print('Created User:')
         print('UUID: ' + str(self.el_user.uuid))
         print('Full Name: ' + self.el_user.full_name)
         print('-----------------------------------------------------')
 
-        self.user2 = self.creator.createUser(Vendor.objects.get(
-            name='Other'), self.randomGenerator("main-vendor-email"), '55501000199', 'user', self.standard_user, True)
+        self.user2 = self.creator.createUser(
+            Vendor.objects.get(
+                name='Other'),
+            self.randomGenerator("main-vendor-email"),
+            '55501000199',
+            'user',
+            self.standard_user,
+            True)
         print('-----------------------------------------------------')
         print('Created User:')
         print('UUID: ' + str(self.user2.uuid))
@@ -82,7 +99,8 @@ class TestAddNextStepToChecklistTestCase(TestBaseEntity):
         print('-----------------------------------------------------')
 
         # Create an Engagement with team
-        self.engagement = self.creator.createEngagement('123456789', 'Validation', None)
+        self.engagement = self.creator.createEngagement(
+            '123456789', 'Validation', None)
         self.engagement.reviewer = self.el_user
         self.engagement.engagement_team.add(self.el_user)
         self.engagement.peer_reviewer = self.peer_reviewer_user
@@ -93,9 +111,14 @@ class TestAddNextStepToChecklistTestCase(TestBaseEntity):
         print('-----------------------------------------------------')
 
         self.deploymentTarget = self.creator.createDeploymentTarget(
-            self.randomGenerator("randomString"), self.randomGenerator("randomString"))
-        self.vf = self.creator.createVF(self.randomGenerator("randomString"),
-                                        self.engagement, self.deploymentTarget, False, self.vendor)
+            self.randomGenerator("randomString"),
+            self.randomGenerator("randomString"))
+        self.vf = self.creator.createVF(
+            self.randomGenerator("randomString"),
+            self.engagement,
+            self.deploymentTarget,
+            False,
+            self.vendor)
         print('-----------------------------------------------------')
         print('Created VF:')
         print('UUID: ' + str(self.vf.uuid))
@@ -111,10 +134,15 @@ class TestAddNextStepToChecklistTestCase(TestBaseEntity):
         self.token = self.loginAndCreateSessionToken(self.el_user)
         datajson = json.dumps(self.data, ensure_ascii=False)
         self.clUrlStr = self.urlPrefix + "engagement/@eng_uuid/checklist/new/"
-        self.checklist = self.c.post(self.clUrlStr.replace("@eng_uuid", str(self.engagement.uuid)),
-                                     datajson, content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.token})
+        self.checklist = self.c.post(
+            self.clUrlStr.replace(
+                "@eng_uuid", str(
+                    self.engagement.uuid)), datajson,
+            content_type='application/json', **{
+                'HTTP_AUTHORIZATION': "token " + self.token})
 
-        self.urlStr = self.urlPrefix + "engagement/@eng_uuid/checklist/@checklist_uuid/nextstep/"
+        self.urlStr = self.urlPrefix + \
+            "engagement/@eng_uuid/checklist/@checklist_uuid/nextstep/"
         self.nextStepList = []
 
     def initBody(self):
@@ -137,9 +165,14 @@ class TestAddNextStepToChecklistTestCase(TestBaseEntity):
     def testAddNextStepForCheckListPositive(self):
         self.initBody()
         self.nextStepList = json.dumps(self.nextStepList, ensure_ascii=False)
-        self.urlStr = self.urlStr.replace("@checklist_uuid", json.loads(self.checklist.content)[
-                                          'uuid']).replace("@eng_uuid", str(self.engagement.uuid))
-        response = self.c.post(self.urlStr, self.nextStepList, content_type='application/json',
+        self.urlStr = self.urlStr.replace(
+            "@checklist_uuid", json.loads(
+                self.checklist.content)['uuid']).replace(
+            "@eng_uuid", str(
+                self.engagement.uuid))
+        response = self.c.post(self.urlStr,
+                               self.nextStepList,
+                               content_type='application/json',
                                **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
@@ -150,8 +183,11 @@ class TestAddNextStepToChecklistTestCase(TestBaseEntity):
         self.nextStepList = json.dumps(self.nextStepList, ensure_ascii=False)
         self.urlStr = self.urlStr.replace("@checklist_uuid", json.loads(
             self.checklist.content)['uuid']).replace("@eng_uuid", str(uuid4()))
-        response = self.c.post(self.urlStr, self.nextStepList, content_type='application/json',
+        response = self.c.post(self.urlStr,
+                               self.nextStepList,
+                               content_type='application/json',
                                **{'HTTP_AUTHORIZATION': "token " + self.token})
-        print('------------------------------> Got response : ' + str(response.status_code))
+        print('------------------------------> Got response : ' +
+              str(response.status_code))
         self.assertEqual(response.status_code, HTTP_401_UNAUTHORIZED)
         return response

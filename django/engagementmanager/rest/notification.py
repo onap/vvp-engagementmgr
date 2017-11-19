@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -44,7 +44,8 @@ from engagementmanager.decorator.auth import auth
 from engagementmanager.decorator.class_decorator import classDecorator
 from engagementmanager.decorator.log_func_entry import logFuncEntry
 import engagementmanager.models
-from engagementmanager.notifications import num_of_notifications_for_user, reset_num_of_notifications_for_user,\
+from engagementmanager.notifications import num_of_notifications_for_user, \
+    reset_num_of_notifications_for_user,\
     pull_recent_notifications
 from engagementmanager.rest.vvp_api_view import VvpApiView
 from engagementmanager.service.authorization_service import Permissions
@@ -75,12 +76,15 @@ class NotificationOps(VvpApiView):
     # PullRecentNotif4User
     def get(self, request, user_uuid, offset, limit):
         user = request_data_mgr.get_user()
-        serilizedActivitySet, num_of_objects = pull_recent_notifications(user.uuid, offset, limit)
+        serilizedActivitySet, num_of_objects = pull_recent_notifications(
+            user.uuid, offset, limit)
         if serilizedActivitySet is not None:
-            data = {'serilizedActivitySet': serilizedActivitySet, 'num_of_objects': num_of_objects}
+            data = {'serilizedActivitySet': serilizedActivitySet,
+                    'num_of_objects': num_of_objects}
             return Response(data)
         else:
-            return Response("Activity set wasn't found", status=HTTP_400_BAD_REQUEST)
+            return Response("Activity set wasn't found",
+                            status=HTTP_400_BAD_REQUEST)
 
     # Reset the number of an unread notifications
     def put(self, request):

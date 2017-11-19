@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -49,6 +49,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL("update  ice_next_step set state = 'Incomplete' where state = 'TODO';"),
-        migrations.RunSQL("update  ice_next_step set state = 'Completed' where state = 'Confirmed';"),
+        migrations.RunSQL(
+            "update  ice_next_step set state = 'Incomplete' \
+            where state = 'TODO';"),
+        migrations.RunSQL(
+            "update  ice_next_step set state = 'Completed' \
+            where state = 'Confirmed';"),
     ]

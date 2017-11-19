@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -45,7 +45,8 @@ from engagementmanager.decorator.log_func_entry import logFuncEntry
 from engagementmanager.models import DeploymentTarget
 from engagementmanager.rest.vvp_api_view import VvpApiView
 from engagementmanager.serializers import DeploymentTargetModelSerializer
-from engagementmanager.service.deploment_target_service import update_deployment_target
+from engagementmanager.service.deploment_target_service \
+    import update_deployment_target
 
 
 @classDecorator([logFuncEntry])
@@ -58,12 +59,16 @@ class DeploymentTargetRESTMethods(VvpApiView):
             update_deployment_target(engagement_uuid, dt_uuid)
             return Response(msg)
         else:
-            msg = "DTarget PUT Request failed, engagement_uuid wasn't found in kwargs or its content is empty, therefore cannot filter by it to find the required VF"
+            msg = "DTarget PUT Request failed, engagement_uuid wasn't found \
+            in kwargs or its content is empty, therefore cannot filter by it \
+            to find the required VF"
             self.logger.error(msg)
             msg = "Action failed."
             return Response(msg, status=HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        deployment_targets = DeploymentTarget.objects.filter(ui_visibility=True).order_by('weight')
-        serializer = DeploymentTargetModelSerializer(deployment_targets, many=True)
+        deployment_targets = DeploymentTarget.objects.filter(
+            ui_visibility=True).order_by('weight')
+        serializer = DeploymentTargetModelSerializer(
+            deployment_targets, many=True)
         return Response(serializer.data)

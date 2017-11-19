@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,7 +36,8 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-from mocks.jenkins_mock.services.jenkins_tests_validation_service import JenkinsTestsResultsSvc
+from mocks.jenkins_mock.services.jenkins_tests_validation_service \
+    import JenkinsTestsResultsSvc
 from validationmanager.em_integration import em_client
 
 
@@ -45,8 +46,9 @@ class JenkinsTestsResultsREST():
     mock_tests_results_svc_obj = JenkinsTestsResultsSvc()
 
     def post(self, git_repo_url, checklist_uuid):
-        response = self.mock_tests_results_svc_obj.retrieve_tests_results_for_cl(
-            checklist_uuid)
+        response = self.mock_tests_results_svc_obj.\
+            retrieve_tests_results_for_cl(
+                checklist_uuid)
         em_client.test_finished(response)
 
     def get(self, eng_manual_id, vf_name):

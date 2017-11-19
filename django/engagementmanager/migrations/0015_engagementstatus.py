@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -55,14 +55,31 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='EngagementStatus',
             fields=[
-                ('uuid', models.CharField(max_length=64, primary_key=True, serialize=False)),
-                ('description', models.CharField(max_length=256)),
-                ('create_time', models.DateTimeField(default=django.utils.timezone.now)),
-                ('update_time', models.DateTimeField(default=django.utils.timezone.now)),
-                ('creator', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                              related_name='status_creator', to='engagementmanager.IceUser')),
-                ('engagement', models.ForeignKey(
-                    on_delete=django.db.models.deletion.PROTECT, to='engagementmanager.Engagement')),
+                ('uuid',
+                 models.CharField(
+                     max_length=64,
+                     primary_key=True,
+                     serialize=False)),
+                ('description',
+                 models.CharField(
+                     max_length=256)),
+                ('create_time',
+                 models.DateTimeField(
+                     default=django.utils.timezone.now)),
+                ('update_time',
+                 models.DateTimeField(
+                     default=django.utils.timezone.now)),
+                ('creator',
+                 models.ForeignKey(
+                     blank=True,
+                     null=True,
+                     on_delete=django.db.models.deletion.PROTECT,
+                     related_name='status_creator',
+                     to='engagementmanager.IceUser')),
+                ('engagement',
+                 models.ForeignKey(
+                     on_delete=django.db.models.deletion.PROTECT,
+                     to='engagementmanager.Engagement')),
             ],
             options={
                 'db_table': 'ice_engagement_status',

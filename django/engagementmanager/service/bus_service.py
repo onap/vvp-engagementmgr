@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,7 +36,8 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-from engagementmanager.bus.handlers.service_bus_base_handler import ServiceBusBaseHandler
+from engagementmanager.bus.handlers.service_bus_base_handler \
+    import ServiceBusBaseHandler
 
 from engagementmanager.utils.vvp_exceptions import VvpGeneralException
 
@@ -49,7 +50,9 @@ class BusService:
 
     def register(self, handler, message_type):
         if not isinstance(handler, ServiceBusBaseHandler):
-            raise VvpGeneralException("You can't register handler which is not from type of ServiceBusBaseHandler")
+            raise VvpGeneralException(
+                "You can't register handler which is not from type " +
+                "of ServiceBusBaseHandler")
 
         handler_pair = self.__get_or_create_handler_pair(message_type)
         handler_pair["handlers"].append(handler)

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -53,7 +53,8 @@ class TestUpdateUserAccountTestCase(TestBaseEntity):
 
         # Create a user with role el
         self.user = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.randomGenerator("main-vendor-email"),
+            name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
             '55501000199', 'user', self.standard_user, True)
         print('-----------------------------------------------------')
         print('Created User:')
@@ -76,16 +77,19 @@ class TestUpdateUserAccountTestCase(TestBaseEntity):
     def updateAccount(self, expectedStatus=200, httpMethod="PUT"):
         self.accountData = json.dumps(self.data, ensure_ascii=False)
         if (httpMethod == "PUT"):
-            response = self.c.put(self.urlStr, self.accountData, content_type='application/json',
-                                  **{'HTTP_AUTHORIZATION': "token " + self.token})
+            response = self.c.put(self.urlStr, self.accountData,
+                                  content_type='application/json',
+                                  **{'HTTP_AUTHORIZATION': "token "
+                                     + self.token})
         elif (httpMethod == "POST"):
-            response = self.c.post(self.urlStr, self.accountData, content_type='application/json',
-                                   **{'HTTP_AUTHORIZATION': "token " + self.token})
+            response = self.c.post(self.urlStr, self.accountData,
+                                   content_type='application/json',
+                                   **{'HTTP_AUTHORIZATION': "token "
+                                      + self.token})
         print('Got response : ' + str(response.status_code) + " Expecting 200")
         self.assertEqual(response.status_code, expectedStatus)
         return response
 
-    ### TESTS ###
     def testUpdateNegativeWrongHttpMethodAccount(self):
         self.initBody()
         print("Negative Test: Wrong HTTP Method --> Expecting status code 405")
@@ -93,7 +97,8 @@ class TestUpdateUserAccountTestCase(TestBaseEntity):
 
     def testUpdateNegativeDiffPasswords(self):
         self.initBody()
-        print("Negative Test: password!=confirm_password --> Expecting status code 400")
+        print("Negative Test: password!=confirm_password --> \
+        Expecting status code 400")
         self.data['confirm_password'] = "fakePassword"
         self.updateAccount(400, "PUT")
 

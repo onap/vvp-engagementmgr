@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -104,12 +104,14 @@ class GitlabClient(object):
 
     def create_project(self, name, **kwargs):
         """
-        Function creates a new project with specified parameters. The following parameters are
-        understood:
+        Function creates a new project with specified parameters.
+        The following parameters are understood:
 
         name:           The name of the new project
-        path:           Custom repository name for new project. default: based on name
-        namespace_id:   Namespace for the new project. default: current user's namespace
+        path:           Custom repository name for new project.
+                        default: based on name
+        namespace_id:   Namespace for the new project.
+                        default: current user's namespace
         description
         issues_enabled
         merge_requests_enabled
@@ -132,9 +134,12 @@ class GitlabClient(object):
 
         # filter kwargs to known parameters and non-optional args
         parameters = dict({k: kwargs[k] for k in kwargs if k in [
-            'path', 'namespace_id', 'description', 'issues_enabled', 'merge_requests_enabled',
-            'builds_enabled', 'wiki_enabled', 'snippets_enabled', 'container_registry_enabled',
-            'shared_runners_enabled', 'public', 'visibility_level', 'import_url',
+            'path', 'namespace_id', 'description',
+            'issues_enabled', 'merge_requests_enabled',
+            'builds_enabled', 'wiki_enabled',
+            'snippets_enabled', 'container_registry_enabled',
+            'shared_runners_enabled', 'public',
+            'visibility_level', 'import_url',
             'public_builds', 'only_allow_merge_if_build_succeeds',
             'only_allow_merge_if_all_discussions_are_resolved', 'lfs_enabled',
             'request_access_enabled',
@@ -206,7 +211,8 @@ class GitlabClient(object):
             logger.info("didnt find project: %s", logEncoding(resp.content))
         else:
             for project in resp.json():
-                if (project_name == project['name'] and group_id == project['namespace']['id']):
+                if (project_name == project['name'] and
+                        group_id == project['namespace']['id']):
                     project_found = project
                     break
 
@@ -219,7 +225,8 @@ class GitlabClient(object):
         email = email.lower()
         url = "%s?username=%s" % (self.users_url, str(username))
         resp = requests.get(url, headers=self.headers)
-        # logger.debug("get_user_by_email response: %s" % resp.content+". Response code: %s" % resp.status_code)
+        # logger.debug("get_user_by_email response: %s" % resp.content+".
+        # Response code: %s" % resp.status_code)
         if not resp.json():
             logger.info("didnt find user: %s", logEncoding(resp.content))
         else:
@@ -300,7 +307,8 @@ class GitlabClient(object):
         else:
             user_created = resp.json()
 
-#         logger.debug("create_user response: %s" % resp.content + ", Response code: %s" % resp.status_code)
+#         logger.debug("create_user response: %s" % resp.content + ",
+#         Response code: %s" % resp.status_code)
 
         return user_created
 
@@ -322,7 +330,8 @@ class GitlabClient(object):
         """
         Function removes a user from a gitlab project, using a given user id
         """
-        url = self.projects_url + '/' + str(project_id) + '/members/' + str(int(uid))
+        url = self.projects_url + '/' + \
+            str(project_id) + '/members/' + str(int(uid))
         return requests.delete(url, headers=self.headers)
 
     def list_users(self):
@@ -469,22 +478,28 @@ class GitlabClient(object):
 
     def get_repository_files(self, project_id):
         """
-        Function retrieves all files for a given repository by project id (In ICE projectId is 1:1 with repo_id)
+        Function retrieves all files for a given repository by project id
+        (In VVP projectId is 1:1 with repo_id)
         GET /projects/:id/repository/tree
         Doc: https://docs.gitlab.com/ce/api/repositories.html
         """
-#         endpoint = self.url+self.BASE_CTX+"projects/"+str(project_id)+"/repository/tree"
+#         endpoint = self.url+self.BASE_CTX+"projects/"+str(project_id)+
+#         "/repository/tree"
         endpoint = "%s%sprojects/%s/repository/tree" % (
             self.url, self.BASE_CTX, str(project_id))
         logger.debug("get_repository_files endpoint=" + endpoint)
         resp = requests.get(endpoint, headers=self.headers)
 
-        if resp.status_code == 404 and resp.json()['message'] == '404 Tree Not Found':
-            # When no initial commit has been created and there are no files in the repo, the
-            # response is not an empty list but "404 Tree Not Found." Intercept this and return
+        if resp.status_code == 404 and resp.json()['message'] == \
+                '404 Tree Not Found':
+            # When no initial commit has been created and there are
+            # no files in the repo, the response is not an empty list
+            # but "404 Tree Not Found." Intercept this and return
             # empty list instead.
-            logger.info("get_repository_files: Looks like there are no associated file to project %s. Response : %s, status = %s", logEncoding(
-                project_id), logEncoding(resp.content), 404)
+            logger.info("get_repository_files: Looks like there are" +
+                        "no associated file to project %s." +
+                        "Response : %s, status = %s", logEncoding(
+                            project_id), logEncoding(resp.content), 404)
             return []
 
         return resp.json()
@@ -534,8 +549,9 @@ class GitlabClient(object):
         https://docs.gitlab.com/ce/api/projects.html
         """
         parameters = dict({k: kwargs[k] for k in kwargs if k in [
-            'push_events', 'issues_events', 'merge_requests_events', 'tag_push_events',
-            'note_events', 'build_events', 'pipeline_events', 'wiki_events',
+            'push_events', 'issues_events', 'merge_requests_events',
+            'tag_push_events', 'note_events', 'build_events',
+            'pipeline_events', 'wiki_events',
             'enable_ssl_verification', 'token']},
             id=project_id,
             url=url,
@@ -544,13 +560,15 @@ class GitlabClient(object):
         if hook_id is None:
             # New hook
             endpoint = "%s/api/v3/projects/%s/hooks" % (self.url, project_id)
-            return requests.post(endpoint, json=parameters, headers=self.headers)
+            return requests.post(endpoint, json=parameters,
+                                 headers=self.headers)
         else:
             # Update existing hook
             parameters['hook_id'] = hook_id
             endpoint = "%s/api/v3/projects/%s/hooks/%s" % (
                 self.url, project_id, hook_id)
-            return requests.put(endpoint, json=parameters, headers=self.headers)
+            return requests.put(endpoint, json=parameters,
+                                headers=self.headers)
 
     def delete_project_hook(self, project_id, hook_id):
         endpoint = "%s/api/v3/projects/%s/hooks/%s" % (

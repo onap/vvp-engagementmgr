@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,12 +36,14 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-from mocks.gitlab_mock.services.gitlab_files_service import GitlabFilesResultsSvc
+from mocks.gitlab_mock.services.gitlab_files_service import \
+    GitlabFilesResultsSvc
 
 
 class GitlabFilesResultsREST():
 
     def get(self, vf):
         mock_gitlab_files_results_svc_obj = GitlabFilesResultsSvc()
-        response = mock_gitlab_files_results_svc_obj.retrieve_files_for_vf_repo()
+        response = mock_gitlab_files_results_svc_obj.\
+            retrieve_files_for_vf_repo()
         return response

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -38,8 +38,10 @@
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
 from apscheduler.schedulers.background import BackgroundScheduler
 from django.conf import settings
-from engagementmanager.bus.messages.daily_scheduled_message import DailyScheduledMessage
-from engagementmanager.bus.messages.hourly_scheduled_message import HourlyScheduledMessage
+from engagementmanager.bus.messages.daily_scheduled_message\
+    import DailyScheduledMessage
+from engagementmanager.bus.messages.hourly_scheduled_message\
+    import HourlyScheduledMessage
 from engagementmanager.service.logging_service import LoggingServiceFactory
 
 logger = LoggingServiceFactory.get_logger()
@@ -57,11 +59,13 @@ class ScheduledJobs:
 
     def setup_daily_job(self):
         self.background_scheduler.add_job(self.__daily_scheduled_job, 'cron',
-                                          hour=settings.DAILY_SCHEDULED_JOB_HOUR, day='*')
+                                          hour=settings.
+                                          DAILY_SCHEDULED_JOB_HOUR, day='*')
 
     def __hourly_scheduled_job(self):
         logger.debug("Hourly scheduled job is about to start.")
         self.bus_service.send_message(HourlyScheduledMessage())
 
     def setup_hourly_job(self):
-        self.background_scheduler.add_job(self.__hourly_scheduled_job, 'cron', minute=0, hour='*', day='*')
+        self.background_scheduler.add_job(
+            self.__hourly_scheduled_job, 'cron', minute=0, hour='*', day='*')

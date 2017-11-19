@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -40,7 +40,8 @@ from abc import ABCMeta
 from rest_framework.views import APIView
 from engagementmanager.decorator.class_decorator import classDecorator
 from engagementmanager.decorator.log_func_entry import logFuncEntry
-from engagementmanager.service.authorization_service import AuthorizationService
+from engagementmanager.service.authorization_service import \
+    AuthorizationService
 from engagementmanager.service.logging_service import LoggingServiceFactory
 
 

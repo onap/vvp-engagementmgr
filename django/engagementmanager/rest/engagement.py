@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -51,8 +51,8 @@ from engagementmanager.serializers import VFModelSerializer, \
     EngagementStatusModelSerializer
 from engagementmanager.service.authorization_service import Permissions
 from engagementmanager.service import engagement_service as eng_svc
-from engagementmanager.utils.constants import Roles, RecentEngagementActionType, \
-    CheckListState, EngagementStage
+from engagementmanager.utils.constants import Roles, \
+    RecentEngagementActionType, CheckListState, EngagementStage
 from engagementmanager.utils.request_data_mgr import request_data_mgr
 from engagementmanager.utils.validator import logEncoding
 from rest_framework.response import Response
@@ -69,14 +69,17 @@ class ExpandedEngByUser(VvpApiView):
         if ('stage' not in data or not data['stage']
             or 'keyword' not in data
             or 'offset' not in data or int(data['offset']) < 0
-                or 'limit' not in data or not data['limit'] or (data['limit'] < 1)):
-            msg = "GetExpandedEngByUser - get request: one of the parameters is missing or invalid."
+                or 'limit' not in data or not data['limit'] or
+                (data['limit'] < 1)):
+            msg = "GetExpandedEngByUser - get request: one of the parameters \
+            is missing or invalid."
             self.logger.error(msg)
             msg = "Action was failed due to bad request."
             return Response(msg, status=HTTP_400_BAD_REQUEST)
         user = request_data_mgr.get_user()
         data = eng_svc.get_dashboard_expanded_engs(
-            data['stage'], data['keyword'], data['offset'], data['limit'], user)
+            data['stage'], data['keyword'], data['offset'],
+            data['limit'], user)
         return Response(data)
 
 
@@ -95,7 +98,8 @@ class ExportEngagements(VvpApiView):
         stageParam = request.GET['stage']
         keywordParam = request.GET['keyword']
 
-        # data, status = eng_svc.get_dashboard_expanded_engs(stageParam, keywordParam, 0, sys.maxint, user)
+        # data, status = eng_svc.get_dashboard_expanded_engs
+        # (stageParam, keywordParam, 0, sys.maxint, user)
         vfs, deployment_targets = eng_svc.get_expanded_engs_for_export(
             stageParam, keywordParam, user)
 
@@ -103,92 +107,96 @@ class ExportEngagements(VvpApiView):
         # Create 'Validation Details' sheet and fill it up with required data:
         validationWorkSheet = workbook.create_sheet()
         validationWorkSheet.title = 'Validation Details'
-        headlines = [WriteOnlyCell(validationWorkSheet, value=u"EId"),
-                     WriteOnlyCell(validationWorkSheet, value=u"Engagement"),
-                     WriteOnlyCell(validationWorkSheet, value=u"Reviewer"),
-                     WriteOnlyCell(
-                         validationWorkSheet, value=u"Peer reviewer"),
-                     WriteOnlyCell(validationWorkSheet, value=u"VFC"),
-                     WriteOnlyCell(validationWorkSheet, value=u"VFC #"),
-                     WriteOnlyCell(validationWorkSheet, value=u"Started"),
-                     WriteOnlyCell(validationWorkSheet, value=u"Vendor"),
-                     WriteOnlyCell(validationWorkSheet, value=u"AIC Version"),
-                     WriteOnlyCell(
-                         validationWorkSheet, value=u"ECOMP Release"),
-                     WriteOnlyCell(validationWorkSheet, value=u"Validate"),
-                     WriteOnlyCell(validationWorkSheet, value=u"Completed"),
-                     WriteOnlyCell(validationWorkSheet, value=u"Stage"),
-                     WriteOnlyCell(
-                         validationWorkSheet, value=u"Heat Pre-validated"),
-                     WriteOnlyCell(validationWorkSheet, value=u"Image Scan"),
-                     WriteOnlyCell(
-                         validationWorkSheet, value=u"AIC Instantiated"),
-                     WriteOnlyCell(
-                         validationWorkSheet, value=u"ASDC Onboarded"),
-                     WriteOnlyCell(
-                         validationWorkSheet, value=u"Overall Progress in %"),
-                     WriteOnlyCell(
-                         validationWorkSheet, value=u"Target Completion Date"),
-                     WriteOnlyCell(validationWorkSheet, value=u"Status")]
+        headlines = [
+            WriteOnlyCell(validationWorkSheet, value=u"EId"),
+            WriteOnlyCell(validationWorkSheet, value=u"Engagement"),
+            WriteOnlyCell(validationWorkSheet, value=u"Reviewer"),
+            WriteOnlyCell(
+                validationWorkSheet, value=u"Peer reviewer"),
+            WriteOnlyCell(validationWorkSheet, value=u"VFC"),
+            WriteOnlyCell(validationWorkSheet, value=u"VFC #"),
+            WriteOnlyCell(validationWorkSheet, value=u"Started"),
+            WriteOnlyCell(validationWorkSheet, value=u"Vendor"),
+            WriteOnlyCell(validationWorkSheet, value=u"AIC Version"),
+            WriteOnlyCell(
+                validationWorkSheet, value=u"ECOMP Release"),
+            WriteOnlyCell(validationWorkSheet, value=u"Validate"),
+            WriteOnlyCell(validationWorkSheet, value=u"Completed"),
+            WriteOnlyCell(validationWorkSheet, value=u"Stage"),
+            WriteOnlyCell(
+                validationWorkSheet, value=u"Heat Pre-validated"),
+            WriteOnlyCell(validationWorkSheet, value=u"Image Scan"),
+            WriteOnlyCell(
+                validationWorkSheet, value=u"AIC Instantiated"),
+            WriteOnlyCell(
+                validationWorkSheet, value=u"ASDC Onboarded"),
+            WriteOnlyCell(
+                validationWorkSheet, value=u"Overall Progress in %"),
+            WriteOnlyCell(
+                validationWorkSheet, value=u"Target Completion Date"),
+            WriteOnlyCell(validationWorkSheet, value=u"Status")]
         for headline in headlines:
             headline.font = Font(name='Courier', size=16, bold=True)
         validationWorkSheet.append(headlines)
 
         for vf in vfs:
-            validationWorkSheet.append([smart_str(vf["engagement__engagement_manual_id"]),
-                                        smart_str(vf["vf__name"]),
-                                        smart_str(
-                                            vf["vf_engagement__reviewer"]),
-                                        smart_str(
-                                            vf["vf_engagement__peer_reviewer"]),
-                                        smart_str(vf["vfcs"]),
-                                        smart_str(vf["vfcs__number"]),
-                                        smart_str(
-                                            vf["engagement__started_state_time"]),
-                                        smart_str(vf["vendor__name"]),
-                                        smart_str(
-                                            vf["deployment_target__version"]),
-                                        smart_str(vf["ecomp_release__name"]),
-                                        smart_str(
-                                            vf["engagement__validated_time"]),
-                                        smart_str(
-                                            vf["engagement__completed_time"]),
-                                        smart_str(
-                                            vf["engagement__engagement_stage"]),
-                                        smart_str(
-                                            vf["engagement__heat_validated_time"]),
-                                        smart_str(
-                                            vf["engagement__image_scan_time"]),
-                                        smart_str(
-                                            vf["engagement__aic_instantiation_time"]),
-                                        smart_str(
-                                            vf["engagement__asdc_onboarding_time"]),
-                                        smart_str(vf["engagement__progress"]),
-                                        smart_str(
-                                            vf["engagement__target_completion_date"]),
-                                        smart_str(
-                                            vf["engagement__latest_status"])
-                                        ])
+            validationWorkSheet.append(
+                [smart_str(vf["engagement__engagement_manual_id"]),
+                 smart_str(vf["vf__name"]),
+                 smart_str(
+                    vf["vf_engagement__reviewer"]),
+                 smart_str(
+                    vf["vf_engagement__peer_reviewer"]),
+                 smart_str(vf["vfcs"]),
+                 smart_str(vf["vfcs__number"]),
+                 smart_str(
+                    vf["engagement__started_state_time"]),
+                 smart_str(vf["vendor__name"]),
+                 smart_str(
+                    vf["deployment_target__version"]),
+                 smart_str(vf["ecomp_release__name"]),
+                 smart_str(
+                    vf["engagement__validated_time"]),
+                 smart_str(
+                    vf["engagement__completed_time"]),
+                 smart_str(
+                    vf["engagement__engagement_stage"]),
+                 smart_str(
+                    vf["engagement__heat_validated_time"]),
+                 smart_str(
+                    vf["engagement__image_scan_time"]),
+                 smart_str(
+                    vf["engagement__aic_instantiation_time"]),
+                 smart_str(
+                    vf["engagement__asdc_onboarding_time"]),
+                 smart_str(vf["engagement__progress"]),
+                 smart_str(
+                    vf["engagement__target_completion_date"]),
+                 smart_str(
+                    vf["engagement__latest_status"])
+                 ])
 
         # Create 'Overview' sheet and fill it up with required data:
         overviewWorkSheet = workbook.create_sheet()
         overviewWorkSheet.title = 'Overview'
-        headlines = [WriteOnlyCell(validationWorkSheet, value=u"AIC/ECOMP"),
-                     WriteOnlyCell(
-                         validationWorkSheet, value=u"Active Count of Engagement"),
-                     WriteOnlyCell(
-                         validationWorkSheet, value=u"Sum of Nr of VFs"),
-                     WriteOnlyCell(
-                         validationWorkSheet, value=u"Intake Count of Engagement"),
-                     WriteOnlyCell(
-                         validationWorkSheet, value=u"Sum of Nr of VFs"),
-                     WriteOnlyCell(
-                         validationWorkSheet, value=u"Completed Count of Engagement"),
-                     WriteOnlyCell(
-                         validationWorkSheet, value=u"Sum of Nr of VFs"),
-                     WriteOnlyCell(
-                         validationWorkSheet, value=u"Total Count of Engagement"),
-                     WriteOnlyCell(validationWorkSheet, value=u"Total Sum of Nr of VFs")]
+        headlines = [
+            WriteOnlyCell(validationWorkSheet, value=u"AIC/ECOMP"),
+            WriteOnlyCell(
+                validationWorkSheet, value=u"Active Count of Engagement"),
+            WriteOnlyCell(
+                validationWorkSheet, value=u"Sum of Nr of VFs"),
+            WriteOnlyCell(
+                validationWorkSheet, value=u"Intake Count of Engagement"),
+            WriteOnlyCell(
+                validationWorkSheet, value=u"Sum of Nr of VFs"),
+            WriteOnlyCell(
+                validationWorkSheet, value=u"Completed Count of Engagement"),
+            WriteOnlyCell(
+                validationWorkSheet, value=u"Sum of Nr of VFs"),
+            WriteOnlyCell(
+                validationWorkSheet, value=u"Total Count of Engagement"),
+            WriteOnlyCell(validationWorkSheet,
+                          value=u"Total Sum of Nr of VFs")]
         for headline in headlines:
             headline.font = Font(name='Courier', size=16, bold=True)
         overviewWorkSheet.append(headlines)
@@ -196,10 +204,12 @@ class ExportEngagements(VvpApiView):
         for deployment_target in deployment_targets:
             overviewWorkSheet.append(deployment_target)
 
-        # We are using HttpResponse and not Rest Response since we couldnt find
+        # We are using HttpResponse and not
+        # Rest Response since we couldnt find
         # support for content diposition
         response = HttpResponse(
-            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            content_type='application/vnd.openxmlformats-officedocument.\
+            spreadsheetml.sheet')
         response['Content-Disposition'] = 'attachment; filename=D2ICE.xlsx'
 
         workbook.save(response)
@@ -215,12 +225,15 @@ class GetEngByUser(VvpApiView):
         user = request_data_mgr.get_user()
         vf_list = []
 
-        engStageList = [EngagementStage.Intake.name, EngagementStage.Active.name,
-                        EngagementStage.Validated.name, EngagementStage.Completed.name]  # @UndefinedVariable
+        engStageList = [
+            EngagementStage.Intake.name, EngagementStage.Active.name,
+            EngagementStage.Validated.name, EngagementStage.Completed.name]
 
         # @UndefinedVariable
-        if (user.role.name == Roles.admin.name or user.role.name == Roles.admin_ro.name):
-            vf_list = VF.objects.filter(engagement__engagement_stage__in=engStageList)\
+        if (user.role.name == Roles.admin.name or
+                user.role.name == Roles.admin_ro.name):
+            vf_list = VF.objects.filter(
+                engagement__engagement_stage__in=engStageList)\
                 .distinct().order_by('engagement__engagement_manual_id')\
                 .annotate(
                     engagement_manual_id=F('engagement__engagement_manual_id'),
@@ -238,8 +251,10 @@ class GetEngByUser(VvpApiView):
                     'engagement_stage',
             )
         else:
-            vf_list = VF.objects.filter(engagement__engagement_stage__in=engStageList).\
-                filter(Q(engagement__engagement_team__uuid=user.uuid)).distinct().order_by('engagement__engagement_manual_id')\
+            vf_list = VF.objects.filter(
+                engagement__engagement_stage__in=engStageList).\
+                filter(Q(engagement__engagement_team__uuid=user.uuid))\
+                .distinct().order_by('engagement__engagement_manual_id')\
                 .annotate(
                     engagement_manual_id=F('engagement__engagement_manual_id'),
                     engagement_uuid=F('engagement__uuid'),
@@ -282,7 +297,8 @@ class SingleEngByUser(VvpApiView):
         engagement = None
 
         # @UndefinedVariable
-        if (user.role.name == Roles.admin.name or user.role.name == Roles.admin_ro.name):
+        if (user.role.name == Roles.admin.name or
+                user.role.name == Roles.admin_ro.name):
             engagement = Engagement.objects.get(uuid=eng_uuid)
         else:
             try:
@@ -292,7 +308,7 @@ class SingleEngByUser(VvpApiView):
                 try:
                     engagement = Engagement.objects.get(
                         engagement_team__uuid=user.uuid, uuid=eng_uuid)
-                except:
+                except BaseException:
                     msg = "Eng for the User with uuid " + \
                         user.uuid + " doesn't exist."
                     self.logger.error(msg)
@@ -300,7 +316,8 @@ class SingleEngByUser(VvpApiView):
                     return Response(msg, status=HTTP_500_INTERNAL_SERVER_ERROR)
         vfObj = VF.objects.get(engagement__uuid=engagement.uuid)
         eng_svc.update_or_insert_to_recent_engagements(
-            user.uuid, vfObj, RecentEngagementActionType.NAVIGATED_INTO_ENGAGEMENT.name)  # @UndefinedVariable
+            user.uuid, vfObj, RecentEngagementActionType.
+            NAVIGATED_INTO_ENGAGEMENT.name)
 
         vfList = VF.objects.filter(engagement__uuid=engagement.uuid)
         formated_vf_list = VFModelSerializer(vfList, many=True).data
@@ -342,11 +359,12 @@ class StarredEngagements(VvpApiView):
     @auth(Permissions.star_an_engagement)
     def get(self, request):
         user = request_data_mgr.get_user()
-        if (user == None):
+        if (not user):
             msg = "User with uuid " + user.uuid + \
                 " doesn't exist. Can't fetch their engagements"
             self.logger.error(logEncoding(msg))
-            msg = "You are not registered as a user, please sign up in order to perform this action"
+            msg = "You are not registered as a user, please sign\
+             up in order to perform this action"
             return Response(msg, status=HTTP_400_BAD_REQUEST)
 
         vf_list = eng_svc.vf_retreiver(user, True)
@@ -360,17 +378,29 @@ class StarredEngagements(VvpApiView):
         for vf_data in vf_list:
 
             # @UndefinedVariable
-            if (user.role.name == Roles.el.name or user.role.name == Roles.admin.name or user.role.name == Roles.admin_ro.name):
+            if (
+                    user.role.name == Roles.el.name or
+                    user.role.name == Roles.admin.name or
+                    user.role.name == Roles.admin_ro.name):
                 if (vf_data['engagement__reviewer__uuid'] == user.uuid):
-                    checklist_lists = Checklist.objects.filter(Q(engagement__uuid=vf_data['engagement__uuid']), Q(engagement__reviewer=user), ~Q(
-                        state=CheckListState.archive.name)).values('uuid', 'name', 'state', 'owner__uuid')  # @UndefinedVariable
+                    checklist_lists = Checklist.objects.filter(
+                        Q(engagement__uuid=vf_data['engagement__uuid']),
+                        Q(engagement__reviewer=user), ~Q(
+                            state=CheckListState.archive.name)).values(
+                                'uuid', 'name', 'state', 'owner__uuid')
                 # @UndefinedVariable
-                elif (user.role.name == Roles.admin.name or user.role.name == Roles.admin_ro.name):
-                    checklist_lists = Checklist.objects.filter(Q(engagement__uuid=vf_data['engagement__uuid']), ~Q(
-                        state=CheckListState.archive.name)).values('uuid', 'name', 'state', 'owner__uuid')   # @UndefinedVariable
+                elif (user.role.name == Roles.admin.name or
+                      user.role.name == Roles.admin_ro.name):
+                    checklist_lists = Checklist.objects.filter(
+                        Q(engagement__uuid=vf_data['engagement__uuid']),
+                        ~Q(state=CheckListState.archive.name)).values(
+                        'uuid', 'name', 'state', 'owner__uuid')
                 else:
-                    checklist_lists = Checklist.objects.filter(Q(engagement__uuid=vf_data['engagement__uuid']), Q(owner=user), ~Q(
-                        state=CheckListState.archive.name)).values('uuid', 'name', 'state', 'owner__uuid')  # @UndefinedVariable
+                    checklist_lists = Checklist.objects.filter(
+                        Q(engagement__uuid=vf_data['engagement__uuid']),
+                        Q(owner=user), ~Q(
+                            state=CheckListState.archive.name)).values(
+                                'uuid', 'name', 'state', 'owner__uuid')
                 vf_data['checklists'] = checklist_lists
             else:
                 vf_data['checklists'] = None
@@ -391,11 +421,12 @@ class StarredEngagements(VvpApiView):
             return Response(msg, status=HTTP_400_BAD_REQUEST)
 
         eng_uuid = data['engagement_uuid']
-        if (user == None):
+        if (not user):
             msg = "User with uuid " + user.uuid + \
                 " doesn't exist. Can't fetch their engagements"
             self.logger.error(logEncoding(msg))
-            msg = "You are not registered as a user, please sign up in order to perform this action"
+            msg = "You are not registered as a user, please sign up in order \
+            to perform this action"
             return Response(msg, status=HTTP_400_BAD_REQUEST)
 
         msg = eng_svc.star_an_engagement(user, eng_uuid)
@@ -409,11 +440,12 @@ class GetRecentEngagements(VvpApiView):
     @auth(Permissions.eng_membership)
     def get(self, request, format=None, **kwargs):
         user = request_data_mgr.get_user()
-        if (user == None):
+        if (not user):
             msg = "User with uuid " + user.uuid + \
                 " doesn't exist. Can't fetch their engagements"
             self.logger.error(logEncoding(msg))
-            msg = "You are not registered as a user, please sign up in order to perform this action"
+            msg = "You are not registered as a user, please sign up in order \
+            to perform this action"
             return Response(msg, status=HTTP_400_BAD_REQUEST)
 
         stared_list = eng_svc.vf_retreiver(user, True)
@@ -431,17 +463,27 @@ class GetRecentEngagements(VvpApiView):
             if (idx == recentList):
                 break
             # @UndefinedVariable
-            if (user.role.name == Roles.el.name or user.role.name == Roles.admin.name or user.role.name == Roles.admin_ro.name):
+            if (user.role.name == Roles.el.name or
+                user.role.name == Roles.admin.name or
+                    user.role.name == Roles.admin_ro.name):
                 if (vf_data['vf__engagement__reviewer__uuid'] == user.uuid):
-                    checklist_lists = Checklist.objects.filter(Q(engagement__uuid=vf_data['vf__engagement__uuid']), Q(engagement__reviewer=user), ~Q(
-                        state=CheckListState.archive.name)).values('uuid', 'name', 'state', 'owner__uuid')  # @UndefinedVariable
+                    checklist_lists = Checklist.objects.filter(
+                        Q(engagement__uuid=vf_data['vf__engagement__uuid']),
+                        Q(engagement__reviewer=user), ~Q(
+                            state=CheckListState.archive.name)).values(
+                                'uuid', 'name', 'state', 'owner__uuid')
                 # @UndefinedVariable
-                elif (user.role.name == Roles.admin.name or user.role.name == Roles.admin_ro.name):
-                    checklist_lists = Checklist.objects.filter(Q(engagement__uuid=vf_data['vf__engagement__uuid']), ~Q(
-                        state=CheckListState.archive.name)).values('uuid', 'name', 'state', 'owner__uuid')   # @UndefinedVariable
+                elif (user.role.name == Roles.admin.name or
+                      user.role.name == Roles.admin_ro.name):
+                    checklist_lists = Checklist.objects.filter(
+                        Q(engagement__uuid=vf_data['vf__engagement__uuid']),
+                        ~Q(state=CheckListState.archive.name)).values(
+                            'uuid', 'name', 'state', 'owner__uuid')
                 else:
-                    checklist_lists = Checklist.objects.filter(Q(engagement__uuid=vf_data['vf__engagement__uuid']), Q(owner=user), ~Q(
-                        state=CheckListState.archive.name)).values('uuid', 'name', 'state', 'owner__uuid')  # @UndefinedVariable
+                    checklist_lists = Checklist.objects.filter(
+                        Q(engagement__uuid=vf_data['vf__engagement__uuid']),
+                        Q(owner=user), ~Q(state=CheckListState.archive.name))\
+                        .values('uuid', 'name', 'state', 'owner__uuid')
                 vf_data['checklists'] = checklist_lists
             else:
                 vf_data['checklists'] = None
@@ -457,7 +499,8 @@ class EngagementProgressBar(VvpApiView):
         data = request.data
         msg = "OK"
 
-        if ('progress' not in data or not data['progress'] or data['progress'] == ''):
+        if ('progress' not in data or not data['progress'] or
+                data['progress'] == ''):
             msg = "progress parameter is missing or empty"
             self.logger.error(msg)
             msg = "Action has failed due to bad request."
@@ -472,7 +515,8 @@ class EngagementProgressBar(VvpApiView):
         eng = self.get_entity(Engagement, request_data_mgr.get_eng_uuid())
         msg = "OK"
 
-        if ('target_date' not in data or not data['target_date'] or data['target_date'] == ''):
+        if ('target_date' not in data or not data['target_date'] or
+                data['target_date'] == ''):
             msg = "target_date parameter is missing or empty"
             self.logger.error(msg)
             msg = "Action has failed due to bad request."
@@ -494,7 +538,8 @@ class ChangeTargetLabEntryDate(VvpApiView):
         eng = self.get_entity(Engagement, request_data_mgr.get_eng_uuid())
         msg = "OK"
         vf = VF.objects.get(engagement__uuid=eng.uuid)
-        if ('target_date' not in data or not data['target_date'] or data['target_date'] == ''):
+        if ('target_date' not in data or not data['target_date']
+                or data['target_date'] == ''):
             msg = "target_date parameter is missing or empty"
             self.logger.error(msg)
             msg = "Action has failed due to bad request."
@@ -535,11 +580,13 @@ class Status(VvpApiView):
         if not description:
             msg = "Not description sent"
             self.logger.error(msg)
-            msg = "You are not registered as a user, please sign up in order to perform this action"
+            msg = "You are not registered as a user, please sign \
+            up in order to perform this action"
             return Response(msg, status=HTTP_400_BAD_REQUEST)
 
         # @UndefinedVariable
-        if (user.role.name != Roles.admin.name and user.role.name != Roles.el.name):
+        if (user.role.name != Roles.admin.name and
+                user.role.name != Roles.el.name):
             msg = "User not authorized"
             self.logger.error(msg)
             msg = "Internal error."
@@ -569,7 +616,8 @@ class Status(VvpApiView):
             return Response(msg, status=HTTP_400_BAD_REQUEST)
 
         # @UndefinedVariable
-        if (user.role.name != Roles.admin.name and user.role.name != Roles.el.name):
+        if (user.role.name != Roles.admin.name and
+                user.role.name != Roles.el.name):
             msg = "User not authorized"
             self.logger.error(msg)
             msg = "Internal error."
@@ -598,7 +646,8 @@ class EngagementOps(VvpApiView):
                 user = request_data_mgr.get_user()
                 created_eng_status = eng_svc.insert_engagement_status(
                     user, data['status'], engagement)
-                return Response(EngagementStatusModelSerializer(created_eng_status).data)
+                return Response(
+                    EngagementStatusModelSerializer(created_eng_status).data)
             else:
                 return Response()
 
@@ -613,7 +662,7 @@ class EngagementTeamUsers(VvpApiView):
         data = request.data
         if (data['user_uuid']):
             requested_user_uuid = data['user_uuid']
-        if (eng_uuid is not None and user is not None and data['user_uuid'] is not None):
+        if (eng_uuid and user and data['user_uuid']):
             eng_svc.remove_user_from_engagement_team(
                 eng_uuid, user, requested_user_uuid)
         return Response(status=HTTP_204_NO_CONTENT)

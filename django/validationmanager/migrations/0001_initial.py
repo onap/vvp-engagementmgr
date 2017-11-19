@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -58,11 +58,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ActiveJob',
             fields=[
-                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('uuid', models.UUIDField(
+                    default=uuid.uuid4, editable=False,
+                    primary_key=True, serialize=False)),
                 ('url', models.URLField(
-                    help_text=b'            The jenkins job URL, which should uniquely identify one\n            execution of the TestEngine.')),
-                ('checklist', models.ForeignKey(help_text=b'            The checklist associated with this job.',
-                                                on_delete=django.db.models.deletion.CASCADE, to='engagementmanager.Checklist')),
+                    help_text=b'            The jenkins job URL, which should \
+                    uniquely identify one\n \
+                                execution of the TestEngine.')),
+                ('checklist', models.ForeignKey(
+                    help_text=b'            \
+                The checklist associated with this job.',
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='engagementmanager.Checklist')),
             ],
             options={
                 'db_table': 'ice_vm_active_job',
@@ -71,10 +78,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ValidationTest',
             fields=[
-                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('uuid', models.UUIDField(default=uuid.uuid4,
+                                          editable=False,
+                                          primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=128)),
                 ('line_items', models.ManyToManyField(
-                    to='engagementmanager.ChecklistLineItem', verbose_name=b'Satisfies Line Items')),
+                    to='engagementmanager.ChecklistLineItem',
+                    verbose_name=b'Satisfies Line Items')),
             ],
             options={
                 'db_table': 'ice_vm_validation_test',

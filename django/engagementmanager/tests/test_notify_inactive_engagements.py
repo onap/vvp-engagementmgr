@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -44,9 +44,11 @@ import mock
 from engagementmanager.tests.test_base_entity import TestBaseEntity
 
 from engagementmanager.apps import bus_service
-from engagementmanager.bus.messages.daily_scheduled_message import DailyScheduledMessage
+from engagementmanager.bus.messages.daily_scheduled_message \
+    import DailyScheduledMessage
 from engagementmanager.models import Vendor, Engagement, Activity, Notification
-from engagementmanager.utils.constants import EngagementStage, ActivityType, Constants
+from engagementmanager.utils.constants import \
+    EngagementStage, ActivityType, Constants
 from django.utils import timezone
 
 
@@ -96,22 +98,33 @@ class TestNotifyInactiveEngagements(TestBaseEntity):
 
     def childSetup(self):
 
-        self.createVendors([Constants.service_provider_company_name, 'Amdocs', 'Other'])
+        self.createVendors(
+            [Constants.service_provider_company_name, 'Amdocs', 'Other'])
         self.createDefaultRoles()
 
         # Create a user with role el
-        self.el_user = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.randomGenerator("main-vendor-email"),
-            '55501000199', 'el user', self.el, True)
+        self.el_user = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
+            '55501000199',
+            'el user',
+            self.el,
+            True)
         # For negative tests
-        self.user = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.randomGenerator("main-vendor-email"),
-            '55501000199', 'user', self.standard_user, True)
+        self.user = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
+            '55501000199',
+            'user',
+            self.standard_user,
+            True)
         self.urlStr = self.urlPrefix + "engagement/@eng_uuid/checklist/new/"
         self.data = dict()
         self.template = self.creator.createDefaultCheckListTemplate()
-#         self.engagement = Engagement.objects.create(uuid='just-a-fake-uuid',engagement_stage='Validation')
-        self.engagement = self.creator.createEngagement(uuid4(), 'Validation', None)
+        self.engagement = self.creator.createEngagement(
+            uuid4(), 'Validation', None)
         self.engagement.reviewer = self.el_user
         self.engagement.peer_reviewer = self.el_user
         self.engagement.engagement_team.add(self.user)
@@ -121,11 +134,19 @@ class TestNotifyInactiveEngagements(TestBaseEntity):
         self.engagement.save()
         self.vendor = Vendor.objects.get(name='Other')
         self.deploymentTarget = self.creator.createDeploymentTarget(
-            self.randomGenerator("randomString"), self.randomGenerator("randomString"))
-        self.vf = self.creator.createVF(self.randomGenerator("randomString"),
-                                        self.engagement, self.deploymentTarget, False, self.vendor)
+            self.randomGenerator("randomString"),
+            self.randomGenerator("randomString"))
+        self.vf = self.creator.createVF(
+            self.randomGenerator("randomString"),
+            self.engagement,
+            self.deploymentTarget,
+            False,
+            self.vendor)
 
-    @mock.patch('validationmanager.em_integration.vm_api.get_list_of_repo_files_callback', with_files)
+    @mock.patch(
+        'validationmanager.em_integration.vm_api.' +
+        'get_list_of_repo_files_callback',
+        with_files)
     def testOnlyNotActiveEngagementsAreNotEffected(self):
         self.engagement.engagement_stage = EngagementStage.Archived.name
         self.engagement.save()
@@ -135,31 +156,49 @@ class TestNotifyInactiveEngagements(TestBaseEntity):
 
         self.assertEqual(updated_engagement.is_with_files, False)
 
-    @mock.patch('engagementmanager.bus.handlers.daily_notify_inactive_engagements_handler.DailyNotifyInactiveEngagementsHandler.get_max_empty_date', mocked_max_empty_date_negative)
-    @mock.patch('validationmanager.em_integration.vm_api.get_list_of_repo_files_callback', no_files)
+    @mock.patch(
+        'engagementmanager.bus.handlers.' +
+        'daily_notify_inactive_engagements_handler.' +
+        'DailyNotifyInactiveEngagementsHandler.get_max_empty_date',
+        mocked_max_empty_date_negative)
+    @mock.patch(
+        'validationmanager.em_integration.' +
+        'vm_api.get_list_of_repo_files_callback',
+        no_files)
     def testEngagementsWithouthFilesOlderThan30DaysAreArchive(self):
         bus_service.send_message(DailyScheduledMessage())
         updated_engagement = Engagement.objects.get(uuid=self.engagement.uuid)
 
         self.assertEqual(updated_engagement.is_with_files, False)
-        self.assertEqual(updated_engagement.engagement_stage, EngagementStage.Archived.name)
+        self.assertEqual(updated_engagement.engagement_stage,
+                         EngagementStage.Archived.name)
 
-    @mock.patch('validationmanager.em_integration.vm_api.get_list_of_repo_files_callback', no_files)
+    @mock.patch(
+        'validationmanager.em_integration.vm_api.' +
+        'get_list_of_repo_files_callback',
+        no_files)
     def testEngagementsWithouthFilesYoungerThan30DaysNotArchive(self):
         bus_service.send_message(DailyScheduledMessage())
         updated_engagement = Engagement.objects.get(uuid=self.engagement.uuid)
 
         self.assertEqual(updated_engagement.is_with_files, False)
-        self.assertEqual(updated_engagement.engagement_stage, EngagementStage.Active.name)
+        self.assertEqual(updated_engagement.engagement_stage,
+                         EngagementStage.Active.name)
 
-    @mock.patch('validationmanager.em_integration.vm_api.get_list_of_repo_files_callback', no_files)
+    @mock.patch(
+        'validationmanager.em_integration.vm_api.' +
+        'get_list_of_repo_files_callback',
+        no_files)
     def testEngagementsWithouthFilesIsNotMarked(self):
         bus_service.send_message(DailyScheduledMessage())
         updated_engagement = Engagement.objects.get(uuid=self.engagement.uuid)
 
         self.assertEqual(updated_engagement.is_with_files, False)
 
-    @mock.patch('validationmanager.em_integration.vm_api.get_list_of_repo_files_callback', with_files)
+    @mock.patch(
+        'validationmanager.em_integration.vm_api.' +
+        'get_list_of_repo_files_callback',
+        with_files)
     def testEngagementsWithoFilesNotSentEmail(self):
         bus_service.send_message(DailyScheduledMessage())
         new_activity = Activity.objects.filter(
@@ -168,8 +207,15 @@ class TestNotifyInactiveEngagements(TestBaseEntity):
         )
         self.assertEqual(0, len(new_activity))
 
-    @mock.patch('validationmanager.em_integration.vm_api.get_list_of_repo_files_callback', no_files)
-    @mock.patch('engagementmanager.bus.handlers.daily_notify_inactive_engagements_handler.DailyNotifyInactiveEngagementsHandler.get_days_delta', get_days_delta_plus_1)
+    @mock.patch(
+        'validationmanager.em_integration.vm_api.' +
+        'get_list_of_repo_files_callback',
+        no_files)
+    @mock.patch(
+        'engagementmanager.bus.handlers.' +
+        'daily_notify_inactive_engagements_handler.' +
+        'DailyNotifyInactiveEngagementsHandler.get_days_delta',
+        get_days_delta_plus_1)
     def testEngagementsWithoutFilesOneDayEmailNotSent(self):
         bus_service.send_message(DailyScheduledMessage())
         new_activity = Activity.objects.filter(
@@ -178,8 +224,15 @@ class TestNotifyInactiveEngagements(TestBaseEntity):
         )
         self.assertEqual(0, len(new_activity))
 
-    @mock.patch('validationmanager.em_integration.vm_api.get_list_of_repo_files_callback', no_files)
-    @mock.patch('engagementmanager.bus.handlers.daily_notify_inactive_engagements_handler.DailyNotifyInactiveEngagementsHandler.get_days_delta', get_days_delta_plus_7)
+    @mock.patch(
+        'validationmanager.em_integration.vm_api.' +
+        'get_list_of_repo_files_callback',
+        no_files)
+    @mock.patch(
+        'engagementmanager.bus.handlers.' +
+        'daily_notify_inactive_engagements_handler.' +
+        'DailyNotifyInactiveEngagementsHandler.get_days_delta',
+        get_days_delta_plus_7)
     def testEngagementsWithoutFiles7DayEmailSent(self):
         bus_service.send_message(DailyScheduledMessage())
         new_activity = Activity.objects.get(
@@ -193,8 +246,15 @@ class TestNotifyInactiveEngagements(TestBaseEntity):
         for notifcation in new_notifications:
             self.assertEqual(notifcation.is_sent, True)
 
-    @mock.patch('validationmanager.em_integration.vm_api.get_list_of_repo_files_callback', no_files)
-    @mock.patch('engagementmanager.bus.handlers.daily_notify_inactive_engagements_handler.DailyNotifyInactiveEngagementsHandler.get_days_delta', get_days_delta_plus_23)
+    @mock.patch(
+        'validationmanager.em_integration.' +
+        'vm_api.get_list_of_repo_files_callback',
+        no_files)
+    @mock.patch(
+        'engagementmanager.bus.handlers.' +
+        'daily_notify_inactive_engagements_handler.' +
+        'DailyNotifyInactiveEngagementsHandler.get_days_delta',
+        get_days_delta_plus_23)
     def testEngagementsWithoutFiles23DayEmailSent(self):
         bus_service.send_message(DailyScheduledMessage())
         new_activity = Activity.objects.get(
@@ -208,8 +268,15 @@ class TestNotifyInactiveEngagements(TestBaseEntity):
         for notifcation in new_notifications:
             self.assertEqual(notifcation.is_sent, True)
 
-    @mock.patch('validationmanager.em_integration.vm_api.get_list_of_repo_files_callback', no_files)
-    @mock.patch('engagementmanager.bus.handlers.daily_notify_inactive_engagements_handler.DailyNotifyInactiveEngagementsHandler.get_days_delta', get_days_delta_plus_29)
+    @mock.patch(
+        'validationmanager.em_integration.vm_api.' +
+        'get_list_of_repo_files_callback',
+        no_files)
+    @mock.patch(
+        'engagementmanager.bus.handlers.' +
+        'daily_notify_inactive_engagements_handler.' +
+        'DailyNotifyInactiveEngagementsHandler.get_days_delta',
+        get_days_delta_plus_29)
     def testEngagementsWithoutFiles29DayEmailSent(self):
         bus_service.send_message(DailyScheduledMessage())
         new_activity = Activity.objects.get(
@@ -223,7 +290,10 @@ class TestNotifyInactiveEngagements(TestBaseEntity):
         for notifcation in new_notifications:
             self.assertEqual(notifcation.is_sent, True)
 
-    @mock.patch('validationmanager.em_integration.vm_api.get_list_of_repo_files_callback', with_files)
+    @mock.patch(
+        'validationmanager.em_integration.' +
+        'vm_api.get_list_of_repo_files_callback',
+        with_files)
     def testEngagementsWithFilesIsMarked(self):
 
         bus_service.send_message(DailyScheduledMessage())

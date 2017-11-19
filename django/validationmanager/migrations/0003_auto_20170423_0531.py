@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -53,6 +53,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='validationtest',
             name='line_items',
-            field=models.ManyToManyField(to='engagementmanager.ChecklistLineItem', verbose_name='Satisfies Line Items'),
+            field=models.ManyToManyField(
+                to='engagementmanager.ChecklistLineItem',
+                verbose_name='Satisfies Line Items'),
         ),
     ]

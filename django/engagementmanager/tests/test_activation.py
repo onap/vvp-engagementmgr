@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -47,22 +47,43 @@ class ActivateTestCase(TestBaseEntity):
     def childSetup(self):  # Variables to use in this class.
         self.urlStr = self.urlPrefix + "signup/"
         self.createDefaultRoles()
-        uuid, vendor = self.creator.createVendor(Constants.service_provider_company_name)
+        uuid, vendor = self.creator.createVendor(
+            Constants.service_provider_company_name)
         self.activation_token_time = timezone.now()
-        self.activation_token_time = self.activation_token_time.replace(2012, 1, 2, 13, 48, 25)
-        print("This is the time that is going to be added to expiredTokenUser: " + str(self.activation_token_time))
-        self.user = self.creator.createUser(vendor, self.randomGenerator("email"), self.randomGenerator(
-            "randomNumber"), self.randomGenerator("randomString"), self.standard_user, False)
-        self.expiredTokenUser = self.creator.createUser(vendor, self.randomGenerator("email"), self.randomGenerator(
-            "randomNumber"), self.randomGenerator("randomString"), self.standard_user, False, activation_token_create_time=self.activation_token_time)
+        self.activation_token_time = self.activation_token_time.replace(
+            2012, 1, 2, 13, 48, 25)
+        print("This is the time that is going " +
+              "to be added to expiredTokenUser: " +
+              str(self.activation_token_time))
+        self.user = self.creator.createUser(
+            vendor,
+            self.randomGenerator("email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.standard_user,
+            False)
+        self.expiredTokenUser = self.creator.createUser(
+            vendor,
+            self.randomGenerator("email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.standard_user,
+            False,
+            activation_token_create_time=self.activation_token_time)
         print('-----------------------------------------------------')
         print('Created User:')
         print('UUID: ' + str(self.user.uuid))
         print('Full Name: ' + self.user.full_name)
         print('-----------------------------------------------------')
-        self.params = '{"company":"' + str(self.user.company) + '","full_name":"' + self.user.full_name + '","email":"' + self.user.email + '","phone_number":"' + self.user.phone_number + \
-            '","password":"' + self.user.user.password + '","regular_email_updates":"' + \
-            str(self.user.regular_email_updates) + '","is_service_provider_contact":"' + str(self.user.is_service_provider_contact) + '"}'
+        self.params = '{"company":"' + str(self.user.company) + \
+            '","full_name":"' + self.user.full_name + '","email":"' + \
+            self.user.email + '","phone_number":"' + \
+            self.user.phone_number + \
+            '","password":"' + self.user.user.password + \
+            '","regular_email_updates":"' + \
+            str(self.user.regular_email_updates) + \
+            '","is_service_provider_contact":"' + \
+            str(self.user.is_service_provider_contact) + '"}'
 
     def testActivation(self):
         print("\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
@@ -70,12 +91,15 @@ class ActivateTestCase(TestBaseEntity):
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n")
         for a in range(2):
             print("###############################################")
-        print("  Before activation, Current User's activation mode: " + str(self.user.user.is_active))
+        print("  Before activation, Current User's activation mode: " +
+              str(self.user.user.is_active))
         for a in range(2):
             print("###############################################")
         user_uuid = self.user.uuid
-        print(self.urlPrefix + 'activate/' + str(user_uuid) + '/' + str(self.user.user.activation_token))
-        print("Activating through the activate_user function: (simulating a GET request)")
+        print(self.urlPrefix + 'activate/' + str(user_uuid) +
+              '/' + str(self.user.user.activation_token))
+        print("Activating through the activate_user function: " +
+              "(simulating a GET request)")
         response = self.c.get(self.urlPrefix + 'activate/' + str(user_uuid) +
                               '/' + str(self.user.user.activation_token))
         print("Response: " + str(response.status_code))
@@ -84,11 +108,13 @@ class ActivateTestCase(TestBaseEntity):
             print("******")
         for a in range(2):
             print("###############################################")
-        print("   Current User's activation mode: " + str(self.user.user.is_active))
+        print("   Current User's activation mode: " +
+              str(self.user.user.is_active))
         for a in range(2):
             print("###############################################")
-        print("Current User's activation mode: " + str(self.user.user.is_active))
-        if (self.user.user.is_active != True):
+        print("Current User's activation mode: " +
+              str(self.user.user.is_active))
+        if (not self.user.user.is_active):
             for a in range(2):
                 print("###############################################")
             print("   User's activation failed: is_active != True..")
@@ -108,23 +134,29 @@ class ActivateTestCase(TestBaseEntity):
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n")
         for a in range(2):
             print("###############################################")
-        print("Current User's activation mode: " + str(self.user.user.is_active))
+        print("Current User's activation mode: " +
+              str(self.user.user.is_active))
         for a in range(2):
             print("###############################################")
 
-        urlStrToGET = self.urlPrefix + "users/"
         user_uuid = self.expiredTokenUser.uuid
-        print("\n\nA user with was pre-initiated with old token creation time  : 2012-01-02 13:48:25.299000+00:00\n\n")
-        response = self.c.get(self.urlPrefix + 'activate/' + str(user_uuid) + '/' +
-                              str(self.expiredTokenUser.user.activation_token))
+        print("\n\nA user with was pre-initiated with old token " +
+              "creation time: 2012-01-02 13:48:25.299000+00:00\n\n")
+        self.c.get(
+            self.urlPrefix +
+            'activate/' +
+            str(user_uuid) +
+            '/' +
+            str(self.expiredTokenUser.user.activation_token))
         self.user.refresh_from_db()
         for a in range(2):
             print("###############################################")
-        print("   Current User's activation mode: " + str(self.expiredTokenUser.user.is_active))
+        print("   Current User's activation mode: " +
+              str(self.expiredTokenUser.user.is_active))
         for a in range(2):
             print("###############################################")
         print("\n\n")
-        if (self.expiredTokenUser.user.activation_token != True):
+        if (not self.expiredTokenUser.user.activation_token):
             for a in range(2):
                 print("###############################################")
             print("Test Success!")
@@ -143,23 +175,27 @@ class ActivateTestCase(TestBaseEntity):
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n")
         for a in range(2):
             print("###############################################")
-        print("Current User's activation mode: " + str(self.user.user.is_active))
+        print("Current User's activation mode: " +
+              str(self.user.user.is_active))
         for a in range(2):
             print("###############################################")
 
-        urlStrToGET = self.urlPrefix + "users/"
-        user_uuid = self.expiredTokenUser.uuid
         print("\n\n Trying to activate a user with an unmatching token")
-        response = self.c.get(self.urlPrefix + 'activate/' + str(self.user.uuid) +
-                              '/' + str(self.expiredTokenUser.user.activation_token))
+        self.c.get(
+            self.urlPrefix +
+            'activate/' +
+            str(self.user.uuid) +
+            '/' +
+            str(self.expiredTokenUser.user.activation_token))
         self.user.refresh_from_db()
         for a in range(2):
             print("###############################################")
-        print("   Current User's activation mode: " + str(self.expiredTokenUser.user.is_active))
+        print("   Current User's activation mode: " +
+              str(self.expiredTokenUser.user.is_active))
         for a in range(2):
             print("###############################################")
         print("\n\n")
-        if (self.expiredTokenUser.user.activation_token != True):
+        if (not self.expiredTokenUser.user.activation_token):
             for a in range(2):
                 print("###############################################")
             print("Test Success!")

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,7 +36,8 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-from engagementmanager.bus.messages.service_bus_base_message import ServiceBusBaseMessage
+from engagementmanager.bus.messages.service_bus_base_message import \
+    ServiceBusBaseMessage
 
 
 class DailyScheduledMessage(ServiceBusBaseMessage):

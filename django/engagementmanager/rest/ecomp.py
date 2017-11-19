@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -38,7 +38,7 @@
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED
+from rest_framework.status import HTTP_400_BAD_REQUEST
 
 from engagementmanager.decorator.class_decorator import classDecorator
 from engagementmanager.decorator.log_func_entry import logFuncEntry
@@ -58,12 +58,15 @@ class ECOMPReleaseRESTMethods(VvpApiView):
             update_ECOMP(engagement_uuid, ecomp_uuid)
             return Response(msg)
         else:
-            msg = "ECOMPRelease PUT Request failed, engagement_uuid wasn't found in kwargs or its content is empty, therefore cannot filter by it to find the required VF"
+            msg = "ECOMPRelease PUT Request failed, engagement_uuid wasn't \
+            found in kwargs or its content is empty, therefore cannot filter \
+            by it to find the required VF"
             self.logger.error(msg)
             msg = "Action failed."
             return Response(msg, status=HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        ecomp_releases = ECOMPRelease.objects.filter(ui_visibility=True).order_by('weight')
+        ecomp_releases = ECOMPRelease.objects.filter(
+            ui_visibility=True).order_by('weight')
         serializer = ECOMPReleaseModelSerializer(ecomp_releases, many=True)
         return Response(serializer.data)

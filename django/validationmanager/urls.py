@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -38,12 +38,15 @@
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
 from django.conf.urls import url
 
-from validationmanager.rest import git_webhook_endpoint, jenkins_webhook_endpoint
+from validationmanager.rest import git_webhook_endpoint,\
+    jenkins_webhook_endpoint
 
 
 urlpatterns = [
     url(r'^hook/test-complete(?:/(?P<auth_token>[^/]+)/?)?$',
-        jenkins_webhook_endpoint.JenkinsWebhookEndpoint.as_view(), name='jenkins-notification-endpoint'),
+        jenkins_webhook_endpoint.JenkinsWebhookEndpoint.as_view(),
+        name='jenkins-notification-endpoint'),
     url(r'^hook/git-push(?:/(?P<auth_token>[^/]+)/?)?$',
-        git_webhook_endpoint.GitWebhookEndpoint.as_view(), name='git-push-endpoint'),
+        git_webhook_endpoint.GitWebhookEndpoint.as_view(),
+        name='git-push-endpoint'),
 ]

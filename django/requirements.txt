@@ -40,6 +40,7 @@ Django==1.10.6
 apscheduler
 bleach
 boto
+celery[redis]
 configparser
 django-cors-headers
 django-storages

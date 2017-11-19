@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -55,12 +55,34 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='RecentEngagement',
             fields=[
-                ('uuid', models.CharField(max_length=64, primary_key=True, serialize=False)),
-                ('user_uuid', models.CharField(max_length=64)),
-                ('action_type', models.CharField(choices=[(b'(3,)', b'GOT_OWNERSHIP_OVER_ENGAGEMENT'), (b'(1,)', b'JOINED_TO_ENGAGEMENT'), (
-                    b'(4,)', b'NAVIGATED_INTO_ENGAGEMENT'), (b'(2,)', b'NEXT_STEP_ASSIGNED')], max_length=36)),
-                ('last_update', models.DateTimeField(default=django.utils.timezone.now, verbose_name='update time')),
-                ('vf', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='engagementmanager.VF')),
+                ('uuid',
+                 models.CharField(
+                     max_length=64,
+                     primary_key=True,
+                     serialize=False)),
+                ('user_uuid',
+                 models.CharField(
+                     max_length=64)),
+                ('action_type',
+                 models.CharField(
+                     choices=[
+                         (b'(3,)',
+                          b'GOT_OWNERSHIP_OVER_ENGAGEMENT'),
+                         (b'(1,)',
+                          b'JOINED_TO_ENGAGEMENT'),
+                         (b'(4,)',
+                          b'NAVIGATED_INTO_ENGAGEMENT'),
+                         (b'(2,)',
+                          b'NEXT_STEP_ASSIGNED')],
+                     max_length=36)),
+                ('last_update',
+                 models.DateTimeField(
+                     default=django.utils.timezone.now,
+                     verbose_name='update time')),
+                ('vf',
+                 models.ForeignKey(
+                     on_delete=django.db.models.deletion.CASCADE,
+                     to='engagementmanager.VF')),
             ],
             options={
                 'db_table': 'ice_recent_engagement',
@@ -69,6 +91,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='engagement',
             name='starred_engagement',
-            field=models.ManyToManyField(to='engagementmanager.IceUser'),
+            field=models.ManyToManyField(
+                to='engagementmanager.IceUser'),
         ),
     ]

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -92,7 +92,7 @@ def createEngagement(user, manual_el_id=False):
     if user.role != elRole:
         if not manual_el_id:
             # Fetch a random EL
-            qs = IceUserProfile.objects.all().filter(role=elRole)  # @UndefinedVariable
+            qs = IceUserProfile.objects.all().filter(role=elRole)
             if qs.count() > 0:
                 randUser = qs[random.randint(0, qs.count() - 1)]
                 elUser = IceUserProfile.objects.get(uuid=randUser.uuid)
@@ -110,7 +110,7 @@ def createEngagement(user, manual_el_id=False):
 
     # Fetch another random el to be a Peer Reviewer
     qs = IceUserProfile.objects.all().filter(
-        role=elRole, user__is_active=True).exclude(uuid=elUser.uuid)  # @UndefinedVariable
+        role=elRole, user__is_active=True).exclude(uuid=elUser.uuid)
     prUser = None
     if qs.count() > 0:
         randUser = qs[random.randint(0, qs.count() - 1)]
@@ -125,7 +125,8 @@ def createEngagement(user, manual_el_id=False):
 
 def is_str_supports_git_naming_convention(item):
     """
-    validates that string can contain only letters, digits hyphen and dot. Also, String cannot end with dot
+    validates that string can contain only letters, digits hyphen and dot.
+    Also, String cannot end with dot
     """
     return bool(re.compile("^[a-zA-Z0-9-]*$").match(item))
 
@@ -144,11 +145,12 @@ def createVF(user, request):
         logger.debug("Processing VF - " + str(data))
 
         if ('virtual_function' not in data or not data['virtual_function'] or
-           'version' not in data or not data['version'] or
-           'target_lab_entry_date' not in data or not data['target_lab_entry_date'] or
-           'target_aic_uuid' not in data or not data['target_aic_uuid'] or
-           'ecomp_release' not in data or not data['ecomp_release'] or
-           'is_service_provider_internal' not in data):
+            'version' not in data or not data['version'] or
+            'target_lab_entry_date' not in data or not
+            data['target_lab_entry_date'] or
+            'target_aic_uuid' not in data or not data['target_aic_uuid'] or
+            'ecomp_release' not in data or not data['ecomp_release'] or
+                'is_service_provider_internal' not in data):
             raise KeyError("One of the input parameters are missing")
 
         # Set el manually, for example when using import from xls el is
@@ -173,7 +175,8 @@ def createVF(user, request):
 
         i_vfName = data['virtual_function']
         if not is_str_supports_git_naming_convention(i_vfName):
-            msg = "VF Name can contain only letters, digits hyphen and dot. VF Name cannot end with dot"
+            msg = "VF Name can contain only letters, digits hyphen and dot.\
+            VF Name cannot end with dot"
             logger.error(msg)
             raise ValueError(msg)
         i_vfVersion = data['version']
@@ -193,7 +196,7 @@ def createVF(user, request):
         vfObj, was_created = addEntityIfNotExist(VF, vf)
 
         insert_to_recent_engagements(
-            user, RecentEngagementActionType.NEW_VF_CREATED.name, vfObj)  # @UndefinedVariable
+            user, RecentEngagementActionType.NEW_VF_CREATED.name, vfObj)
 
         addUsersToEngTeam(engObj.uuid, [user, elUser, prUser])
         sendSlackNotifications(engObj.uuid, [user, elUser, prUser])
@@ -208,7 +211,8 @@ def createVF(user, request):
 
 
 def updateValidationDetails(request):
-    #  if data['target_aic_uuid'] is not None and data['target_aic_uuid'] != "":
+    # if data['target_aic_uuid'] is not None and data['target_aic_uuid'] !=
+    # "":
     data = request.data
     logger.debug("Processing VF_Details - " + str(data))
     vf = VF.objects.get(uuid=data['vf_uuid'])
@@ -226,15 +230,16 @@ def updateValidationDetails(request):
 def checkAndModifyIfSSHNextStepExist(user):
     SSHStep = None
     qs = NextStep.objects.filter(
-        owner=user, next_step_type=NextStepType.set_ssh.name)  # @UndefinedVariable
+        owner=user, next_step_type=NextStepType.set_ssh.name)
     if qs is None or qs.count() == 0:
         return None
     else:
         SSHStep = NextStep.objects.get(
-            owner=user, next_step_type=NextStepType.set_ssh.name)  # @UndefinedVariable
+            owner=user, next_step_type=NextStepType.set_ssh.name)
 
     # @UndefinedVariable
-    if SSHStep.state in (NextStepState.Incomplete.name) and user.ssh_public_key:
+    if SSHStep.state in (
+            NextStepState.Incomplete.name) and user.ssh_public_key:
         SSHStep.state = 'Completed'
         SSHStep.last_update_time = timezone.now()
         SSHStep.last_update_type = 'Completed'
@@ -245,7 +250,8 @@ def checkAndModifyIfSSHNextStepExist(user):
 
 def addUsersToEngTeam(eng_uuid, newUserList):
     """
-    If the user isn't an EL and their doesn't have an SSH step then create personal SSH next step for him.
+    If the user isn't an EL and their doesn't have an SSH step then,
+    create personal SSH next step for him.
     """
     engObj = Engagement.objects.get(uuid=eng_uuid)
     vfObj = engObj.vf
@@ -255,7 +261,8 @@ def addUsersToEngTeam(eng_uuid, newUserList):
     for newUser in newUserList:
         engObj.engagement_team.add(newUser)
         update_or_insert_to_recent_engagements(
-            newUser.uuid, vfObj, RecentEngagementActionType.JOINED_TO_ENGAGEMENT.name)  # @UndefinedVariable
+            newUser.uuid, vfObj,
+            RecentEngagementActionType.JOINED_TO_ENGAGEMENT.name)
         SSHStep = checkAndModifyIfSSHNextStepExist(newUser)
         if not SSHStep and newUser != el_user:
             NextStepSvc().create_default_next_steps_for_user(newUser, el_user)
@@ -267,7 +274,8 @@ def addUsersToEngTeam(eng_uuid, newUserList):
 
 def sendSlackNotifications(eng_uuid, newUserList):
     """
-    Send Slack notifications to the reviewer, peer reviewer and also the engagements channel
+    Send Slack notifications to the reviewer,
+    peer reviewer and also the engagements channel
     """
     # get the engagement
     engagement = Engagement.objects.get(uuid=eng_uuid)
@@ -301,24 +309,27 @@ def sendSlackNotifications(eng_uuid, newUserList):
         engagement_manual_id, vf_name, reviewer, peer_reviewer, creator)
 
 
-def getVfByEngUuid(engUuid): 
+def getVfByEngUuid(engUuid):
     vfList = VF.objects.filter(engagement__uuid=engUuid)
     if vfList:
         logger.debug("Found VF name=" + vfList[0].name)
         if len(vfList) > 1:
             logger.warning(
-                "!! There seems to be more than one VF attached to the engagement with uuid=" + logEncoding(engUuid))
+                "!! There seems to be more than one VF attached to the\
+                engagement with uuid=" + logEncoding(engUuid))
         # Assumption: the list only has one item because the relation
         # Engagement-VF is 1:1 business wise
         return vfList[0]
     else:
         logger.error(
-            "There are no VFs in the engagement identified by eng_uuid=" + logEncoding(engUuid))
+            "There are no VFs in the engagement identified\
+            by eng_uuid=" + logEncoding(engUuid))
         return None
 
 
 def generateActivationLink(activationToken, user):
-    return str(settings.DOMAIN) + Constants.activation_prefix + str(user.uuid) + "/" + activationToken
+    return str(settings.DOMAIN) + Constants.activation_prefix + \
+        str(user.uuid) + "/" + activationToken
 
 
 def getFirstEngByUser(user):
@@ -331,7 +342,9 @@ def getFirstEngByUser(user):
         return None
 
 
-def createUserTemplate(company, full_name, role, phone, is_service_provider_contact, ssh_key=None, regular_email_updates=False, user=None):
+def createUserTemplate(company, full_name, role, phone,
+                       is_service_provider_contact,
+                       ssh_key=None, regular_email_updates=False, user=None):
     data = {
         'company': company,
         'phone_number': phone,

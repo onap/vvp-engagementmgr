@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -55,10 +55,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Feedback',
             fields=[
-                ('uuid', models.CharField(max_length=36, primary_key=True, serialize=False, unique=True)),
-                ('create_time', models.DateTimeField(default=django.utils.timezone.now)),
-                ('description', models.TextField(verbose_name='feedback_description')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='engagementmanager.IceUserProfile')),
+                ('uuid', models.CharField(max_length=36,
+                                          primary_key=True, serialize=False,
+                                          unique=True)),
+                ('create_time', models.DateTimeField(
+                    default=django.utils.timezone.now)),
+                ('description', models.TextField(
+                    verbose_name='feedback_description')),
+                ('user', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='engagementmanager.IceUserProfile')),
             ],
             options={
                 'db_table': 'ice_feedback',

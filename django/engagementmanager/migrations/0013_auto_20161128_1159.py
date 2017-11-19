@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -54,46 +54,64 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='engagement',
             name='active_time',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='active time'),
+            field=models.DateTimeField(
+                default=django.utils.timezone.now,
+                verbose_name='active time'),
         ),
         migrations.AddField(
             model_name='engagement',
             name='aic_instantiation_time',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='aic instantiation time'),
+            field=models.DateTimeField(
+                default=django.utils.timezone.now,
+                verbose_name='aic instantiation time'),
         ),
         migrations.AddField(
             model_name='engagement',
             name='asdc_onboarding_time',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='asdc onboarding time'),
+            field=models.DateTimeField(
+                default=django.utils.timezone.now,
+                verbose_name='asdc onboarding time'),
         ),
         migrations.AddField(
             model_name='engagement',
             name='completed_time',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='completed time'),
+            field=models.DateTimeField(
+                default=django.utils.timezone.now,
+                verbose_name='completed time'),
         ),
         migrations.AddField(
             model_name='engagement',
             name='heat_validated_time',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='heat validated time'),
+            field=models.DateTimeField(
+                default=django.utils.timezone.now,
+                verbose_name='heat validated time'),
         ),
         migrations.AddField(
             model_name='engagement',
             name='image_scan_time',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='image scan time'),
+            field=models.DateTimeField(
+                default=django.utils.timezone.now,
+                verbose_name='image scan time'),
         ),
         migrations.AddField(
             model_name='engagement',
             name='intake_time',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='intake time'),
+            field=models.DateTimeField(
+                default=django.utils.timezone.now,
+                verbose_name='intake time'),
         ),
         migrations.AddField(
             model_name='engagement',
             name='started_state_time',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='started state time'),
+            field=models.DateTimeField(
+                default=django.utils.timezone.now,
+                verbose_name='started state time'),
         ),
         migrations.AddField(
             model_name='engagement',
             name='validated_time',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='validated time'),
+            field=models.DateTimeField(
+                default=django.utils.timezone.now,
+                verbose_name='validated time'),
         ),
     ]

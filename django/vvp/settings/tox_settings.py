@@ -57,7 +57,8 @@ EMAIL_USE_SSL = True
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'EXCEPTION_HANDLER': 'engagementmanager.utils.exception_handler.ice_exception_handler',
+    'EXCEPTION_HANDLER': \
+    'engagementmanager.utils.exception_handler.ice_exception_handler',
     'PAGE_SIZE': 10,
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -78,7 +79,8 @@ JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'token',
     'JWT_ALGORITHM': 'HS256',
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
-    'JWT_DECODE_HANDLER': 'engagementmanager.utils.authentication.ice_jwt_decode_handler',
+    'JWT_DECODE_HANDLER':
+    'engagementmanager.utils.authentication.ice_jwt_decode_handler',
 }
 
 APPEND_SLASH = False
@@ -101,7 +103,8 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',          # required by d.c.admin
+    # required by d.c.admin
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -119,8 +122,10 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',          # required by d.c.admin
-                'django.contrib.messages.context_processors.messages',  # required by d.c.admin
+                # required by d.c.admin
+                'django.contrib.auth.context_processors.auth',
+                # required by d.c.admin
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
@@ -155,7 +160,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'MinimumLengthValidator',
         'CommonPasswordValidator',
         'NumericPasswordValidator',
-        ]]
+    ]]
 
 
 # Internationalization
@@ -176,9 +181,12 @@ STATIC_ROOT = os.environ['STATIC_ROOT']
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'formatters': {  # All possible attributes are: https://docs.python.org/3/library/logging.html#logrecord-attributes
+    # All possible attributes are:
+    # https://docs.python.org/3/library/logging.html#logrecord-attributes
+    'formatters': {
         'verbose': {
-            'format': '%(asctime)s %(levelname)s %(name)s %(module)s %(lineno)d %(process)d %(thread)d %(message)s'
+            'format': '%(asctime)s %(levelname)s %(name)s %(module)s \
+            %(lineno)d %(process)d %(thread)d %(message)s'
         },
         'simple': {
             'format': '%(asctime)s %(levelname)s %(name)s %(message)s'
@@ -190,7 +198,9 @@ LOGGING = {
             'formatter': 'simple'
         },
         'vvp-info.log': {
-            'level': 'INFO',  # handler will ignore DEBUG (only process INFO, WARN, ERROR, CRITICAL, FATAL)
+            # handler will ignore DEBUG (only process INFO, WARN, ERROR,
+            # CRITICAL, FATAL)
+            'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': os.path.join(LOGS_PATH, 'vvp-info.log'),
             'formatter': 'verbose'
@@ -216,7 +226,8 @@ LOGGING = {
     },
     'loggers': {
         'vvp.logger': {
-            'handlers': ['vvp-info.log', 'vvp-debug.log', 'vvp-requests.log', 'vvp-db.log', 'console'],
+            'handlers': ['vvp-info.log', 'vvp-debug.log', 'vvp-requests.log',
+                         'vvp-db.log', 'console'],
             'level': 'DEBUG' if DEBUG else 'INFO',
         },
         'django': {
@@ -247,7 +258,8 @@ LOGGING = {
 # VVP Related Configuration
 #############################
 CONTACT_FROM_ADDRESS = os.getenv('CONTACT_FROM_ADDRESS', 'dummy@example.com')
-CONTACT_EMAILS = [s.strip() for s in os.getenv('CONTACT_EMAILS', 'dummy@example.com').split(',') if s]
+CONTACT_EMAILS = [s.strip() for s in os.getenv(
+    'CONTACT_EMAILS', 'dummy@example.com').split(',') if s]
 DOMAIN = os.getenv('EM_DOMAIN_NAME', 'http://localhost:8080')
 TOKEN_EXPIRATION_IN_HOURS = 48
 DAILY_SCHEDULED_JOB_HOUR = 20
@@ -266,7 +278,8 @@ API_DOMAIN = 'em'
 # threat model
 WEBHOOK_TOKEN = os.environ['SECRET_WEBHOOK_TOKEN']
 
-# The authentication token and URL needed for us to issue requests to the GitLab API.
+# The authentication token and URL needed for us to issue requests to the
+# GitLab API.
 GITLAB_TOKEN = os.environ['SECRET_GITLAB_AUTH_TOKEN']
 GITLAB_URL = "http://gitlab/"
 
@@ -284,7 +297,8 @@ CMS_APP_CLIENT_SECRET = os.environ['SECRET_CMS_APP_CLIENT_SECRET']
 # slack integration
 SLACK_API_TOKEN = os.environ['SLACK_API_TOKEN']
 ENGAGEMENTS_CHANNEL = os.getenv('ENGAGEMENTS_CHANNEL', '')
-ENGAGEMENTS_NOTIFICATIONS_CHANNEL = os.getenv('ENGAGEMENTS_NOTIFICATIONS_CHANNEL:', '')
+ENGAGEMENTS_NOTIFICATIONS_CHANNEL = os.getenv(
+    'ENGAGEMENTS_NOTIFICATIONS_CHANNEL:', '')
 DEVOPS_CHANNEL = os.getenv('DEVOPS_CHANNEL', '')
 DEVOPS_NOTIFICATIONS_CHANNEL = os.getenv('DEVOPS_NOTIFICATIONS_CHANNEL', '')
 

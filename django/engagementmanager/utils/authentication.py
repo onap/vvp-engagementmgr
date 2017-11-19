@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -58,7 +58,8 @@ def ice_jwt_decode_handler(token):
 class JWTAuthentication(object):
     """
     Simple token based authentication.
-    Clients should authenticate by passing the token key in the "Authorization" HTTP header, prepended with the string "Token ".
+    Clients should authenticate by passing the token key in the
+    "Authorization" HTTP header, prepended with the string "Token ".
     For example: Authorization: Token 401f7ac837da42b97f613d789819ff93537bee6a
     """
 
@@ -75,11 +76,13 @@ class JWTAuthentication(object):
         Create token for reset password flow.
         """
         encryptor = URLSafeTimedSerializer(api_settings.JWT_SECRET_KEY)
-        return encryptor.dumps(user_data.email, salt=api_settings.JWT_SECRET_KEY)
+        return encryptor.dumps(user_data.email,
+                               salt=api_settings.JWT_SECRET_KEY)
 
     def decode_reset_password_token(self, token):
         """
-        Decoded the token created at reset password flow and return what was encrypted.
+        Decoded the token created at reset password flow and
+        return what was encrypted.
         """
         decryptor = URLSafeTimedSerializer(api_settings.JWT_SECRET_KEY)
         email = decryptor.loads(

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -40,9 +40,11 @@ from django.contrib.auth import get_user_model
 from sshpubkeys import SSHKey
 
 from engagementmanager.apps import bus_service
-from engagementmanager.bus.messages.activity_event_message import ActivityEventMessage
+from engagementmanager.bus.messages.activity_event_message\
+    import ActivityEventMessage
 from engagementmanager.models import IceUserProfile, Role, VF
-from engagementmanager.serializers import SuperThinIceUserProfileModelSerializerForSignals
+from engagementmanager.serializers import\
+    SuperThinIceUserProfileModelSerializerForSignals
 from engagementmanager.service.base_service import BaseSvc
 from engagementmanager.utils.cryptography import CryptographyText
 from engagementmanager.utils.activities_data import SSHKeyAddedActivityData
@@ -61,15 +63,15 @@ class UserService(BaseSvc):
         try:
             ssh.parse()
         except Exception as e:
-            msg = """ssh provided by the user is invalid, type of exception: """ + \
-                str(e)
+            msg = """ssh provided by the user is invalid,""" +\
+                """type of exception: """ + str(e)
             self.logger.error(msg)
             msg = "Updating SSH Key failed due to invalid key."
             raise VvpBadRequest(msg)
 
         # remove comment from ssh key
         # ssh.comment returns comment attached to key
-        if ssh.comment != None:
+        if ssh.comment is not None:
             striped_key = sshkey.replace(ssh.comment, '').strip()
         else:
             striped_key = sshkey.strip()
@@ -85,7 +87,8 @@ class UserService(BaseSvc):
             raise Exception(msg)
         else:
             self.logger.debug(
-                "SSH key already taken by another user - uuid: %s", user_with_ssh.uuid)
+                "SSH key already taken by another user - uuid: %s",
+                user_with_ssh.uuid)
             msg = "Updating SSH Key failed due to invalid key."
             raise VvpBadRequest(msg)
 
@@ -100,7 +103,8 @@ class UserService(BaseSvc):
     def get_el_list(self):
         el_role = Role.objects.get(name='el')
         engagement_leads_users = IceUserProfile.objects.filter(role=el_role)
-        return SuperThinIceUserProfileModelSerializerForSignals(engagement_leads_users, many=True).data
+        return SuperThinIceUserProfileModelSerializerForSignals(
+            engagement_leads_users, many=True).data
 
     def get_user_by_email(self, email):
         UserModel = get_user_model()

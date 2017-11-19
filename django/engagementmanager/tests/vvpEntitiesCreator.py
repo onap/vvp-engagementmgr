@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -42,8 +42,10 @@ import string
 import random
 from engagementmanager.service.logging_service import LoggingServiceFactory
 from engagementmanager.utils.authentication import JWTAuthentication
-from engagementmanager.models import Vendor, IceUserProfile, Role, Engagement, DeploymentTarget, ApplicationServiceInfrastructure, VF,\
-    NextStep, ChecklistTemplate, DeploymentTargetSite, VFC, Checklist, ChecklistSection, ChecklistLineItem,\
+from engagementmanager.models import Vendor, IceUserProfile, Role, \
+    Engagement, DeploymentTarget, ApplicationServiceInfrastructure, VF,\
+    NextStep, ChecklistTemplate, DeploymentTargetSite, VFC, \
+    Checklist, ChecklistSection, ChecklistLineItem,\
     CustomUser
 from engagementmanager.utils.constants import Constants
 
@@ -55,7 +57,8 @@ class VvpEntitiesCreator:
     def __init__(self):
         pass
 
-    def createUserTemplate(self, company, email, full_name, role, is_service_provider_contact, ssh_key=None, ):
+    def createUserTemplate(self, company, email, full_name, role,
+                           is_service_provider_contact, ssh_key=None, ):
         return {
             'company': company,
             'email': email,
@@ -112,16 +115,25 @@ class VvpEntitiesCreator:
         admin = self.getOrCreateIfNotExist(
             Role, {'name': 'admin'}, {'name': 'admin'})
         el = self.getOrCreateIfNotExist(Role, {'name': 'el'}, {'name': 'el'})
-        standard_user = self.getOrCreateIfNotExist(Role, {'name': 'standard_user'}, {
-                                                   'name': 'standard_user'})
+        standard_user = self.getOrCreateIfNotExist(
+            Role, {'name': 'standard_user'}, {
+                'name': 'standard_user'})
         return admin, el, standard_user
 
-    def createUser(self, company, email, phone, fullName, role, is_active=False, ssh_key=None, activation_token_create_time=timezone.now()):
+    def createUser(self, company, email, phone, fullName, role,
+                   is_active=False, ssh_key=None,
+                   activation_token_create_time=timezone.now()):
         try:
-            user, is_user_created = CustomUser.objects.get_or_create(username=email, defaults={'email': email, 'password': '12345678', 'activation_token': uuid4(
-            ), 'activation_token_create_time': timezone.now(), 'last_login': timezone.now(), 'is_active': is_active})
-            user_profile, is_profile_created = IceUserProfile.objects.update_or_create(
-                email=email, defaults=self.createUserTemplate(company, email, fullName, role, False, ssh_key))
+            user, is_user_created = CustomUser.objects.get_or_create(
+                username=email, defaults={
+                    'email': email, 'password': '12345678',
+                    'activation_token': uuid4(),
+                    'activation_token_create_time': timezone.now(),
+                    'last_login': timezone.now(), 'is_active': is_active})
+            user_profile, is_profile_created = \
+                IceUserProfile.objects.update_or_create(
+                    email=email, defaults=self.createUserTemplate(
+                        company, email, fullName, role, False, ssh_key))
         except Exception as e:
             logger.error("VvpEntitiesCreator - createUser - error:")
             logger.error(e)
@@ -129,18 +141,23 @@ class VvpEntitiesCreator:
         return user_profile
 
     def createEngagement(self, uuid, engagement_type, engagement_team):
-        return self.getOrCreateIfNotExist(Engagement, {'uuid': uuid}, self.createEngagementTemplate(engagement_type, engagement_team))
+        return self.getOrCreateIfNotExist(
+            Engagement, {'uuid': uuid}, self.createEngagementTemplate(
+                engagement_type, engagement_team))
 
-    def createVF(self, name, engagement, deployment, is_service_provider_internal, vendor, **kwargs):
-        vf = VF.objects.create(name=name, engagement=engagement,
-                               deployment_target=deployment,
-                               is_service_provider_internal=is_service_provider_internal,
-                               vendor=vendor,
-                               target_lab_entry_date=timezone.now(), **kwargs)
+    def createVF(self, name, engagement, deployment,
+                 is_service_provider_internal, vendor, **kwargs):
+        vf = VF.objects.create(
+            name=name, engagement=engagement,
+            deployment_target=deployment,
+            is_service_provider_internal=is_service_provider_internal,
+            vendor=vendor,
+            target_lab_entry_date=timezone.now(), **kwargs)
         return vf
 
     def createNextStep(self, uuid, createFields):
-        return self.getOrCreateIfNotExist(NextStep, {'uuid': uuid}, createFields)
+        return self.getOrCreateIfNotExist(
+            NextStep, {'uuid': uuid}, createFields)
 
     def createDefaultCheckListTemplate(self):
         checklist_templates = [
@@ -158,22 +175,45 @@ class VvpEntitiesCreator:
                             {
                                 'name': 'Parameters',
                                 'weight': 1,
-                                'description': 'Numeric parameters should include range and/or allowed values.',
-                                'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                                'description': 'Numeric parameters ' +
+                                'should include range and/or allowed values.',
+                                'validation_instructions': 'Here are some ' +
+                                'useful tips for how to validate this item ' +
+                                ' in the most awesome way:<br><br><ul><li>' +
+                                'Here is my awesome tip 1</li><li>Here is ' +
+                                'my awesome tip 2</li><li>' +
+                                'Here is my awesome ' +
+                                'tip 3</li></ul>',
                                 'line_type': 'auto',
                             },
                             {
                                 'name': 'String parameters',
                                 'weight': 1,
-                                'description': 'Numeric parameters should include range and/or allowed values.',
-                                'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                                'description': 'Numeric parameters ' +
+                                'should include range and/or allowed values.',
+                                'validation_instructions': 'Here are some ' +
+                                'useful tips for how to validate this item ' +
+                                'in the most awesome way:<br><br><ul><li>' +
+                                'Here is my awesome tip 1</li><li>Here is ' +
+                                'my awesome tip 2</li><li>' +
+                                'Here is my awesome ' +
+                                'tip 3</li></ul>',
                                 'line_type': 'auto',
                             },
                             {
                                 'name': 'Numeric parameters',
                                 'weight': 1,
-                                'description': 'Numeric parameters should include range and/or allowed values.',
-                                'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                                'description': 'Numeric parameters should ' +
+                                'include range and/or allowed values.',
+                                'validation_instructions': 'Here are some ' +
+                                'useful tips for how to ' +
+                                'validate this item in ' +
+                                'the most awesome way:<br><br><ul><li>' +
+                                'Here is ' +
+                                'my awesome tip 1</li><li>' +
+                                'Here is my awesome ' +
+                                'tip 2</li><li>Here is my awesome tip 3' +
+                                '</li></ul>',
                                 'line_type': 'auto',
                             }
                         ]
@@ -187,15 +227,27 @@ class VvpEntitiesCreator:
                             {
                                 'name': 'Normal references',
                                 'weight': 1,
-                                'description': 'Numeric parameters should include range and/or allowed values.',
-                                'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                                'description': 'Numeric parameters should ' +
+                                'include range and/or allowed values.',
+                                'validation_instructions': 'Here are ' +
+                                'some useful tips for how to validate ' +
+                                'this item in the most awesome way:' +
+                                '<br><br><ul><li>Here is my awesome ' +
+                                'tip 1</li><li>Here is my awesome tip 2' +
+                                '</li><li>Here is my awesome tip 3</li></ul>',
                                 'line_type': 'manual',
                             },
                             {
                                 'name': 'VF image',
                                 'weight': 1,
-                                'description': 'Numeric parameters should include range and/or allowed values.',
-                                'validation_instructions': 'Here are some useful tips for how to validate this item in the most awesome way:<br><br><ul><li>Here is my awesome tip 1</li><li>Here is my awesome tip 2</li><li>Here is my awesome tip 3</li></ul>',
+                                'description': 'Numeric parameters should ' +
+                                'include range and/or allowed values.',
+                                'validation_instructions': 'Here are some ' +
+                                'useful tips for how to validate this item ' +
+                                'in the most awesome way:<br><br><ul><li>' +
+                                'Here is my awesome tip 1</li><li>Here ' +
+                                'is my awesome tip 2</li><li>Here is my ' +
+                                'awesome tip 3</li></ul>',
                                 'line_type': 'auto',
                             }
                         ]
@@ -206,32 +258,36 @@ class VvpEntitiesCreator:
         ]
 
         for template in checklist_templates:
-            created_template = ChecklistTemplate.objects.get_or_create(name=template['name'], defaults={
-                'category': template['category'],
-                'version': template['version'],
-                'create_time': timezone.now()
-            })
+            created_template = ChecklistTemplate.objects.get_or_create(
+                name=template['name'], defaults={
+                    'category': template['category'],
+                    'version': template['version'],
+                    'create_time': timezone.now()
+                })
             created_template = ChecklistTemplate.objects.get(
                 name=template['name'])
             for section in template['sections']:
                 created_section = ChecklistSection.objects.get_or_create(
                     name=section['name'],
-                    template_id=created_template.uuid, defaults={
+                    template_id=created_template.uuid,
+                    defaults={
                         'weight': section['weight'],
                         'description': section['description'],
-                        'validation_instructions': section['validation_instructions']
+                        'validation_instructions': section[
+                            'validation_instructions']
 
                     })
                 created_section = ChecklistSection.objects.get(
                     name=section['name'], template_id=created_template.uuid)
                 for lineitem in section['lineitems']:
-                    created_lineitem = ChecklistLineItem.objects.get_or_create(
+                    ChecklistLineItem.objects.get_or_create(
                         name=lineitem['name'],
                         template_id=created_template.uuid,
                         defaults={
                             'weight': lineitem['weight'],
                             'description': lineitem['description'],
-                            'validation_instructions': lineitem['validation_instructions'],
+                            'validation_instructions': lineitem[
+                                'validation_instructions'],
                             'line_type': lineitem['line_type'],
                             'section_id': created_section.uuid,
                         })
@@ -241,8 +297,9 @@ class VvpEntitiesCreator:
 
         return self.defaultCheklistTemplate
 
-    def createCheckList(self, name, state, validation_cycle, associated_files, engagement, template, creator, owner):
-        if (associated_files == None):
+    def createCheckList(self, name, state, validation_cycle, associated_files,
+                        engagement, template, creator, owner):
+        if (not associated_files):
             associated_files = '{}'
         return self.getOrCreateIfNotExist(Checklist, {'name': name}, {
             'state': state,
@@ -260,21 +317,26 @@ class VvpEntitiesCreator:
         try:
             obj = VFC.objects.get(name=name)
         except VFC.DoesNotExist:
-            return VFC.objects.create(name=name, external_ref_id=ext_ref, company=company, creator=creator, vf=vf)
+            return VFC.objects.create(name=name, external_ref_id=ext_ref,
+                                      company=company, creator=creator, vf=vf)
         return obj
 
     def randomGenerator(self, typeOfValue, numberOfDigits=0):
         lettersAndNumbers = string.ascii_letters + string.digits
         if typeOfValue == 'email':
-            myEmail = ''.join(random.choice(lettersAndNumbers) for _ in range(4)) + "@" + \
-                ''.join(random.choice(string.ascii_uppercase) for _ in range(4)) + ".com"
+            myEmail = ''.join(
+                random.choice(lettersAndNumbers) for _ in range(4)) + "@" + \
+                ''.join(random.choice(string.ascii_uppercase)
+                        for _ in range(4)) + ".com"
             return myEmail
         elif typeOfValue == 'main-vendor-email':
-            myEmail = ''.join(random.choice(lettersAndNumbers) for _ in range(4)) + "@" + \
-                      Constants.service_provider_mail_domain[0]
+            myEmail = ''.join(
+                random.choice(lettersAndNumbers) for _ in range(4)) + "@" + \
+                Constants.service_provider_mail_domain[0]
             return myEmail
         elif typeOfValue == 'randomNumber':
-            randomNumber = ''.join("%s" % random.randint(0, 9) for _ in range(0, (numberOfDigits + 1)))
+            randomNumber = ''.join("%s" % random.randint(0, 9)
+                                   for _ in range(0, (numberOfDigits + 1)))
             return randomNumber
         elif typeOfValue == 'randomString':
             randomString = "".join(random.sample(lettersAndNumbers, 5))

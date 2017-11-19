@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -43,10 +43,11 @@ from engagementmanager.service.logging_service import LoggingServiceFactory
 
 logger = LoggingServiceFactory.get_logger()
 
+
 class GitManager(object):
     def getRepoAssociatedFilesForUser(self, eng_uuid):
         logger.debug("Fetching the repo associated files for engagement " +
-                          eng_uuid)
+                     eng_uuid)
         vf = VF.objects.get(engagement__uuid=eng_uuid)
         fileList = send_get_list_of_repo_files_event(vf)
         return fileList

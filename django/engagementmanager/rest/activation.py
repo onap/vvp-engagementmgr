@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -48,8 +48,10 @@ from engagementmanager.decorator.log_func_entry import logFuncEntry
 from engagementmanager.models import IceUserProfile
 from engagementmanager.rest.vvp_api_view import VvpApiView
 from engagementmanager.utils.constants import Constants
-from engagementmanager.utils.vvp_exceptions import VvpObjectNotAvailable, VvpGeneralException, VvpBadRequest
-from engagementmanager.views_helper import generateActivationLink, getFirstEngByUser
+from engagementmanager.utils.vvp_exceptions \
+    import VvpObjectNotAvailable, VvpGeneralException, VvpBadRequest
+from engagementmanager.views_helper \
+    import generateActivationLink, getFirstEngByUser
 from engagementmanager.vm_integration import vm_client
 from engagementmanager.service.logging_service import LoggingServiceFactory
 
@@ -63,8 +65,9 @@ class ResendActivationMail(VvpApiView):
     def get(self, request, user_uuid, format=None):
         ice_user_obj = IceUserProfile.objects.get(uuid=user_uuid)
 
-        data = {'activation_link': generateActivationLink(ice_user_obj.user.activation_token, ice_user_obj),
-                'full_name': ice_user_obj.full_name}
+        data = {'activation_link': generateActivationLink(
+            ice_user_obj.user.activation_token, ice_user_obj),
+            'full_name': ice_user_obj.full_name}
 
         # updating the activation time
         ice_user_obj.user.activation_token_create_time = timezone.now()
@@ -72,10 +75,12 @@ class ResendActivationMail(VvpApiView):
         ice_user_obj.save()
         self.logger.debug("Activation Link: " + data['activation_link'])
 
-        body = get_template("{activate_template_dir}activate_mail_body.html".format(
-            activate_template_dir=Constants.activate_template_dir))
-        subject = get_template("{activate_template_dir}activate_mail_subject.html".format(
-            activate_template_dir=Constants.activate_template_dir))
+        body = get_template(
+            "{activate_template_dir}activate_mail_body.html".format(
+                activate_template_dir=Constants.activate_template_dir))
+        subject = get_template(
+            "{activate_template_dir}activate_mail_subject.html".format(
+                activate_template_dir=Constants.activate_template_dir))
         mail.sendMail(ice_user_obj.email, data, body, subject)
 
         return Response()
@@ -98,18 +103,22 @@ class ActivateUser(VvpApiView):
 
         if user.activation_token != kwargs['token']:
             raise VvpBadRequest(
-                "User's activation token is not equal to the token in the activation path param.")
+                "User's activation token is not equal to the \
+                token in the activation path param.")
 
         created = user.activation_token_create_time
         current = timezone.now()
-        if created.year == current.year and created.month == current.month and (created.day == current.day or
-                                                                                created.day == current.day - 1):
+        if created.year == current.year and created.month == current.month \
+            and (created.day == current.day or
+                 created.day == current.day - 1):
             delta = current - created
-            if abs(delta).total_seconds() / 3600.0 <= settings.TOKEN_EXPIRATION_IN_HOURS:
+            if abs(delta).total_seconds() / 3600.0 <= \
+                    settings.TOKEN_EXPIRATION_IN_HOURS:
                 user.is_active = True
                 user.save()
                 self.logger.debug(
-                    "User " + user_profile.full_name + " is activated successfully, redirecting to Login")
+                    "User " + user_profile.full_name + " is activated successfully, \
+                    redirecting to Login")
                 user = IceUserProfile.objects.get(email=user.email)
                 eng = getFirstEngByUser(user)
                 result = {'activation_success': True, }
@@ -119,5 +128,5 @@ class ActivateUser(VvpApiView):
                 return Response(result)
         else:
             raise SignatureExpired("User's activation token expired.")
-        
+
         return Response({'activation_success': False, })

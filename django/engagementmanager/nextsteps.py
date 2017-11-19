@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -51,28 +51,33 @@ default_next_steps = [
     {
         'position': 2,
         'stage': 'Intake',
-        'text': 'Please work with your Engagement Lead (EL) to complete the necessary trial agreements.',
+        'text': 'Please work with your Engagement Lead (EL) to complete the ' +
+        'necessary trial agreements.',
         'condition': lambda x, y: True,
         'type': NextStepType.trial_agreements.name  # @UndefinedVariable
     },
     {
         'position': 3,
         'stage': 'Intake',
-        'text': 'Please add your ' + Constants.service_provider_company_name + ' sponsor or vendor contact information.',
+        'text': 'Please add your ' + Constants.service_provider_company_name\
+        + ' sponsor or vendor contact information.',
         'condition': lambda user, eng: False if (eng.contact_user) else True,
         'type': NextStepType.add_contact_person.name  # @UndefinedVariable
     },
     {
         'position': 1,
         'stage': 'Active',
-        'text': 'Please submit the first version of the VF package. If you have any problems or questions, please contact your Engagement Lead (EL)',
+        'text': 'Please submit the first version of the VF package.' +\
+        'If you have any problems or questions,' +\
+        'please contact your Engagement Lead (EL)',
         'condition': lambda x, y: True,
         'type': NextStepType.submit_vf_package.name  # @UndefinedVariable
     },
     {
         'position': 1,
         'stage': 'Validated',
-        'text': 'Please schedule a time with your Engagement Lead (EL) to complete the handoff.',
+        'text': 'Please schedule a time with your Engagement Lead (EL)' +\
+        'to complete the handoff.',
         'condition': lambda x, y: True,
         'type': NextStepType.el_handoff.name  # @UndefinedVariable
     }
@@ -83,18 +88,28 @@ def create_default_next_steps_for_user(user, el_user):
     """
     This method is for personal default next step only since it has an owner
     """
-    def cond(user): return False if (user.ssh_public_key and user.ssh_public_key != '') else True
+    def cond(user): return False if (
+        user.ssh_public_key and user.ssh_public_key != '') else True
     if cond(user):
         desc = "Please add your SSH key to be able to contribute."
-        nextstep = NextStep.objects.create(creator=el_user, last_updater=el_user, position=1, description=desc, last_update_type='Added', state='Incomplete',
-                                           engagement_stage='Intake', engagement=None, owner=user, next_step_type=NextStepType.set_ssh.name, due_date=timezone.now() + timedelta(days=1))  # @UndefinedVariable
+        nextstep = NextStep.objects.create(
+            creator=el_user,
+            last_updater=el_user, position=1,
+            description=desc,
+            last_update_type='Added',
+            state='Incomplete',
+            engagement_stage='Intake',
+            engagement=None, owner=user,
+            next_step_type=NextStepType.set_ssh.name,
+            due_date=timezone.now() + timedelta(days=1))
         nextstep.assignees.add(user)
         nextstep.save()
 
 
 def create_default_next_steps(user, engagement, el_user):
     """
-    This method is for non-personal default next step only since it doesn't have an owner
+    This method is for non-personal default next step \
+    only since it doesn't have an owner
     """
     for step in default_next_steps:
         cond = step['condition']
@@ -104,10 +119,17 @@ def create_default_next_steps(user, engagement, el_user):
             if (user.company == Constants.service_provider_company):
                 desc = desc.replace('$Contact', 'Vendor Contact')
             else:
-                desc = desc.replace('$Contact', Constants.service_provider_company_name + ' Sponsor Contact')
+                desc = desc.replace(
+                    '$Contact', Constants.service_provider_company_name
+                    + ' Sponsor Contact')
             logger.debug('Creating default next step : ' + desc)
-            nextstep = NextStep.objects.create(creator=el_user, last_updater=el_user, position=step['position'], description=desc, state='Incomplete', engagement_stage=step[
-                                               'stage'], engagement=engagement, next_step_type=ns_type, due_date=timezone.now() + timedelta(days=1))
+            nextstep = NextStep.objects.create(
+                creator=el_user,
+                last_updater=el_user, position=step['position'],
+                description=desc, state='Incomplete',
+                engagement_stage=step['stage'],
+                engagement=engagement, next_step_type=ns_type,
+                due_date=timezone.now() + timedelta(days=1))
             nextstep.assignees.add(el_user)
             nextstep.save()
         else:

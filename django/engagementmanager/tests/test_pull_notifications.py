@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -38,10 +38,12 @@
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
 from engagementmanager.tests.test_base_entity import TestBaseEntity
 from engagementmanager.apps import bus_service
-from engagementmanager.bus.messages.activity_event_message import ActivityEventMessage
+from engagementmanager.bus.messages.activity_event_message import \
+    ActivityEventMessage
 from engagementmanager.models import Vendor
-from engagementmanager.utils.constants import Constants, ActivityType
-from engagementmanager.utils.activities_data import ActivityData, UserJoinedEngagementActivityData
+from engagementmanager.utils.constants import Constants
+from engagementmanager.utils.activities_data import \
+    UserJoinedEngagementActivityData
 from engagementmanager.service.logging_service import LoggingServiceFactory
 
 logger = LoggingServiceFactory.get_logger()
@@ -54,14 +56,23 @@ class NotificationsTestCase(TestBaseEntity):
 
         self.createDefaultRoles()
         # Create a user with role el
-        vendor = Vendor.objects.get(name=Constants.service_provider_company_name)
-        self.peer_reviewer = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.randomGenerator("main-vendor-email"),
-            '55501000199', 'peer-reviewer user', self.el, True)
-        self.el_user = self.creator.createUser(vendor,
-                                               self.randomGenerator("main-vendor-email"),
-                                               self.randomGenerator("randomNumber"),
-                                               self.randomGenerator("randomString"), self.el, True)
+        vendor = Vendor.objects.get(
+            name=Constants.service_provider_company_name)
+        self.peer_reviewer = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
+            '55501000199',
+            'peer-reviewer user',
+            self.el,
+            True)
+        self.el_user = self.creator.createUser(
+            vendor,
+            self.randomGenerator("main-vendor-email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.el,
+            True)
         print('-----------------------------------------------------')
         print('Created User:')
         print('UUID: ' + str(self.el_user.uuid))
@@ -70,8 +81,13 @@ class NotificationsTestCase(TestBaseEntity):
 
         # Create a user with role standard_user
         vendor = Vendor.objects.get(name='Other')
-        self.user = self.creator.createUser(vendor, self.randomGenerator("email"), self.randomGenerator(
-            "randomNumber"), self.randomGenerator("randomString"), self.standard_user, True)
+        self.user = self.creator.createUser(
+            vendor,
+            self.randomGenerator("email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.standard_user,
+            True)
         print('-----------------------------------------------------')
         print('Created User:')
         print('UUID: ' + str(self.user.uuid))
@@ -90,9 +106,14 @@ class NotificationsTestCase(TestBaseEntity):
         self.engagement.peer_reviewer = self.peer_reviewer
         # Create a VF
         self.deploymentTarget = self.creator.createDeploymentTarget(
-            self.randomGenerator("randomString"), self.randomGenerator("randomString"))
-        self.vf = self.creator.createVF(self.randomGenerator("randomString"),
-                                        self.engagement, self.deploymentTarget, False, vendor)
+            self.randomGenerator("randomString"),
+            self.randomGenerator("randomString"))
+        self.vf = self.creator.createVF(
+            self.randomGenerator("randomString"),
+            self.engagement,
+            self.deploymentTarget,
+            False,
+            vendor)
 
         print('-----------------------------------------------------')
         print('Created VF:')
@@ -108,13 +129,19 @@ class NotificationsTestCase(TestBaseEntity):
         logger.debug("Starting pull notification test")
         logger.debug("Creating a random new user")
         vendor = Vendor.objects.get(name='Other')
-        randomUser = self.creator.createUser(vendor, self.randomGenerator("email"), self.randomGenerator(
-            "randomNumber"), self.randomGenerator("randomString"), self.standard_user, True)
+        randomUser = self.creator.createUser(
+            vendor,
+            self.randomGenerator("email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.standard_user,
+            True)
         self.engagement.engagement_team.add(randomUser)
         self.engagement.save()
 
         logger.debug(
-            "created a new user & added them to the engagement team, going to create the activity and consider it as a notification")
+            "created a new user & added them to the engagement team, \
+            going to create the activity and consider it as a notification")
         usersList = []
         usersList.append(randomUser)
         activity_data = UserJoinedEngagementActivityData(
@@ -122,7 +149,8 @@ class NotificationsTestCase(TestBaseEntity):
         bus_service.send_message(ActivityEventMessage(activity_data))
 
         response = self.c.get(urlStr + str(randomUser.uuid) +
-                              "/0/1", **{'HTTP_AUTHORIZATION': "token " + self.token})
+                              "/0/1", **{'HTTP_AUTHORIZATION':
+                                         "token " + self.token})
         content = response.content
         status = response.status_code
         logger.debug("Got response : " + str(status))

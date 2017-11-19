@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,12 +36,15 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
+
+
 def classDecorator(decorators):
     def decorate(cls):
         for attr in cls.__dict__:
             if callable(getattr(cls, attr)):
                 for ice_decorator in decorators:
-                    if (attr in ["get", "put", "post", "delete", "entity_list", "entity_detail", "set_attr"]):
+                    if (attr in ["get", "put", "post", "delete",
+                                 "entity_list", "entity_detail", "set_attr"]):
                         setattr(cls, attr, ice_decorator(getattr(cls, attr)))
         return cls
     return decorate

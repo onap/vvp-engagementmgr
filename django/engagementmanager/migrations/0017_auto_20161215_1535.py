@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -54,14 +54,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Invitation',
             fields=[
-                ('uuid', models.CharField(max_length=36, primary_key=True, serialize=False)),
-                ('engagement_uuid', models.CharField(db_index=True, max_length=64)),
-                ('invited_by_user_uuid', models.CharField(db_index=True, max_length=64)),
+                ('uuid', models.CharField(max_length=36,
+                                          primary_key=True, serialize=False)),
+                ('engagement_uuid', models.CharField(
+                    db_index=True, max_length=64)),
+                ('invited_by_user_uuid', models.CharField(
+                    db_index=True, max_length=64)),
                 ('email', models.CharField(max_length=255)),
                 ('invitation_token', models.CharField(max_length=1024)),
                 ('accepted', models.BooleanField(default=False)),
                 ('create_time', models.DateTimeField(
-                    default=django.utils.timezone.now, verbose_name='invitation creation time')),
+                    default=django.utils.timezone.now,
+                    verbose_name='invitation creation time')),
             ],
             options={
                 'db_table': 'ice_invitation',

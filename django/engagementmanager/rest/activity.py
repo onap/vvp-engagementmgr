@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -60,6 +60,7 @@ class PullActivities(VvpApiView):
         if not num:
             num = settings.NUMBER_OF_POLLED_ACTIVITIES
         eng = Engagement.objects.get(uuid=request_data_mgr.get_eng_uuid())
-        activities = self.activities_service.pull_recent_activities(eng, recent_activities_limit=num)
+        activities = self.activities_service.pull_recent_activities(
+            eng, recent_activities_limit=num)
         serializer = ActivityModelSerializer(activities, many=True)
         return Response(serializer.data)

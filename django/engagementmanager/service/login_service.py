@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -74,14 +74,19 @@ class LoginSvc(BaseSvc):
             raise PermissionDenied(msg)
         return user
 
-    def reset_password(self, reset_password_email, i_password, msg, user_profile):
+    def reset_password(self, reset_password_email, i_password,
+                       msg, user_profile):
         token_user = self.get_user_by_email(reset_password_email)
         if user_profile.user.id != token_user.id:
-            msg = self.render_user_conflict_message(user_profile.user, token_user)
+            msg = self.render_user_conflict_message(
+                user_profile.user, token_user)
         temp_encrypted_password = user_profile.user.temp_password
-        is_temp_password_ok = check_password(i_password, temp_encrypted_password)
+        is_temp_password_ok = check_password(
+            i_password, temp_encrypted_password)
         if is_temp_password_ok:
-            self.logger.debug("Temporary Passwords match... Checking temporary password expiration")
+            self.logger.debug(
+                "Temporary Passwords match...\
+                 Checking temporary password expiration")
         else:
             msg = "User or Password does not match"
             self.logger.error(msg + " in Reset Password flow")
@@ -90,7 +95,8 @@ class LoginSvc(BaseSvc):
 
     def render_user_conflict_message(self, user, user_from_token):
         msg = "User Conflict"
-        self.logger.error(msg + ". user uuid =" + user.id + ", user from token uuid=" + user_from_token.id)
+        self.logger.error(msg + ". user uuid =" + user.id +
+                          ", user from token uuid=" + user_from_token.id)
         raise VvpConflict
 
     def render_user_not_active_message(self, i_email):
@@ -106,25 +112,31 @@ class LoginSvc(BaseSvc):
         if reset_password_param is not None:
             is_reset_pwd_flow = True
             self.logger.debug(
-                "Reset Password flow is identified. Checking temporary password expiration. t=" + reset_password_param)
+                "Reset Password flow is identified.\
+                 Checking temporary password expiration. t="
+                + reset_password_param)
             token_arr = reset_password_param.split("token")
             if len(token_arr) > 0:
                 email = jwt_obj.decode_reset_password_token(str(token_arr[1]))
             else:
-                self.logger.error("token doesn't include token prefix: " + logEncoding(reset_password_param))
+                self.logger.error(
+                    "token doesn't include token prefix: "
+                    + logEncoding(reset_password_param))
                 is_reset_pwd_flow = False
         return email, is_reset_pwd_flow
 
     def handle_invite_token(self, data, user_data, user_profile):
         data['invitation'] = data['invitation'].strip()
-        invitation = Invitation.objects.get(invitation_token=data['invitation'])
+        invitation = Invitation.objects.get(
+            invitation_token=data['invitation'])
         addUsersToEngTeam(invitation.engagement_uuid, [user_profile])
         vf_obj = VF.objects.get(engagement__uuid=invitation.engagement_uuid)
         vm_client.fire_event_in_bg('send_provision_new_vf_event', vf_obj)
         user_data['eng_uuid'] = invitation.engagement_uuid
         markInvitationAsAccepted(data['invitation'])
 
-    def get_serialized_user_data(self, is_reset_pwd_flow, user_profile, jwt_obj, user):
+    def get_serialized_user_data(self, is_reset_pwd_flow, user_profile,
+                                 jwt_obj, user):
         user_data = ThinIceUserProfileModelSerializer(user_profile).data
         user_data['isResetPwdFlow'] = is_reset_pwd_flow
         user_data['token'] = jwt_obj.create_token(user)

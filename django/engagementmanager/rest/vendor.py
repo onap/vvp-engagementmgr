@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -68,9 +68,6 @@ class VendorREST(VvpApiView):
         data = request.data
 
         vendor = None
-        public = False
-        if 'public' in data:
-            public = data['public']
         try:
             vendor = Vendor.objects.get(name=data['name'])
             msg = "Company: " + vendor.name + " already exist"
@@ -91,5 +88,5 @@ class VendorREST(VvpApiView):
     def delete(self, request, uuid):
         msg = ""
         sts = HTTP_204_NO_CONTENT
-        vendor = Vendor.objects.get(uuid=uuid).delete()
+        Vendor.objects.get(uuid=uuid).delete()
         return Response(msg, status=sts)

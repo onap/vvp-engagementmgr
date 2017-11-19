@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -39,7 +39,8 @@
 """ populate_all_gitlab_repo_and_user_and_jenkins
 Will populate gitlab and jenkins with vf data (where it's not exists).
 
-This command will be used for systems with missing gitlab/jenkins data for some vfs.
+This command will be used for systems
+with missing gitlab/jenkins data for some vfs.
 """
 from django.core.management.base import BaseCommand
 from rest_framework.status import HTTP_200_OK
@@ -55,14 +56,18 @@ logger = LoggingServiceFactory.get_logger()
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        engStageList = [EngagementStage.Intake.name, EngagementStage.Active.name,
-                        EngagementStage.Validated.name, EngagementStage.Completed.name]
-        vf_list = VF.objects.filter(engagement__engagement_stage__in=engStageList)
+        engStageList = [EngagementStage.Intake.name,
+                        EngagementStage.Active.name,
+                        EngagementStage.Validated.name,
+                        EngagementStage.Completed.name]
+        vf_list = VF.objects.filter(
+            engagement__engagement_stage__in=engStageList)
         log_array = []
         error_array = []
         for vf_found in vf_list:
             logger.debug(vf_found.uuid)
-            msg, http_status, values = vm_client.send_provision_new_vf_event(vf_found)
+            msg, http_status, values = vm_client.send_provision_new_vf_event(
+                vf_found)
             vf_dict = {
                 'vf_uuid': vf_found.uuid,
                 'msg': msg,

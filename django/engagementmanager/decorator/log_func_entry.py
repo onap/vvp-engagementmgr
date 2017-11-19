@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -45,6 +45,7 @@ logger = LoggingServiceFactory.get_logger()
 def logFuncEntry(func):
     @wraps(func)
     def log(*args, **kwargs):
-        logger.debug('calling {}'.format(func.__name__) + " | " + str(args) + " | " + str(kwargs))
+        logger.debug('calling {}'.format(func.__name__) +
+                     " | " + str(args) + " | " + str(kwargs))
         return func(*args, **kwargs)
     return log

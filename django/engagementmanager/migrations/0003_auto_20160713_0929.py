@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -56,30 +56,61 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='nextstep',
-            options={'verbose_name_plural': 'Next steps'},
+            options={
+                'verbose_name_plural': 'Next steps'},
         ),
         migrations.AddField(
             model_name='nextstep',
             name='next_step_type',
-            field=models.CharField(choices=[(b'(3,)', b'add_contact_person'), (b'(5,)', b'el_handoff'), (b'(1,)', b'set_ssh'), (
-                b'(4,)', b'submit_vf_package'), (b'(2,)', b'trial_agreements'), (b'6', b'user_defined')], default=b'user_defined', max_length=36),
+            field=models.CharField(
+                choices=[
+                    (b'(3,)',
+                     b'add_contact_person'),
+                    (b'(5,)',
+                     b'el_handoff'),
+                    (b'(1,)',
+                     b'set_ssh'),
+                    (b'(4,)',
+                     b'submit_vf_package'),
+                    (b'(2,)',
+                     b'trial_agreements'),
+                    (b'6',
+                     b'user_defined')],
+                default=b'user_defined',
+                max_length=36),
         ),
         migrations.AddField(
             model_name='nextstep',
             name='owner',
-            field=models.ForeignKey(blank=True, null=True,
-                                    on_delete=django.db.models.deletion.PROTECT, to='engagementmanager.IceUser'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to='engagementmanager.IceUser'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='target_completion_date',
-            field=models.DateField(blank=True, default=datetime.datetime(
-                2016, 7, 29, 9, 29, 32, 642800, tzinfo=utc), null=True),
+            field=models.DateField(
+                blank=True,
+                default=datetime.datetime(
+                    2016,
+                    7,
+                    29,
+                    9,
+                    29,
+                    32,
+                    642800,
+                    tzinfo=utc),
+                null=True),
         ),
         migrations.AlterField(
             model_name='nextstep',
             name='engagement',
-            field=models.ForeignKey(blank=True, null=True,
-                                    on_delete=django.db.models.deletion.PROTECT, to='engagementmanager.Engagement'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to='engagementmanager.Engagement'),
         ),
     ]

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -52,7 +52,8 @@ logger = LoggingServiceFactory.get_logger()
 def setDecision(decisionUuid, user, value):
     logger.debug("attempting setDecision(user=%r, value=%r)...", user, value)
 
-    if not decisionUuid or not user or value not in CheckListDecisionValue.__members__:
+    if not decisionUuid or not user or value not in \
+            CheckListDecisionValue.__members__:
         msg = "decisionUuid or value are empty or invalid / user == None"
         logger.error(msg)
         msg = "decision wasn't change due to bad parameters"
@@ -61,48 +62,64 @@ def setDecision(decisionUuid, user, value):
     decision = ChecklistDecision.objects.get(uuid=decisionUuid)
     checklist = decision.checklist
 
-    # @UndefinedVariable
-    if (checklist.owner.email == user.email and user.role.name == Roles.el.name) or (user.role.name == Roles.admin.name):
-        if checklist.state == CheckListState.review.name:  # @UndefinedVariable
+    if (checklist.owner.email == user.email and
+            user.role.name == Roles.el.name) or \
+            (user.role.name == Roles.admin.name):
+        if checklist.state == CheckListState.review.name:
             if decision.review_value != value:
                 decision.review_value = value
                 decision.save()
-                msg = "review_value was successfully changed for decision: " + decision.uuid + " , value: " + value
+                msg = "review_value was successfully " +\
+                    "changed for decision: " + \
+                    decision.uuid + " , value: " + value
             else:
-                msg = "review_value was already the same: " + decision.uuid + " , value: " + value
+                msg = "review_value was already the same: " + \
+                    decision.uuid + " , value: " + value
             logger.debug(msg)
-        elif checklist.state == CheckListState.peer_review.name:  # @UndefinedVariable
+        elif checklist.state == CheckListState.peer_review.name:
             if decision.peer_review_value != value:
                 decision.peer_review_value = value
                 decision.save()
-                msg = "peer_review_value was successfully changed for decision: " + decision.uuid + " , value: " + value
+                msg = "peer_review_value was successfully " +\
+                    "changed for decision: " + decision.uuid +\
+                    " , value: " + value
             else:
-                msg = "review_value was already the same: " + decision.uuid + " , value: " + value
+                msg = "review_value was already the same: " + \
+                    decision.uuid + " , value: " + value
             logger.debug(msg)
-        elif checklist.state == CheckListState.automation.name:  # @UndefinedVariable
+        elif checklist.state == CheckListState.automation.name:
             if decision.review_value != value:
                 decision.peer_review_value = value
                 decision.save()
-                msg = "peer_review_value was successfully changed for decision: " + decision.uuid + " , value: " + value
+                msg = "peer_review_value was successfully " +\
+                    "changed for decision: " + decision.uuid +\
+                    " , value: " + value
             else:
-                msg = "review_value was already the same: " + decision.uuid + " , value: " + value
+                msg = "review_value was already the same: " + \
+                    decision.uuid + " , value: " + value
 
             if decision.review_value != value:
                 decision.review_value = value
                 decision.save()
-                msg = "review_value was successfully changed for decision: " + decision.uuid + " , value: " + value
+                msg = "review_value was successfully " +\
+                    "changed for decision: " + \
+                    decision.uuid + " , value: " + value
             else:
-                msg = "review_value was already the same: " + decision.uuid + " , value: " + value
+                msg = "review_value was already the same: " + \
+                    decision.uuid + " , value: " + value
             logger.debug(msg)
         else:
-            msg = "checklist's state is an invalid state for the decision change and should be different"
+            msg = "checklist's state is an invalid state for the decision " +\
+                "change and should be different"
             logger.error(msg)
-            msg = "decision wasn't change, Checklist's state is not allowed to change the decision"
+            msg = "decision wasn't change, " +\
+                "Checklist's state is not allowed to change the decision"
             raise MethodNotAllowed(msg)
         return msg
     else:
         msg = "user isn't an EL / The User (" + user.full_name + \
-            ") tried to change the decision while the current owner is " + checklist.owner.full_name
+            ") tried to change the decision while the current owner is " \
+            + checklist.owner.full_name
         logger.error(logEncoding(msg))
         msg = "Action is forbidden"
         raise PermissionDenied(msg)
@@ -110,13 +127,16 @@ def setDecision(decisionUuid, user, value):
 
 def getDecision(decisionUuid, user):
     data = dict()
-    if decisionUuid == '' or (not user and user.role.name == Roles.el.name):  # @UndefinedVariable
+    # @UndefinedVariable
+    if decisionUuid == '' or (not user and user.role.name == Roles.el.name):
         msg = "decisionUuid or (user == None / user.role != EL)"
         logger.error(msg)
-        msg = "decision wasn't retrieved due to bad parameters / you are not authorized"
+        msg = "decision wasn't retrieved due to bad parameters / " +\
+            "you are not authorized"
         raise KeyError(msg)
 
     decision = ChecklistDecision.objects.get(uuid=decisionUuid)
-    data['decision'] = ThinChecklistDecisionModelSerializer(decision, many=False).data
+    data['decision'] = ThinChecklistDecisionModelSerializer(
+        decision, many=False).data
     decisionData = json.dumps(data, ensure_ascii=False)
     return decisionData

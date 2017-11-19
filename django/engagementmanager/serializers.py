@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -37,7 +37,9 @@
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
 '''
-Each entity has a model serializer that save/update the object in its create()/update() methods and a regular dictionary (map) serializer that return a new/updated instance of the object
+Each entity has a model serializer that save/update the object in its \
+create()/update() methods and a regular dictionary (map) serializer that \
+return a new/updated instance of the object
 
 '''
 from rest_framework import serializers
@@ -47,7 +49,8 @@ from engagementmanager.models import NextStep, Notification, Activity, \
     ChecklistLineItem, ECOMPRelease, EngagementStatus, CustomUser, \
     ChecklistSection
 
-from .models import IceUserProfile, VFC, Engagement, VF, DeploymentTarget, Role, Vendor, DeploymentTargetSite
+from .models import IceUserProfile, VFC, Engagement, VF, \
+    DeploymentTarget, Role, Vendor, DeploymentTargetSite
 
 
 class RoleModelSerializer(serializers.ModelSerializer):
@@ -106,7 +109,8 @@ class SuperThinIceUserProfileModelSerializer(serializers.ModelSerializer):
                   'user', 'company', 'phone_number')
 
 
-class SuperThinIceUserProfileModelSerializerForSignals(serializers.ModelSerializer):
+class SuperThinIceUserProfileModelSerializerForSignals(
+        serializers.ModelSerializer):
     role = RoleModelSerializer(many=False)
 
     class Meta:
@@ -121,8 +125,10 @@ class ThinIceUserProfileModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IceUserProfile
-        fields = ('email', 'full_name', 'user', 'is_service_provider_contact', 'phone_number', 'role', 'uuid', 'company',
-                  'ssh_public_key', 'regular_email_updates', 'email_updates_on_every_notification',
+        fields = ('email', 'full_name', 'user', 'is_service_provider_contact',
+                  'phone_number', 'role', 'uuid', 'company',
+                  'ssh_public_key', 'regular_email_updates',
+                  'email_updates_on_every_notification',
                   'email_updates_daily_digest', 'rgwa_access_key')
 
 
@@ -179,7 +185,8 @@ class ThinVFModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = VF
         fields = (
-            'uuid', 'name', 'engagement', 'is_service_provider_internal', 'ecomp_release')
+            'uuid', 'name', 'engagement',
+            'is_service_provider_internal', 'ecomp_release')
 
 
 class ThinDeploymentTargetSiteModelSerializer(serializers.ModelSerializer):
@@ -304,7 +311,8 @@ class UserNextStepModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = NextStep
         fields = ('due_date', 'engagement_manual_id', 'description',
-                  'create_time', 'creator_full_name', 'vf_name', 'engagement_uuid')
+                  'create_time', 'creator_full_name',
+                  'vf_name', 'engagement_uuid')
 
 
 class NextStepModelSerializer(serializers.ModelSerializer):

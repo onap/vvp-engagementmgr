@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -44,7 +44,8 @@ from engagementmanager.decorator.class_decorator import classDecorator
 from engagementmanager.decorator.log_func_entry import logFuncEntry
 from engagementmanager.models import VF, DeploymentTargetSite
 from engagementmanager.rest.vvp_api_view import VvpApiView
-from engagementmanager.serializers import ThinDeploymentTargetSiteModelSerializer
+from engagementmanager.serializers import \
+    ThinDeploymentTargetSiteModelSerializer
 from engagementmanager.service.authorization_service import Permissions
 
 
@@ -56,16 +57,19 @@ class DTSites(VvpApiView):
         if vf_uuid:
             vf = VF.objects.get(uuid=vf_uuid)
             dtsites = vf.deployment_target_sites
-            serializer = ThinDeploymentTargetSiteModelSerializer(dtsites, many=True)
+            serializer = ThinDeploymentTargetSiteModelSerializer(
+                dtsites, many=True)
             return Response(serializer.data)
         else:
             dtsites = DeploymentTargetSite.objects.all()
-            serializer = ThinDeploymentTargetSiteModelSerializer(dtsites, many=True)
+            serializer = ThinDeploymentTargetSiteModelSerializer(
+                dtsites, many=True)
             return Response(serializer.data)
 
     """
     expecting: VF object uuid, DeploymentTargetSite uuid
-    result: addition of the DeploymentTargetSite object with dtsite_uuid to the VF's deployment_target_sites
+    result: addition of the DeploymentTargetSite object with dtsite_uuid \
+    to the VF's deployment_target_sites
     """
     @auth(Permissions.add_deployment_target_site)
     def post(self, request):
@@ -76,7 +80,8 @@ class DTSites(VvpApiView):
 
         try:
             dtsite = DeploymentTargetSite.objects.get(name=name)
-            msg = "DTSite was already existed, hence would next be added to the VF's sites list"
+            msg = "DTSite was already existed, hence would next be \
+            added to the VF's sites list"
         except DeploymentTargetSite.DoesNotExist:
             dtsite = DeploymentTargetSite.objects.create(name=name)
             dtsite.save()

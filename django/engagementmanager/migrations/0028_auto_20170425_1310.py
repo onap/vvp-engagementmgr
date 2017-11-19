@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -53,59 +53,177 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='activity',
             name='activity_type',
-            field=models.CharField(choices=[('user_joined_eng', 'user_joined_eng'), ('ssh_key_added', 'ssh_key_added'), ('eng_validation_request', 'eng_validation_request'), ('next_steps', 'next_steps'), ('vfc', 'vfc'), (
-                'change_checklist_state', 'change_checklist_state'), ('vf_provisioing_event', 'vf_provisioing_event'), ('test_finished_event', 'test_finished_event'), ('change_engagement_stage', 'change_engagement_stage')], max_length=36),
+            field=models.CharField(
+                choices=[
+                    ('user_joined_eng',
+                     'user_joined_eng'),
+                    ('ssh_key_added',
+                     'ssh_key_added'),
+                    ('eng_validation_request',
+                     'eng_validation_request'),
+                    ('next_steps',
+                     'next_steps'),
+                    ('vfc',
+                     'vfc'),
+                    ('change_checklist_state',
+                     'change_checklist_state'),
+                    ('vf_provisioing_event',
+                     'vf_provisioing_event'),
+                    ('test_finished_event',
+                     'test_finished_event'),
+                    ('change_engagement_stage',
+                     'change_engagement_stage')],
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='checklist',
             name='state',
-            field=models.CharField(choices=[('automation', 'automation'), ('review', 'review'), ('peer_review', 'peer_review'), ('approval', 'approval'), (
-                'handoff', 'handoff'), ('closed', 'closed'), ('archive', 'archive'), ('pending', 'pending')], default='pending', max_length=36),
+            field=models.CharField(
+                choices=[
+                    ('automation',
+                     'automation'),
+                    ('review',
+                     'review'),
+                    ('peer_review',
+                     'peer_review'),
+                    ('approval',
+                     'approval'),
+                    ('handoff',
+                     'handoff'),
+                    ('closed',
+                     'closed'),
+                    ('archive',
+                     'archive'),
+                    ('pending',
+                     'pending')],
+                default='pending',
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='checklistdecision',
             name='peer_review_value',
-            field=models.CharField(choices=[('approved', 'approved'), ('denied', 'denied'),
-                                            ('not_relevant', 'not_relevant'), ('na', 'na')], max_length=36),
+            field=models.CharField(
+                choices=[
+                    ('approved',
+                     'approved'),
+                    ('denied',
+                     'denied'),
+                    ('not_relevant',
+                     'not_relevant'),
+                    ('na',
+                     'na')],
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='checklistdecision',
             name='review_value',
-            field=models.CharField(choices=[('approved', 'approved'), ('denied', 'denied'),
-                                            ('not_relevant', 'not_relevant'), ('na', 'na')], max_length=36),
+            field=models.CharField(
+                choices=[
+                    ('approved',
+                     'approved'),
+                    ('denied',
+                     'denied'),
+                    ('not_relevant',
+                     'not_relevant'),
+                    ('na',
+                     'na')],
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='checklistlineitem',
             name='line_type',
-            field=models.CharField(choices=[('auto', 'auto'), ('manual', 'manual')], default='auto', max_length=36),
+            field=models.CharField(
+                choices=[
+                    ('auto',
+                     'auto'),
+                    ('manual',
+                     'manual')],
+                default='auto',
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='checklisttemplate',
             name='category',
-            field=models.CharField(choices=[('overall', 'overall'), ('heat', 'heat'), ('glance', 'glance'),
-                                            ('instantiation', 'instantiation'), ('asdc', 'asdc')], default='overall', max_length=36),
+            field=models.CharField(
+                choices=[
+                    ('overall',
+                     'overall'),
+                    ('heat',
+                     'heat'),
+                    ('glance',
+                     'glance'),
+                    ('instantiation',
+                     'instantiation'),
+                    ('asdc',
+                     'asdc')],
+                default='overall',
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='engagement_stage',
-            field=models.CharField(choices=[('Intake', 'Intake'), ('Active', 'Active'), ('Validated', 'Validated'), (
-                'Completed', 'Completed'), ('Archived', 'Archived')], db_index=True, default='Intake', max_length=15),
+            field=models.CharField(
+                choices=[
+                    ('Intake',
+                     'Intake'),
+                    ('Active',
+                     'Active'),
+                    ('Validated',
+                     'Validated'),
+                    ('Completed',
+                     'Completed'),
+                    ('Archived',
+                     'Archived')],
+                db_index=True,
+                default='Intake',
+                max_length=15),
         ),
         migrations.AlterField(
             model_name='nextstep',
             name='next_step_type',
-            field=models.CharField(choices=[('set_ssh', 'set_ssh'), ('trial_agreements', 'trial_agreements'), ('add_contact_person', 'add_contact_person'), (
-                'submit_vf_package', 'submit_vf_package'), ('el_handoff', 'el_handoff'), ('user_defined', 'user_defined')], default='user_defined', max_length=36),
+            field=models.CharField(
+                choices=[
+                    ('set_ssh',
+                     'set_ssh'),
+                    ('trial_agreements',
+                     'trial_agreements'),
+                    ('add_contact_person',
+                     'add_contact_person'),
+                    ('submit_vf_package',
+                     'submit_vf_package'),
+                    ('el_handoff',
+                     'el_handoff'),
+                    ('user_defined',
+                     'user_defined')],
+                default='user_defined',
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='nextstep',
             name='state',
-            field=models.CharField(choices=[('Incomplete', 'Incomplete'), ('Completed', 'Completed')], max_length=15),
+            field=models.CharField(
+                choices=[
+                    ('Incomplete',
+                     'Incomplete'),
+                    ('Completed',
+                     'Completed')],
+                max_length=15),
         ),
         migrations.AlterField(
             model_name='recentengagement',
             name='action_type',
-            field=models.CharField(choices=[('JOINED_TO_ENGAGEMENT', 'JOINED_TO_ENGAGEMENT'), ('NEXT_STEP_ASSIGNED', 'NEXT_STEP_ASSIGNED'), ('GOT_OWNERSHIP_OVER_ENGAGEMENT',
-                                                                                                                                             'GOT_OWNERSHIP_OVER_ENGAGEMENT'), ('NAVIGATED_INTO_ENGAGEMENT', 'NAVIGATED_INTO_ENGAGEMENT'), ('NEW_VF_CREATED', 'NEW_VF_CREATED')], max_length=36),
+            field=models.CharField(
+                choices=[
+                    ('JOINED_TO_ENGAGEMENT',
+                     'JOINED_TO_ENGAGEMENT'),
+                    ('NEXT_STEP_ASSIGNED',
+                     'NEXT_STEP_ASSIGNED'),
+                    ('GOT_OWNERSHIP_OVER_ENGAGEMENT',
+                     'GOT_OWNERSHIP_OVER_ENGAGEMENT'),
+                    ('NAVIGATED_INTO_ENGAGEMENT',
+                     'NAVIGATED_INTO_ENGAGEMENT'),
+                    ('NEW_VF_CREATED',
+                     'NEW_VF_CREATED')],
+                max_length=36),
         ),
     ]

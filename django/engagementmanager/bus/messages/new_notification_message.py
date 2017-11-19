@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,14 +36,16 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-from engagementmanager.bus.messages.service_bus_base_message import ServiceBusBaseMessage
+from engagementmanager.bus.messages.service_bus_base_message import \
+    ServiceBusBaseMessage
 from engagementmanager.models import Notification
 from engagementmanager.utils.vvp_exceptions import VvpGeneralException
 
 
 class NewNotificationMessage(ServiceBusBaseMessage):
     def __init__(self, notification):
-        if type(notification) is not Notification:
-            raise VvpGeneralException("New notification event can be from type Notification only.")
+        if not isinstance(notification, Notification):
+            raise VvpGeneralException(
+                "New notification event can be from type Notification only.")
 
         self.notification = notification

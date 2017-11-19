@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -53,6 +53,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='engagement',
             name='archived_time',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='archived time'),
+            field=models.DateTimeField(
+                blank=True, null=True, verbose_name='archived time'),
         ),
     ]

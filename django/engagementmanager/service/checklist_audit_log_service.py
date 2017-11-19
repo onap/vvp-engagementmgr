@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -37,7 +37,8 @@
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
 import json
-from engagementmanager.models import ChecklistDecision, ChecklistAuditLog, Checklist
+from engagementmanager.models import ChecklistDecision,\
+    ChecklistAuditLog, Checklist
 from engagementmanager.serializers import ThinChecklistAuditLogModelSerializer
 from engagementmanager.service.logging_service import LoggingServiceFactory
 
@@ -46,11 +47,14 @@ logger = LoggingServiceFactory.get_logger()
 
 def addAuditLogToDecision(decision, description, user, category=''):
     """
-    expected: decisionUuid(string), description(string), user(object), category is optional(string)
-    result: new auditlog object would be create and attached to a decision object.
+    expected: decisionUuid(string), description(string),\
+     user(object), category is optional(string)
+    result: new auditlog object would be create and \
+    attached to a decision object.
     """
     audit = ChecklistAuditLog.objects.create(decision=decision,
-                                             description=description, category=category, creator=user)
+                                             description=description,
+                                             category=category, creator=user)
     auditData = ThinChecklistAuditLogModelSerializer(audit).data
     return auditData
 
@@ -58,10 +62,11 @@ def addAuditLogToDecision(decision, description, user, category=''):
 def getAuditLogsWithDecision(decisionUuid, user):
     """
     expected: decisionUuid(string), user(object)
-    result: all audit logs objects that attached to a decision would be returned in a json.
+    result: all audit logs objects that attached to a decision \
+    would be returned in a json.
     """
     data = dict()
-    if checklistUuid == '' or not user:  # @UndefinedVariable
+    if decisionUuid == '' or not user:
         msg = "checklistUuid or user == None"
         logger.error(msg)
         msg = "AuditLogs were not retrieved due to bad parameters"
@@ -69,18 +74,22 @@ def getAuditLogsWithDecision(decisionUuid, user):
 
     decision = ChecklistDecision.objects.get(uuid=decisionUuid)
     audits = ChecklistAuditLog.objects.filter(decision=decision)
-    data['audits'] = ThinChecklistAuditLogModelSerializer(audits, many=True).data
+    data['audits'] = ThinChecklistAuditLogModelSerializer(
+        audits, many=True).data
     auditsData = json.dumps(data, ensure_ascii=False)
     return auditsData
 
 
 def addAuditLogToChecklist(checklist, description, user, category=''):
     """
-    expected: checklistUuid(string), description(string), user(object), category is optional(string)
-    result: new auditlog object would be create and attached to a checklist object.
+    expected: checklistUuid(string), description(string), user(object), \
+    category is optional(string)
+    result: new auditlog object would be create and attached \
+    to a checklist object.
     """
     audit = ChecklistAuditLog.objects.create(checklist=checklist,
-                                             description=description, category=category, creator=user)
+                                             description=description,
+                                             category=category, creator=user)
     auditData = ThinChecklistAuditLogModelSerializer(audit).data
     logger.debug("audit log was successfully updated")
     return auditData
@@ -89,7 +98,8 @@ def addAuditLogToChecklist(checklist, description, user, category=''):
 def getAuditLogsWithChecklist(checklistUuid, user):
     """
     expected: checklistUuid(string), user(object)
-    result: all audit logs objects that attached to a checklist would be returned in a json.
+    result: all audit logs objects that attached to a checklist \
+    would be returned in a json.
     """
     data = dict()
     if checklistUuid == '' or not user:  # @UndefinedVariable
@@ -100,6 +110,7 @@ def getAuditLogsWithChecklist(checklistUuid, user):
 
     checklist = Checklist.objects.get(uuid=checklistUuid)
     audits = ChecklistAuditLog.objects.filter(checklist=checklist)
-    data['audits'] = ThinChecklistAuditLogModelSerializer(audits, many=True).data
+    data['audits'] = ThinChecklistAuditLogModelSerializer(
+        audits, many=True).data
     auditsData = json.dumps(data, ensure_ascii=False)
     return auditsData

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -41,7 +41,8 @@ import os
 
 from django.core import management
 
-from engagementmanager.management.commands.initial_populate_db import execute_bootstrap_actions
+from engagementmanager.management.commands.initial_populate_db \
+    import execute_bootstrap_actions
 from engagementmanager.tests.test_base_entity import TestBaseEntity
 
 
@@ -54,10 +55,10 @@ class TestImportEngagementXLSTestCase(TestBaseEntity):
     def initBody(self):
         pass
 
-    ### TESTS ###
     def testImportEngagementXLSTestCase(self):
         self.initBody()
-        xls_path = 'engagementmanager/tests/D2_ICE_Engagements_Import_Example.xlsx'
+        xls_path = \
+            'engagementmanager/tests/D2_ICE_Engagements_Import_Example.xlsx'
 
         if not os.path.exists(xls_path):
             print("File doesnt exists")

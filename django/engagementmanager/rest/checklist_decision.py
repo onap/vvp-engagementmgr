@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -46,7 +46,8 @@ from engagementmanager.decorator.class_decorator import classDecorator
 from engagementmanager.decorator.log_func_entry import logFuncEntry
 from engagementmanager.rest.vvp_api_view import VvpApiView
 from engagementmanager.service.authorization_service import Permissions
-from engagementmanager.service.checklist_decision_service import setDecision, getDecision
+from engagementmanager.service.checklist_decision_service import setDecision, \
+    getDecision
 from engagementmanager.utils.request_data_mgr import request_data_mgr
 
 

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,7 +36,6 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-import json
 
 from rest_framework.response import Response
 
@@ -46,8 +45,9 @@ from engagementmanager.decorator.log_func_entry import logFuncEntry
 from engagementmanager.models import ChecklistDecision, Checklist
 from engagementmanager.rest.vvp_api_view import VvpApiView
 from engagementmanager.service.authorization_service import Permissions
-from engagementmanager.service.checklist_audit_log_service import getAuditLogsWithChecklist, \
-    addAuditLogToChecklist, getAuditLogsWithDecision, addAuditLogToDecision
+from engagementmanager.service.checklist_audit_log_service \
+    import getAuditLogsWithChecklist, addAuditLogToChecklist, \
+    getAuditLogsWithDecision, addAuditLogToDecision
 from engagementmanager.utils.request_data_mgr import request_data_mgr
 
 
@@ -68,7 +68,8 @@ class ChecklistAuditLog(VvpApiView):
         checklistUuid = request_data_mgr.get_cl_uuid()
 
         if ('description' not in data or not data['description']):
-            msg = "description for the audit log is not provided in the request's body"
+            msg = "description for the audit log is " +\
+                "not provided in the request's body"
             self.logger.error(msg)
             raise KeyError(msg)
         description = data['description']

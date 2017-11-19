@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -44,13 +44,15 @@ class ChoiceEnum(Enum):
 
     @classmethod
     def choices(cls):
-        """Return this Enum's values in a format suitable for use as Django Field.choices param.
+        """Return this Enum's values in a format suitable for use as Django Field.
+        choices param.
 
         https://docs.python.org/3/library/enum.html
         https://docs.djangoproject.com/en/1.10/ref/models/fields/#choices
 
         """
-        # FIXME it might be more useful in some situations to return (x.value, x.name), but we do
-        # this way is for compatibility with older versions of this code. Changing would require a
-        # data migration.`
+        # FIXME it might be more useful in some situations to
+        # return (x.value, x.name), but we do
+        # this way is for compatibility with older versions of this code.
+        # Changing would require a data migration.`
         return [(x.name, x.name) for x in cls]

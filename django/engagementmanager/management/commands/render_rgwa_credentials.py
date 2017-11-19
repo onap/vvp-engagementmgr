@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -39,7 +39,8 @@
 """ render_rgwa_credentials
 Will create rados gateway user (S3 API) for each django user.
 
-This command will create the user if it's not exists so it safe to run it even the user are exists.
+This command will create the user if it's not exists
+so it safe to run it even the user are exists.
 This command is part of bucket usage (images) efforts.
 """
 from django.db.models import Q

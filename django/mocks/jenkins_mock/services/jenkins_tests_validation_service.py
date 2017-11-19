@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -51,15 +51,17 @@ class JenkinsTestsResultsSvc():
         response['checklist_uuid'] = checklist_uuid
         checklist = Checklist.objects.get(uuid=checklist_uuid)
         line_items = ChecklistLineItem.objects.filter(
-            template=checklist.template)[:JenkinsTestsResultsSvc().num_of_auto_tests]
+            template=checklist.template)[
+                :JenkinsTestsResultsSvc().num_of_auto_tests]
         optional_results = ['approved', 'denied']
         optional_text = ['Mock: All required tests passed',
                          'Mock: At least one of the required tests failed']
         response['decisions'] = list()
         for lineitem in line_items:
-            #random_result = random.choice(optional_results)
+            # random_result = random.choice(optional_results)
             random_result = optional_results[0]
-            #audit_log_text = optional_text[0] if random_result == optional_results[0] else optional_text[1]
+            # audit_log_text = optional_text[0] if random_result ==
+            # optional_results[0] else optional_text[1]
             audit_log_text = optional_text[0]
             response['decisions'].append(
                 {

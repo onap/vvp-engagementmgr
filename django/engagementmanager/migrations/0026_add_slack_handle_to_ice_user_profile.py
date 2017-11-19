@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -52,6 +52,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='iceuserprofile',
             name='slack_handle',
-            field=models.CharField(blank=True, default=None, max_length=64, null=True),
+            field=models.CharField(
+                blank=True, default=None, max_length=64, null=True),
         ),
     ]

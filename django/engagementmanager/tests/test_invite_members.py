@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -83,11 +83,17 @@ class TestInviteMembersTestCase(TestBaseEntity):
 
         # Create a VF
         self.deploymentTarget = self.creator.createDeploymentTarget(
-            self.randomGenerator("randomString"), self.randomGenerator("randomString"))
+            self.randomGenerator("randomString"),
+            self.randomGenerator("randomString"))
 
         for eng in self.engList:
-            vf = self.creator.createVF(self.randomGenerator("randomString"), eng,
-                                       self.deploymentTarget, False, Vendor.objects.get(name='Other'))
+            vf = self.creator.createVF(
+                self.randomGenerator("randomString"),
+                eng,
+                self.deploymentTarget,
+                False,
+                Vendor.objects.get(
+                    name='Other'))
             self.vfList.append(vf)
 
         self.urlStr = self.urlPrefix + "invite-team-members/"
@@ -108,22 +114,30 @@ class TestInviteMembersTestCase(TestBaseEntity):
 
     def inviteContact(self, expectedStatus=HTTP_200_OK):
         self.invitedDataStr = json.dumps(self.invitedData, ensure_ascii=False)
-        response = self.c.post(self.urlStr, self.invitedDataStr, content_type='application/json',
+        response = self.c.post(self.urlStr,
+                               self.invitedDataStr,
+                               content_type='application/json',
                                **{'HTTP_AUTHORIZATION': "token " + self.token})
-        print('Got response : ' + str(response.status_code), str(response.content))
+        print('Got response : ' + str(response.status_code),
+              str(response.content))
         self.assertEqual(response.status_code, expectedStatus)
         return response
 
     def createContactUser(self):
-        self.contact = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.data['email'], self.data['phone_number'], self.data['full_name'], self.standard_user, True)
+        self.contact = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.data['email'],
+            self.data['phone_number'],
+            self.data['full_name'],
+            self.standard_user,
+            True)
         print('-----------------------------------------------------')
         print('Created User:')
         print('UUID: ' + str(self.contact.uuid))
         print('Full Name: ' + self.contact.full_name)
         print('-----------------------------------------------------')
 
-    ### TESTS ###
     def testAddContactForNonExistingContact(self):
         self.initBody()
         self.inviteContact()
@@ -161,4 +175,5 @@ class TestInviteMembersTestCase(TestBaseEntity):
             self.invitedData.append(data)
             self.inviteContact(expectedStatus=HTTP_200_OK)
             invitedUser = IceUserProfile.objects.get(email=data['email'])
-            self.assertTrue(invitedUser in self.engList[i].engagement_team.all())
+            self.assertTrue(
+                invitedUser in self.engList[i].engagement_team.all())

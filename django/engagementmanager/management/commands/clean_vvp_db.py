@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -37,16 +37,20 @@
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
 """ clean_vvp_db
-Will delete content from database (almost all entities) to create initial environment.
+Will delete content from database (almost all entities)
+to create initial environment.
 
 This command uses django orm to remove data.
-This command is part of clean_vvp_system command but can be used separately as well.
+This command is part of clean_vvp_system command
+but can be used separately as well.
 
-WARNING: It will delete almost everything, if you have necessary data DO NOT USE THIS COMMAND!
+WARNING: It will delete almost everything, if you
+have necessary data DO NOT USE THIS COMMAND!
 """
 from django.core.management.base import BaseCommand
 from engagementmanager import models
-from engagementmanager.management.commands.initial_populate_db import admin_dummy_users, admin_ro_dummy_users, \
+from engagementmanager.management.commands.initial_populate_db \
+    import admin_dummy_users, admin_ro_dummy_users, \
     dummy_users, el_dummy_users
 from engagementmanager.service.logging_service import LoggingServiceFactory
 from engagementmanager.utils.constants import Constants
@@ -57,12 +61,14 @@ logger = LoggingServiceFactory.get_logger()
 class Command(BaseCommand):
     def handle(self, *args, **options):
         logger.info("***************************************")
-        logger.info(">>%s db is about to be cleaned up!" % Constants.program_name)
+        logger.info(">>%s db is about to be cleaned up!" %
+                    Constants.program_name)
         logger.info("***************************************")
 
         excluded_emails = [dummy_users[0][1], dummy_users[1][1],
                            el_dummy_users[0][1], el_dummy_users[1][1],
-                           admin_dummy_users[0][1], admin_ro_dummy_users[0][1], ]
+                           admin_dummy_users[0][1],
+                           admin_ro_dummy_users[0][1], ]
 
         try:
             models.EngagementStatus.objects.all().delete()
@@ -83,7 +89,9 @@ class Command(BaseCommand):
             models.Engagement.objects.all().delete()
             models.IceUserProfile.objects.exclude(email__in=excluded_emails)\
                 .delete()
-            models.CustomUser.objects.exclude(user_ptr_id__in=models.IceUserProfile.objects.all().values('id')).delete()
+            models.CustomUser.objects.exclude(
+                user_ptr_id__in=models.IceUserProfile.objects.
+                all().values('id')).delete()
 
             models.DeploymentTarget.objects.all().delete()
             models.DeploymentTargetSite.objects.all().delete()

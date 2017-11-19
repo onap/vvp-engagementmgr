@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -52,7 +52,8 @@ class InvalidGitlabEventException(APIException):
 
 class InvalidJenkinsPhaseException(APIException):
     status_code = HTTP_400_BAD_REQUEST
-    default_detail = 'Jenkins job build notification phase was missing or invalid.'
+    default_detail = 'Jenkins job build notification phase \
+    was missing or invalid.'
 
 
 class InvalidPayloadException(APIException):

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -39,7 +39,8 @@
 from django.db.models.query_utils import Q
 from django.utils import timezone
 from django.utils.timezone import timedelta
-from engagementmanager.bus.handlers.service_bus_base_handler import ServiceBusBaseHandler
+from engagementmanager.bus.handlers.service_bus_base_handler import \
+    ServiceBusBaseHandler
 from engagementmanager.models import Engagement, VF
 from engagementmanager.service.activities_service import ActivitiesSvc
 from engagementmanager.service.checklist_service import CheckListSvc
@@ -52,10 +53,14 @@ logger = LoggingServiceFactory.get_logger()
 
 
 class DailyNotifyInactiveEngagements(ServiceBusBaseHandler):
+
     def handle_message(self, bus_message):
         logger.debug("New digest bus message arrived - email is about to sent")
         checklist_service = CheckListSvc()
-        engagements_list = Engagement.objects.filter(is_with_files=False, Q(engagement_stage=EngagementStage.Active.name) | Q(engagement_stage=EngagementStage.Intake.name))
+        engagements_list = Engagement.objects.filter(
+            Q(engagement_stage=EngagementStage.Active.name) | Q(
+                engagement_stage=EngagementStage.Intake.name),
+            is_with_files=False)
 
         for engagement in engagements_list:
             files_found = checklist_service.getEngagementFiles(engagement.uuid)
@@ -67,7 +72,10 @@ class DailyNotifyInactiveEngagements(ServiceBusBaseHandler):
             max_empty_time = self.get_max_empty_date(engagement.create_time)
 
             if max_empty_time < timezone.now():
-                archive_engagement(engagement.uuid, "More than 30 days passed and no files added to gitlab yet")
+                archive_engagement(
+                    engagement.uuid,
+                    "More than 30 days passed and no files \
+                    added to gitlab yet")
             else:
                 self.send_emails_logic(engagement)
 
@@ -81,13 +89,21 @@ class DailyNotifyInactiveEngagements(ServiceBusBaseHandler):
 
     def send_emails_logic(self, engagement):
 
-        delta_days_from_creation = self.get_days_delta(engagement.create_time, timezone.now())
+        delta_days_from_creation = self.get_days_delta(
+            engagement.create_time, timezone.now())
         alert_days = [7, 14, 21]
-        if (delta_days_from_creation in alert_days) or (delta_days_from_creation >= 23 and delta_days_from_creation < 30):
+        if (delta_days_from_creation in alert_days) or (
+                delta_days_from_creation >= 23 and
+                delta_days_from_creation < 30):
             vf = VF.objects.get(engagement=engagement)
             vf_name = vf.name
-            max_empty_time = self.get_max_empty_date(engagement.create_time).strftime('%b %d, %Y')
+            max_empty_time = self.get_max_empty_date(
+                engagement.create_time).strftime('%b %d, %Y')
             git_repo_url = vf.git_repo_url
             activity_data = NoticeEmptyEngagementData(
-                vf_name, max_empty_time, git_repo_url, str(delta_days_from_creation), engagement)
+                vf_name,
+                max_empty_time,
+                git_repo_url,
+                str(delta_days_from_creation),
+                engagement)
             ActivitiesSvc().generate_activity(activity_data)

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -55,17 +55,38 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Checklist',
             fields=[
-                ('uuid', models.CharField(max_length=36, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255, verbose_name='checklist name')),
-                ('state', models.CharField(choices=[(b'(4,)', b'approval'), (b'(7,)', b'archive'), (b'(1,)', b'automation'), (b'(6,)', b'closed'), (
-                    b'(5,)', b'handoff'), (b'(3,)', b'peer_review'), (b'8', b'pending'), (b'(2,)', b'review')], default=b'automation', max_length=36)),
-                ('validation_cycle', models.IntegerField(verbose_name='validation cycle')),
-                ('weight', models.FloatField(default=0, verbose_name='checklist weight')),
-                ('associated_files', models.TextField(verbose_name='list of files from gitlab')),
-                ('create_time', models.DateTimeField(default=django.utils.timezone.now, verbose_name='creation time')),
-                ('update_time', models.DateTimeField(blank=True, null=True, verbose_name='last update time')),
-                ('creator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                              related_name='checklist_creator', to='engagementmanager.IceUser')),
+                ('uuid', models.CharField(max_length=36,
+                                          primary_key=True, serialize=False)),
+                ('name', models.CharField(
+                    max_length=255,
+                    verbose_name='checklist name')),
+                ('state', models.CharField(
+                    choices=[(b'(4,)', b'approval'),
+                             (b'(7,)', b'archive'),
+                             (b'(1,)', b'automation'), (b'(6,)', b'closed'), (
+                        b'(5,)', b'handoff'), (b'(3,)', b'peer_review'),
+                        (b'8', b'pending'), (b'(2,)', b'review')],
+                    default=b'automation', max_length=36)),
+                ('validation_cycle', models.IntegerField(
+
+                    verbose_name='validation cycle')),
+                ('weight', models.FloatField(
+                    default=0,
+                    verbose_name='checklist weight')),
+                ('associated_files', models.TextField(
+
+                    verbose_name='list of files from gitlab')),
+                ('create_time', models.DateTimeField(
+                    default=django.utils.timezone.now,
+                    verbose_name='creation time')),
+                ('update_time', models.DateTimeField(
+                    blank=True,
+                    null=True,
+                    verbose_name='last update time')),
+                ('creator', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='checklist_creator',
+                    to='engagementmanager.IceUser')),
             ],
             options={
                 'db_table': 'ice_checklist',
@@ -74,15 +95,25 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ChecklistAuditLog',
             fields=[
-                ('uuid', models.CharField(max_length=36, primary_key=True, serialize=False)),
+                ('uuid', models.CharField(max_length=36,
+                                          primary_key=True, serialize=False)),
                 ('category', models.CharField(max_length=255)),
                 ('description', models.TextField()),
-                ('create_time', models.DateTimeField(default=django.utils.timezone.now, verbose_name='creation time')),
-                ('update_time', models.DateTimeField(blank=True, null=True, verbose_name='last update time')),
-                ('checklist', models.ForeignKey(blank=True, null=True,
-                                                on_delete=django.db.models.deletion.CASCADE, to='engagementmanager.Checklist')),
+                ('create_time', models.DateTimeField(
+                    default=django.utils.timezone.now,
+                    verbose_name='creation time')),
+                ('update_time', models.DateTimeField(
+                    blank=True,
+                    null=True,
+                    verbose_name='last update time')),
+                ('checklist', models.ForeignKey(
+                    blank=True, null=True,
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='engagementmanager.Checklist')),
                 ('creator', models.ForeignKey(
-                    on_delete=django.db.models.deletion.CASCADE, to='engagementmanager.IceUser')),
+
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='engagementmanager.IceUser')),
             ],
             options={
                 'db_table': 'ice_checklist_audit_log',
@@ -91,15 +122,25 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ChecklistDecision',
             fields=[
-                ('uuid', models.CharField(max_length=36, primary_key=True, serialize=False)),
+                ('uuid', models.CharField(max_length=36,
+                                          primary_key=True, serialize=False)),
                 ('review_value', models.CharField(choices=[
-                 (b'(1,)', b'approved'), (b'(2,)', b'denied'), (b'4', b'na'), (b'(3,)', b'not_relevant')], max_length=36)),
+                 (b'(1,)', b'approved'), (b'(2,)', b'denied'), (b'4', b'na'),
+                 (b'(3,)', b'not_relevant')], max_length=36)),
                 ('peer_review_value', models.CharField(choices=[
-                 (b'(1,)', b'approved'), (b'(2,)', b'denied'), (b'4', b'na'), (b'(3,)', b'not_relevant')], max_length=36)),
-                ('create_time', models.DateTimeField(default=django.utils.timezone.now, verbose_name='creation time')),
-                ('update_time', models.DateTimeField(blank=True, null=True, verbose_name='last update time')),
+                 (b'(1,)', b'approved'), (b'(2,)', b'denied'), (b'4', b'na'),
+                 (b'(3,)', b'not_relevant')], max_length=36)),
+                ('create_time', models.DateTimeField(
+                    default=django.utils.timezone.now,
+                    verbose_name='creation time')),
+                ('update_time', models.DateTimeField(
+                    blank=True,
+                    null=True,
+                    verbose_name='last update time')),
                 ('checklist', models.ForeignKey(
-                    on_delete=django.db.models.deletion.CASCADE, to='engagementmanager.Checklist')),
+
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='engagementmanager.Checklist')),
             ],
             options={
                 'db_table': 'ice_checklist_decision',
@@ -108,15 +149,27 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ChecklistLineItem',
             fields=[
-                ('uuid', models.CharField(max_length=36, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255, verbose_name='line name')),
+                ('uuid', models.CharField(max_length=36,
+                                          primary_key=True, serialize=False)),
+                ('name', models.CharField(max_length=255,
+                                          verbose_name='line name')),
                 ('weight', models.FloatField(verbose_name='line weight')),
-                ('description', models.TextField(verbose_name='line description')),
-                ('line_type', models.CharField(choices=[(b'(1,)', b'auto'),
-                                                        (b'2', b'manual')], default=b'auto', max_length=36)),
-                ('validation_instructions', models.TextField(verbose_name='line validation instructions')),
-                ('create_time', models.DateTimeField(default=django.utils.timezone.now, verbose_name='creation time')),
-                ('update_time', models.DateTimeField(blank=True, null=True, verbose_name='last update time')),
+                ('description', models.TextField(
+                    verbose_name='line description')),
+                ('line_type', models.CharField(
+                    choices=[(b'(1,)', b'auto'),
+                             (b'2', b'manual')],
+                    default=b'auto', max_length=36)),
+                ('validation_instructions', models.TextField(
+
+                    verbose_name='line validation instructions')),
+                ('create_time', models.DateTimeField(
+                    default=django.utils.timezone.now,
+                    verbose_name='creation time')),
+                ('update_time', models.DateTimeField(
+                    blank=True,
+                    null=True,
+                    verbose_name='last update time')),
             ],
             options={
                 'db_table': 'ice_checklist_line_item',
@@ -125,15 +178,28 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ChecklistSection',
             fields=[
-                ('uuid', models.CharField(max_length=36, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255, verbose_name='section name')),
+                ('uuid', models.CharField(max_length=36,
+                                          primary_key=True, serialize=False)),
+                ('name', models.CharField(max_length=255,
+                                          verbose_name='section name')),
                 ('weight', models.FloatField(verbose_name='checklist weight')),
-                ('description', models.TextField(verbose_name='section description')),
-                ('validation_instructions', models.TextField(verbose_name='section validation instructions')),
-                ('create_time', models.DateTimeField(default=django.utils.timezone.now, verbose_name='creation time')),
-                ('update_time', models.DateTimeField(blank=True, null=True, verbose_name='last update time')),
-                ('parent_section', models.ForeignKey(blank=True, null=True,
-                                                     on_delete=django.db.models.deletion.CASCADE, to='engagementmanager.ChecklistSection')),
+                ('description', models.TextField(
+
+                    verbose_name='section description')),
+                ('validation_instructions', models.TextField(
+
+                    verbose_name='section validation instructions')),
+                ('create_time', models.DateTimeField(
+                    default=django.utils.timezone.now,
+                    verbose_name='creation time')),
+                ('update_time', models.DateTimeField(
+                    blank=True,
+                    null=True,
+                    verbose_name='last update time')),
+                ('parent_section',
+                 models.ForeignKey(blank=True, null=True,
+                                   on_delete=django.db.models.deletion.CASCADE,
+                                   to='engagementmanager.ChecklistSection')),
             ],
             options={
                 'db_table': 'ice_checklist_section',
@@ -142,13 +208,24 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ChecklistTemplate',
             fields=[
-                ('uuid', models.CharField(max_length=36, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255, verbose_name='template name')),
-                ('category', models.CharField(choices=[
-                 (b'3', b'glance'), (b'(2,)', b'heat'), (b'(1,)', b'overall')], default=b'overall', max_length=36)),
-                ('version', models.IntegerField(verbose_name='template version')),
-                ('create_time', models.DateTimeField(default=django.utils.timezone.now, verbose_name='creation time')),
-                ('update_time', models.DateTimeField(blank=True, null=True, verbose_name='last update time')),
+                ('uuid', models.CharField(max_length=36,
+                                          primary_key=True, serialize=False)),
+                ('name', models.CharField(max_length=255,
+                                          verbose_name='template name')),
+                ('category', models.CharField(
+                    choices=[
+                        (b'3', b'glance'), (b'(2,)', b'heat'),
+                        (b'(1,)', b'overall')],
+                    default=b'overall', max_length=36)),
+                ('version', models.IntegerField(
+                    verbose_name='template version')),
+                ('create_time', models.DateTimeField(
+                    default=django.utils.timezone.now,
+                    verbose_name='creation time')),
+                ('update_time', models.DateTimeField(
+                    blank=True,
+                    null=True,
+                    verbose_name='last update time')),
             ],
             options={
                 'db_table': 'ice_checklist_template',
@@ -157,81 +234,103 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='engagement',
             name='peer_reviewer',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                    related_name='Engagement_peer_reviewer', to='engagementmanager.IceUser'),
+            field=models.ForeignKey(
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='Engagement_peer_reviewer',
+                to='engagementmanager.IceUser'),
         ),
         migrations.AddField(
             model_name='nextstep',
             name='assignees',
-            field=models.ManyToManyField(related_name='assignees', to='engagementmanager.IceUser'),
+            field=models.ManyToManyField(
+                related_name='assignees', to='engagementmanager.IceUser'),
         ),
         migrations.AddField(
             model_name='nextstep',
             name='due_date',
-            field=models.DateField(null=True, verbose_name='due_date'),
+            field=models.DateField(null=True,
+                                   verbose_name='due_date'),
         ),
         migrations.AddField(
             model_name='nextstep',
             name='files',
-            field=models.TextField(null=True, verbose_name='list of files'),
+            field=models.TextField(null=True,
+                                   verbose_name='list of files'),
         ),
         migrations.AlterField(
             model_name='activity',
             name='activity_type',
-            field=models.CharField(choices=[(b'6', b'change_checklist_state'), (b'3', b'eng_validation_request'), (
-                b'4', b'next_steps'), (b'2', b'ssh_key_added'), (b'1', b'user_joined_eng'), (b'5', b'vfc')], max_length=36),
+            field=models.CharField(
+                choices=[(b'6', b'change_checklist_state'),
+                         (b'3', b'eng_validation_request'), (
+                    b'4', b'next_steps'), (b'2', b'ssh_key_added'),
+                    (b'1', b'user_joined_eng'), (b'5', b'vfc')],
+                max_length=36),
         ),
         migrations.AddField(
             model_name='checklistsection',
             name='template',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
-                                    to='engagementmanager.ChecklistTemplate'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                to='engagementmanager.ChecklistTemplate'),
         ),
         migrations.AddField(
             model_name='checklistlineitem',
             name='section',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                    to='engagementmanager.ChecklistSection'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='engagementmanager.ChecklistSection'),
         ),
         migrations.AddField(
             model_name='checklistlineitem',
             name='template',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                    to='engagementmanager.ChecklistTemplate'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='engagementmanager.ChecklistTemplate'),
         ),
         migrations.AddField(
             model_name='checklistdecision',
             name='lineitem',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                    to='engagementmanager.ChecklistLineItem'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='engagementmanager.ChecklistLineItem'),
         ),
         migrations.AddField(
             model_name='checklistdecision',
             name='template',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                    to='engagementmanager.ChecklistTemplate'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='engagementmanager.ChecklistTemplate'),
         ),
         migrations.AddField(
             model_name='checklistauditlog',
             name='decision',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
-                                    to='engagementmanager.ChecklistDecision'),
+            field=models.ForeignKey(
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to='engagementmanager.ChecklistDecision'),
         ),
         migrations.AddField(
             model_name='checklist',
             name='engagement',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='engagementmanager.Engagement'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='engagementmanager.Engagement'),
         ),
         migrations.AddField(
             model_name='checklist',
             name='owner',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                    related_name='checklist_owner', to='engagementmanager.IceUser'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='checklist_owner',
+                to='engagementmanager.IceUser'),
         ),
         migrations.AddField(
             model_name='checklist',
             name='template',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
-                                    to='engagementmanager.ChecklistTemplate'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                to='engagementmanager.ChecklistTemplate'),
         ),
     ]

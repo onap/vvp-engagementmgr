@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -53,44 +53,54 @@ class ActivityData:
 
 class UserJoinedEngagementActivityData(ActivityData):
     def __init__(self, vf, users_list, engagement, owner=None):
-        super(UserJoinedEngagementActivityData, self).__init__(engagement, ActivityType.user_joined_eng, owner)
+        super(UserJoinedEngagementActivityData, self).__init__(
+            engagement, ActivityType.user_joined_eng, owner)
         self.vf = vf
         self.users_list = users_list
 
 
 class VFProvisioningActivityData(ActivityData):
-    def __init__(self, vf, users_list, engagement, description="There was an error provisioning the VF", owner=None):
-        super(VFProvisioningActivityData, self).__init__(engagement, ActivityType.vf_provisioning_event, owner)
+    def __init__(self, vf, users_list, engagement,
+                 description="There was an error provisioning the VF",
+                 owner=None):
+        super(VFProvisioningActivityData, self).__init__(
+            engagement, ActivityType.vf_provisioning_event, owner)
         self.vf = vf
         self.description = description
         self.users_list = users_list
 
 
 class TestFinishedActivityData(ActivityData):
-    def __init__(self, users_list, engagement, description="There was an error in Test"
-                                                           " Finished signal from Jenkins", owner=None):
-        super(TestFinishedActivityData, self).__init__(engagement, ActivityType.test_finished_event, owner)
+    def __init__(self, users_list, engagement,
+                 description="There was an error in Test"
+                 " Finished signal from Jenkins", owner=None):
+        super(TestFinishedActivityData, self).__init__(
+            engagement, ActivityType.test_finished_event, owner)
         self.description = description
         self.users_list = users_list
 
 
 class ChangeEngagementStageActivityData(ActivityData):
     def __init__(self, vf, stage, engagement, owner=None):
-        super(ChangeEngagementStageActivityData, self).__init__(engagement, ActivityType.change_engagement_stage, owner)
+        super(ChangeEngagementStageActivityData, self).__init__(
+            engagement, ActivityType.change_engagement_stage, owner)
         self.vf = vf
         self.stage = stage
 
 
 class AddNextStepsActivityData(ActivityData):
     def __init__(self, vf, user, engagement, owner=None):
-        super(AddNextStepsActivityData, self).__init__(engagement, ActivityType.add_next_steps, owner)
+        super(AddNextStepsActivityData, self).__init__(
+            engagement, ActivityType.add_next_steps, owner)
         self.vf = vf
         self.user = user
 
 
 class NoticeEmptyEngagementData(ActivityData):
-    def __init__(self, vf_name, max_empty_time, git_repo_url, delta_days_from_creation, engagement, owner=None):
-        super(NoticeEmptyEngagementData, self).__init__(engagement, ActivityType.notice_empty_engagement, owner)
+    def __init__(self, vf_name, max_empty_time, git_repo_url,
+                 delta_days_from_creation, engagement, owner=None):
+        super(NoticeEmptyEngagementData, self).__init__(
+            engagement, ActivityType.notice_empty_engagement, owner)
         self.max_empty_time = max_empty_time
         self.vf_name = vf_name
         self.git_repo_url = git_repo_url
@@ -99,18 +109,21 @@ class NoticeEmptyEngagementData(ActivityData):
 
 class UpdateNextStepsActivityData(ActivityData):
     def __init__(self, update_type, user, engagement, owner=None):
-        super(UpdateNextStepsActivityData, self).__init__(engagement, ActivityType.update_next_steps, owner)
+        super(UpdateNextStepsActivityData, self).__init__(
+            engagement, ActivityType.update_next_steps, owner)
         self.update_type = update_type
         self.user = user
 
 
 class DeleteNextStepsActivityData(ActivityData):
     def __init__(self, user, engagement, owner=None):
-        super(DeleteNextStepsActivityData, self).__init__(engagement, ActivityType.delete_next_steps, owner)
+        super(DeleteNextStepsActivityData, self).__init__(
+            engagement, ActivityType.delete_next_steps, owner)
         self.user = user
 
 
 class SSHKeyAddedActivityData(ActivityData):
     def __init__(self, action, engagement, owner=None):
-        super(SSHKeyAddedActivityData, self).__init__(engagement, ActivityType.ssh_key_added, owner)
+        super(SSHKeyAddedActivityData, self).__init__(
+            engagement, ActivityType.ssh_key_added, owner)
         self.action = action

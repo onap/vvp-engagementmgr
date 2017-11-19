@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -39,7 +39,8 @@
 import json
 from django.template.loader import get_template
 from engagementmanager import mail
-from engagementmanager.bus.handlers.service_bus_base_handler import ServiceBusBaseHandler
+from engagementmanager.bus.handlers.service_bus_base_handler import \
+    ServiceBusBaseHandler
 from engagementmanager.mail import sendMail
 from engagementmanager.models import Notification
 from engagementmanager.utils.constants import Constants
@@ -50,26 +51,42 @@ logger = LoggingServiceFactory.get_logger()
 
 class DailyResendNotificationsHandler(ServiceBusBaseHandler):
     def handle_message(self, bus_message):
-        logger.debug("New resend notifications message arrived - emails is about to sent to the "
-                     "all unsent notifications")
+        logger.debug(
+            "New resend notifications message arrived - " +
+            "emails is about to sent to the " +
+            "all unsent notifications")
         unsent_notifications = Notification.objects.filter(is_sent=False)
         for notification in unsent_notifications:
             if notification.user.email_updates_on_every_notification:
                 try:
-                    subject_template = get_template("{notification_template_dir}notification_mail_subject.html".format(
-                        notification_template_dir=Constants.notification_template_dir))
-                    msg_template = get_template("{notification_template_dir}notification_mail_body.html".format(
-                        notification_template_dir=Constants.notification_template_dir))
+                    subject_template = get_template(
+                        "{notification_template_dir}\
+                        notification_mail_subject.html".format(
+                            notification_template_dir=Constants.
+                            notification_template_dir))
+                    msg_template = get_template(
+                        "{notification_template_dir}\
+                        notification_mail_body.html".format(
+                            notification_template_dir=Constants.
+                            notification_template_dir))
 
-                    sendMail(notification.user.email, json.loads(notification.activity.metadata),
-                             msg_template, subject_template, mail_from=mail.ice_admin_mail_from)
+                    sendMail(
+                        notification.user.email,
+                        json.loads(
+                            notification.activity.metadata),
+                        msg_template,
+                        subject_template,
+                        mail_from=mail.ice_admin_mail_from)
                     notification.is_sent = True
                     notification.save()
                 except Exception as e:
-                    msg = "Something went wrong while trying to resend bulk mail " \
+                    msg = "Something went wrong while trying \
+                    to resend bulk mail " \
                           "as part of the notifications daily resend"
                     logger.error(msg + " " + e)
             else:
                 notification.is_sent = True
                 notification.save()
-                logger.info("User choose not to get email on every notification, set it as sent.")
+                logger.info(
+                    "User choose not to get email on every \
+                    notification, set it as sent.")

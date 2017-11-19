@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -47,7 +47,8 @@ ice_admin_mail_from = settings.CONTACT_FROM_ADDRESS
 logger = LoggingServiceFactory.get_logger()
 
 
-def sendMail(email, data, mail_body_template, mail_subject_template, mail_from=ice_admin_mail_from):
+def sendMail(email, data, mail_body_template, mail_subject_template,
+             mail_from=ice_admin_mail_from):
     logger.debug("about to send mail to " + email)
     if data is None:
         data = {}
@@ -55,7 +56,8 @@ def sendMail(email, data, mail_body_template, mail_subject_template, mail_from=i
     html_msg = mail_body_template.render(context=data)
     mail_subject = mail_subject_template.render(context=data)
     # send mail with template
-    send_mail(mail_subject, '', "D2 ICE Team <" + mail_from + ">", [email], fail_silently=False, html_message=html_msg)
+    send_mail(mail_subject, '', "D2 ICE Team <" + mail_from + ">",
+              [email], fail_silently=False, html_message=html_msg)
     logger.debug("Looks like email delivery to " + email + " has succeeded")
 
 
@@ -64,8 +66,11 @@ def sendBulkMail(datatuple):
 
     try:
         num_sent = send_mass_mail(datatuple)
-        logger.debug("Looks like email delivery has succeeded. Number of sent mails is " + str(num_sent))
+        logger.debug(
+            "Looks like email delivery has succeeded. Number of sent\
+            mails is " + str(num_sent))
         return num_sent
-    except Exception as e:  # Dont remove try-except since it is invoked from Notification Bot
+    # Dont remove try-except since it is invoked from Notification Bot
+    except Exception as e:
         logger.error("Email delivery has failed. Error is: " + str(e))
         raise e

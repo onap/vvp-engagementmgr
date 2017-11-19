@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -53,12 +53,33 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='engagement',
             name='archive_reason',
-            field=models.TextField(default=None, null=True),
+            field=models.TextField(
+                default=None,
+                null=True),
         ),
         migrations.AlterField(
             model_name='activity',
             name='activity_type',
-            field=models.CharField(choices=[(b'user_joined_eng', b'user_joined_eng'), (b'ssh_key_added', b'ssh_key_added'), (b'eng_validation_request', b'eng_validation_request'), (b'next_steps', b'next_steps'), (b'vfc', b'vfc'), (
-                b'change_checklist_state', b'change_checklist_state'), (b'vf_provisioing_event', b'vf_provisioing_event'), (b'test_finished_event', b'test_finished_event'), (b'change_engagement_stage', b'change_engagement_stage')], max_length=36),
+            field=models.CharField(
+                choices=[
+                    (b'user_joined_eng',
+                     b'user_joined_eng'),
+                    (b'ssh_key_added',
+                     b'ssh_key_added'),
+                    (b'eng_validation_request',
+                     b'eng_validation_request'),
+                    (b'next_steps',
+                     b'next_steps'),
+                    (b'vfc',
+                     b'vfc'),
+                    (b'change_checklist_state',
+                     b'change_checklist_state'),
+                    (b'vf_provisioing_event',
+                     b'vf_provisioing_event'),
+                    (b'test_finished_event',
+                     b'test_finished_event'),
+                    (b'change_engagement_stage',
+                     b'change_engagement_stage')],
+                max_length=36),
         ),
     ]

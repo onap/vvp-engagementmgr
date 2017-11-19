@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,7 +36,8 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-from rest_framework.status import HTTP_401_UNAUTHORIZED, HTTP_202_ACCEPTED, HTTP_500_INTERNAL_SERVER_ERROR
+from rest_framework.status import HTTP_401_UNAUTHORIZED, \
+    HTTP_202_ACCEPTED, HTTP_500_INTERNAL_SERVER_ERROR
 from engagementmanager.models import Vendor
 from engagementmanager.tests.test_base_entity import TestBaseEntity
 from engagementmanager.utils.constants import Constants
@@ -50,12 +51,18 @@ class EngProgressTestCase(TestBaseEntity):
     def childSetup(self):  # Variables to use in this class.
         self.createVendors([Constants.service_provider_company_name, 'Other'])
         self.createDefaultRoles()
-        self.admin, self.el, self.standard_user = self.creator.createAndGetDefaultRoles()
+        self.admin, self.el, self.standard_user = \
+            self.creator.createAndGetDefaultRoles()
 
         # Create a user with role el
-        self.el_user = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.randomGenerator("main-vendor-email"),
-            '55501000199', 'el user', self.el, True)
+        self.el_user = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
+            '55501000199',
+            'el user',
+            self.el,
+            True)
         self.peer_reviewer = self.creator.createUser(Vendor.objects.get(
             name='Other'), self.randomGenerator("main-vendor-email"),
             '55501000199', 'peer-reviewer user', self.el, True)
@@ -80,19 +87,29 @@ class EngProgressTestCase(TestBaseEntity):
         self.printTestName("START")
 
         logger.debug(
-            "action should fail (401), Only Engagement Lead can set Engagement Progress")
-        response = self.c.put(urlStr, '{ "progress" : 50 }', content_type='application/json',
-                              **{'HTTP_AUTHORIZATION': "token " + self.token})
+            "action should fail (401), Only Engagement \
+            Lead can set Engagement Progress")
+        response = self.c.put(
+            urlStr,
+            '{ "progress" : 50 }',
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_401_UNAUTHORIZED)
 
-        response = self.c.put(urlStr, '{ "progress" : 50 }', content_type='application/json',
-                              **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.put(
+            urlStr,
+            '{ "progress" : 50 }',
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_202_ACCEPTED)
 
-        response = self.c.put(urlStr, '{ "progress" : 101 }', content_type='application/json',
-                              **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.put(
+            urlStr,
+            '{ "progress" : 101 }',
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_500_INTERNAL_SERVER_ERROR)
 

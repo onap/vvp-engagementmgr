@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -51,16 +51,22 @@ class VFCAPITestCase(TestBaseEntity):
         self.createVendors([Constants.service_provider_company_name, 'Other'])
         self.createDefaultRoles()
         # Create a user with role el
-        self.service_provider = Vendor.objects.get(name=Constants.service_provider_company_name)
-        self.el_user = self.creator.createUser(self.service_provider, self.randomGenerator(
-            "main-vendor-email"), self.randomGenerator("randomNumber"), self.randomGenerator("randomString"), self.el, True)
+        self.service_provider = Vendor.objects.get(
+            name=Constants.service_provider_company_name)
+        self.el_user = self.creator.createUser(
+            self.service_provider, self.randomGenerator(
+                "main-vendor-email"), self.randomGenerator("randomNumber"),
+            self.randomGenerator(
+                "randomString"), self.el, True)
         logger.debug('-----------------------------------------------------')
         logger.debug('Created User:')
         logger.debug('UUID: ' + str(self.el_user.uuid))
         logger.debug('Full Name: ' + self.el_user.full_name)
         logger.debug('-----------------------------------------------------')
-        self.peer_reviewer = self.creator.createUser(self.service_provider, self.randomGenerator(
-            "main-vendor-email"), self.randomGenerator("randomNumber"), self.randomGenerator("randomString"), self.el, True)
+        self.peer_reviewer = self.creator.createUser(
+            self.service_provider, self.randomGenerator(
+                "main-vendor-email"), self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"), self.el, True)
         logger.debug('-----------------------------------------------------')
         logger.debug('Created Peer Reviewer:')
         logger.debug('UUID: ' + str(self.peer_reviewer.uuid))
@@ -69,8 +75,10 @@ class VFCAPITestCase(TestBaseEntity):
 
         # Create a user with role standard_user
         self.vendor = Vendor.objects.get(name='Other')
-        self.user = self.creator.createUser(self.vendor, self.randomGenerator("email"), self.randomGenerator(
-            "randomNumber"), self.randomGenerator("randomString"), self.standard_user, True)
+        self.user = self.creator.createUser(
+            self.vendor, self.randomGenerator("email"), self.randomGenerator(
+                "randomNumber"), self.randomGenerator("randomString"),
+            self.standard_user, True)
         logger.debug('-----------------------------------------------------')
         logger.debug('Created User:')
         logger.debug('UUID: ' + str(self.user.uuid))
@@ -80,7 +88,8 @@ class VFCAPITestCase(TestBaseEntity):
         # Create an Engagement with team
         self.engagement = self.creator.createEngagement(self.randomGenerator(
             "randomString"), self.randomGenerator("randomString"), None)
-        self.engagement.engagement_team.add(self.user, self.el_user, self.peer_reviewer)
+        self.engagement.engagement_team.add(
+            self.user, self.el_user, self.peer_reviewer)
         self.engagement.peer_reviewer = self.peer_reviewer
         self.engagement.reviewer = self.el_user
         self.engagement.save()
@@ -91,9 +100,11 @@ class VFCAPITestCase(TestBaseEntity):
 
         # Create a DT, DTSite, VF
         self.deploymentTarget = self.creator.createDeploymentTarget(
-            self.randomGenerator("randomString"), self.randomGenerator("randomString"))
+            self.randomGenerator("randomString"),
+            self.randomGenerator("randomString"))
         self.vf = self.creator.createVF(self.randomGenerator("randomString"),
-                                        self.engagement, self.deploymentTarget, False, self.vendor)
+                                        self.engagement, self.deploymentTarget,
+                                        False, self.vendor)
 
         logger.debug('-----------------------------------------------------')
         logger.debug('Created VF:')
@@ -103,16 +114,17 @@ class VFCAPITestCase(TestBaseEntity):
         self.token = self.loginAndCreateSessionToken(self.user)
         self.ELtoken = self.loginAndCreateSessionToken(self.el_user)
 
-    def retrieveCurrentObjectsOfEngagementByFilter(self, method, detailOrObject, entity):
+    def retrieveCurrentObjectsOfEngagementByFilter(self, method,
+                                                   detailOrObject, entity):
         if method == 'filter':
-            list = entity.objects.filter(engagement=detailOrObject)
-            return list
+            entity_list = entity.objects.filter(engagement=detailOrObject)
+            return entity_list
         elif method == 'get':
-            list = entity.objects.get(uuid=detailOrObject)
-            return list
+            entity_list = entity.objects.get(uuid=detailOrObject)
+            return entity_list
 
-    def loggerTestFailedOrSucceded(self, bool):
-        if bool:
+    def loggerTestFailedOrSucceded(self, flag):
+        if flag:
             logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             logger.debug(" Test Succeeded")
             logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n")
@@ -125,7 +137,8 @@ class VFCAPITestCase(TestBaseEntity):
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.debug(" Test started: Create DTSite and add to VF")
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n")
-        self.deploymentTargetSite = self.creator.createDeploymentTargetSite(self.randomGenerator("randomString"))
+        self.deploymentTargetSite = self.creator.createDeploymentTargetSite(
+            self.randomGenerator("randomString"))
         self.vf.deployment_target_sites.add(self.deploymentTargetSite)
         sites = self.vf.deployment_target_sites.all()
         num = 1
@@ -141,14 +154,18 @@ class VFCAPITestCase(TestBaseEntity):
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.debug(" Test started: Delete VFC")
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n")
-        vfc = self.creator.createVFC(self.randomGenerator("randomString"), self.randomGenerator(
+        vfc = self.creator.createVFC(self.randomGenerator("randomString"),
+                                     self.randomGenerator(
             "randomNumber"), self.vendor, self.vf, self.el_user)
-        urlStr = self.urlPrefix + 'vf/' + str(vfc.uuid) + '/vfcs/' + str(vfc.uuid)
-        if (vfc == None):
-            logger.error("vfc wasn't created successfully before the deletion attempt")
+        urlStr = self.urlPrefix + 'vf/' + \
+            str(vfc.uuid) + '/vfcs/' + str(vfc.uuid)
+        if (not vfc):
+            logger.error(
+                "vfc wasn't created successfully before the deletion attempt")
             self.loggerTestFailedOrSucceded(False)
             self.assertEqual(500, expectedStatus)
-        response = self.c.delete(urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.delete(
+            urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
         logger.debug('Got response : ' + str(response.status_code))
         if (response.status_code == HTTP_204_NO_CONTENT):
             self.loggerTestFailedOrSucceded(True)
@@ -160,16 +177,21 @@ class VFCAPITestCase(TestBaseEntity):
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.debug(" Test started: Get VFCs")
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n")
-        vfc = self.creator.createVFC(self.randomGenerator("randomString"), self.randomGenerator(
+        vfc = self.creator.createVFC(self.randomGenerator("randomString"),
+                                     self.randomGenerator(
             "randomNumber"), self.vendor, self.vf, self.el_user)
-        vfc2 = self.creator.createVFC(self.randomGenerator("randomString"), self.randomGenerator(
+        vfc2 = self.creator.createVFC(self.randomGenerator("randomString"),
+                                      self.randomGenerator(
             "randomNumber"), self.service_provider, self.vf, self.el_user)
         urlStr = self.urlPrefix + 'vf/' + str(self.vf.uuid) + '/vfcs/'
-        if (vfc == None or vfc2 == None):
-            logger.error("The VFCs were not created successfully before the deletion attempt")
+        if (not vfc or not vfc2):
+            logger.error(
+                "The VFCs were not created successfully before \
+                the deletion attempt")
             self.loggerTestFailedOrSucceded(False)
             self.assertEqual(500, expectedStatus)
-        response = self.c.get(urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.get(
+            urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
         logger.debug('Got response : ' + str(response.status_code))
         logger.debug("VFCs found in the VF(through the GET request):")
         logger.debug(str(response.content))

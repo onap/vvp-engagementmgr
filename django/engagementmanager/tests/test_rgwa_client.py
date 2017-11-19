@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -59,7 +59,7 @@ class Test_ValidateArgs(object):
         self.valid_args = {
             'foo': ['foo1', 'foo2'],
             'bar': [1, 2, 3],
-            }
+        }
 
     def test_unconstrained(self):
         _validate_args(self.valid_args, baz="quux")
@@ -89,7 +89,7 @@ class TestRGWAClientMethods(object):
             access_key=self.access_key,
             secret_key=self.secret_key,
             base_url=Constants.rgwa_base_url
-            )
+        )
 
     def test_get_usage(self, r):
         self.conn.get_usage(uid='foo', show_entries=True)
@@ -98,9 +98,9 @@ class TestRGWAClientMethods(object):
             method='get',
             json={},
             params={'show-entries': True, 'show-summary': False, 'uid': 'foo'},
-            url=Constants.rgwa_base_url+'/usage',
+            url=Constants.rgwa_base_url + '/usage',
             verify=True,
-            )
+        )
 
     def test_trim_usage(self, r):
         self.conn.trim_usage(uid='foo', remove_all=True)
@@ -111,7 +111,7 @@ class TestRGWAClientMethods(object):
             params={'remove-all': True, 'uid': 'foo'},
             url='http://localhost:8123/admin/usage',
             verify=True,
-            )
+        )
 
     def test_get_user(self, r):
         self.conn.get_user(uid='foo')
@@ -120,9 +120,9 @@ class TestRGWAClientMethods(object):
             method='get',
             json={},
             params={'uid': 'foo'},
-            url=Constants.rgwa_base_url+'/user',
+            url=Constants.rgwa_base_url + '/user',
             verify=True,
-            )
+        )
 
     # Marked FIXME because we experience diminishing returns here. All the
     # methods in the library are basically one-liner calls to the common
@@ -134,80 +134,103 @@ class TestRGWAClientMethods(object):
 
     @expectedFailure
     def test_create_user(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_modify_user(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_remove_user(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_create_subuser(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_modify_subuser(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_remove_subuser(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_create_key(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_remove_key(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_get_bucket(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_check_bucket_index(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_remove_bucket(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_unlink_bucket(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_link_bucket(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_remove_object(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_get_policy(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_add_capability(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_remove_capability(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_get_quota(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_set_quota(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_get_user_quota(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_set_user_quota(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_get_user_bucket_quota(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_set_user_bucket_quota(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
 
     @expectedFailure
     def test_get_users(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
+
     @expectedFailure
     def test_get_buckets(self, r):
-        raise NotImplementedError # FIXME
+        raise NotImplementedError  # FIXME
 
 
 # FIXME TODO Add integration tests against a local ceph radosgw instance,

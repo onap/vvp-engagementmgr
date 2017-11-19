@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -117,7 +117,8 @@ class RequsetDataMgr:
         }
 
     '''
-        Called from the verify_token decorator which is a central place that populates the user and all other attributes in RequestData object
+        Called from the verify_token decorator which is a central place \
+        that populates the user and all other attributes in RequestData object
     '''
 
     def clear_old_request_data(self):

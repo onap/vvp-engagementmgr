@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -44,8 +44,14 @@ from engagementmanager import models
 @admin.register(models.Activity)
 class ActivityModelAdmin(admin.ModelAdmin):
 
-    list_display = ["engagement_manual_id", "vf_name", "description",
-                    "activity_type", "activity_owner", "create_time", "is_notification"]
+    list_display = [
+        "engagement_manual_id",
+        "vf_name",
+        "description",
+        "activity_type",
+        "activity_owner",
+        "create_time",
+        "is_notification"]
     list_filter = ["activity_type", "is_notification"]
 
     def engagement_manual_id(self, obj):
@@ -69,8 +75,19 @@ class ActivityModelAdmin(admin.ModelAdmin):
 @admin.register(models.Checklist)
 class ChecklistModelAdmin(admin.ModelAdmin):
 
-    list_display = ["name", "state", "engagement_manual_id", "vf_name", "validation_cycle",
-                    "weight", "template", "owner", "creator", "associated_files", "create_time", "update_time"]
+    list_display = [
+        "name",
+        "state",
+        "engagement_manual_id",
+        "vf_name",
+        "validation_cycle",
+        "weight",
+        "template",
+        "owner",
+        "creator",
+        "associated_files",
+        "create_time",
+        "update_time"]
     list_filter = ["template", "state"]
     search_fields = ["name", "associated_files"]
 
@@ -84,7 +101,8 @@ class ChecklistModelAdmin(admin.ModelAdmin):
 @admin.register(models.ChecklistAuditLog)
 class ChecklistAuditLogModelAdmin(admin.ModelAdmin):
 
-    list_display = ["description", "creator", "checklist", "create_time", "update_time"]
+    list_display = ["description", "creator",
+                    "checklist", "create_time", "update_time"]
     list_filter = ["category"]
     search_fields = ["description"]
 
@@ -92,7 +110,8 @@ class ChecklistAuditLogModelAdmin(admin.ModelAdmin):
 @admin.register(models.ChecklistDecision)
 class ChecklistDecisionModelAdmin(admin.ModelAdmin):
 
-    list_display = ["checklist", "lineitem", "review_value", "peer_review_value", "create_time", "update_time"]
+    list_display = ["checklist", "lineitem", "review_value",
+                    "peer_review_value", "create_time", "update_time"]
     list_filter = ["template"]
     search_fields = ["name"]
 
@@ -100,7 +119,8 @@ class ChecklistDecisionModelAdmin(admin.ModelAdmin):
 @admin.register(models.ChecklistLineItem)
 class ChecklistLineItemModelAdmin(admin.ModelAdmin):
 
-    list_display = ["name", "weight", "template", "section", "create_time", "update_time"]
+    list_display = ["name", "weight", "template",
+                    "section", "create_time", "update_time"]
     list_filter = ["template", "section"]
     search_fields = ["name"]
 
@@ -108,14 +128,16 @@ class ChecklistLineItemModelAdmin(admin.ModelAdmin):
 @admin.register(models.ChecklistSection)
 class ChecklistSectionModelAdmin(admin.ModelAdmin):
 
-    list_display = ["name", "weight", "template", "parent_section", "create_time", "update_time"]
+    list_display = ["name", "weight", "template",
+                    "parent_section", "create_time", "update_time"]
     list_filter = ["template"]
 
 
 @admin.register(models.ChecklistTemplate)
 class ChecklistTemplateModelAdmin(admin.ModelAdmin):
 
-    list_display = ["name", "category", "version", "create_time", "update_time"]
+    list_display = ["name", "category",
+                    "version", "create_time", "update_time"]
     list_filter = ["category", "version"]
     search_fields = ["name"]
     search_fields = ["name"]
@@ -137,8 +159,16 @@ class DeploymentTargetSiteModelAdmin(admin.ModelAdmin):
 @admin.register(models.Engagement)
 class EngagementModelAdmin(admin.ModelAdmin):
 
-    list_display = ["engagement_manual_id", "vf_name", "deployment_target_name", "ecomp_release", "progress", "target_completion_date",
-                    "target_lab_entry_date", "engagement_stage", "create_time"]
+    list_display = [
+        "engagement_manual_id",
+        "vf_name",
+        "deployment_target_name",
+        "ecomp_release",
+        "progress",
+        "target_completion_date",
+        "target_lab_entry_date",
+        "engagement_stage",
+        "create_time"]
     list_editable = ["progress", "target_completion_date", "engagement_stage"]
     list_filter = ["engagement_stage"]
     search_fields = ["engagement_stage", "engagement_manual_id"]
@@ -165,7 +195,8 @@ class EngagementModelAdmin(admin.ModelAdmin):
 @admin.register(models.EngagementStatus)
 class EngagementStatusModelAdmin(admin.ModelAdmin):
 
-    list_display = ["engagement_manual_id", "vf_name", "description", "creator_full_name", "create_time", "update_time"]
+    list_display = ["engagement_manual_id", "vf_name", "description",
+                    "creator_full_name", "create_time", "update_time"]
     list_filter = ["creator"]
     search_fields = ["description"]
 
@@ -189,8 +220,16 @@ class ECOMPReleaseModelAdmin(admin.ModelAdmin):
 @admin.register(models.IceUserProfile)
 class IceUserProfileModelAdmin(admin.ModelAdmin):
 
-    list_display = ["full_name", "email", "phone_number", "company_name", "role_name", "is_service_provider_contact", "has_ssh_key",
-                    "create_time", "role"]
+    list_display = [
+        "full_name",
+        "email",
+        "phone_number",
+        "company_name",
+        "role_name",
+        "is_service_provider_contact",
+        "has_ssh_key",
+        "create_time",
+        "role"]
     list_editable = ["phone_number", "is_service_provider_contact", "role"]
     list_filter = ["is_service_provider_contact", "role", "company"]
     search_fields = ["full_name", "email", "phone_number"]
@@ -216,16 +255,24 @@ class IceUserProfileModelAdmin(admin.ModelAdmin):
 @admin.register(models.Invitation)
 class InvitationModelAdmin(admin.ModelAdmin):
 
-    list_display = ["email", "engagement_manual_id", "vf_name",
-                    "invited_by_user", "accepted", "create_time", "invitation_token"]
+    list_display = [
+        "email",
+        "engagement_manual_id",
+        "vf_name",
+        "invited_by_user",
+        "accepted",
+        "create_time",
+        "invitation_token"]
     list_filter = ["accepted"]
     search_fields = ["email", "invitation_token"]
 
     def invited_by_user(self, obj):
-        return models.IceUserProfile.objects.get(uuid=obj.invited_by_user_uuid).full_name
+        return models.IceUserProfile.objects.get(
+            uuid=obj.invited_by_user_uuid).full_name
 
     def engagement_manual_id(self, obj):
-        return models.Engagement.objects.get(uuid=obj.engagement_uuid).engagement_manual_id
+        return models.Engagement.objects.get(
+            uuid=obj.engagement_uuid).engagement_manual_id
 
     def vf_name(self, obj):
         e = models.Engagement.objects.get(uuid=obj.engagement_uuid)
@@ -235,8 +282,20 @@ class InvitationModelAdmin(admin.ModelAdmin):
 @admin.register(models.NextStep)
 class NextStepModelAdmin(admin.ModelAdmin):
 
-    list_display = ["engagement_manual_id", "vf_name", "description", "files", "due_date", "last_updater_full_name", "last_update_time",
-                    "last_update_type", "creator_full_name", "create_time", "state", "next_step_type", "owner_full_name"]
+    list_display = [
+        "engagement_manual_id",
+        "vf_name",
+        "description",
+        "files",
+        "due_date",
+        "last_updater_full_name",
+        "last_update_time",
+        "last_update_type",
+        "creator_full_name",
+        "create_time",
+        "state",
+        "next_step_type",
+        "owner_full_name"]
     list_filter = ["next_step_type", "state"]
     search_fields = ["description", "files"]
 
@@ -284,8 +343,14 @@ class NextStepModelAdmin(admin.ModelAdmin):
 @admin.register(models.Notification)
 class NotificationModelAdmin(admin.ModelAdmin):
 
-    list_display = ["activity_description", "activity_type", "engagement_manual_id",
-                    "vf_name", "is_sent", "is_read", "activity_create_time"]
+    list_display = [
+        "activity_description",
+        "activity_type",
+        "engagement_manual_id",
+        "vf_name",
+        "is_sent",
+        "is_read",
+        "activity_create_time"]
     list_filter = ["is_sent", "is_read"]
 
     def activity_description(self, obj):
@@ -305,7 +370,8 @@ class NotificationModelAdmin(admin.ModelAdmin):
 
     def vf_name(self, obj):
         if obj.activity.engagement:
-            return models.VF.objects.get(engagement=obj.activity.engagement).name
+            return models.VF.objects.get(
+                engagement=obj.activity.engagement).name
         else:
             return ""
 
@@ -313,7 +379,8 @@ class NotificationModelAdmin(admin.ModelAdmin):
 @admin.register(models.RecentEngagement)
 class RecentEngagementModelAdmin(admin.ModelAdmin):
 
-    list_display = ["engagement_manual_id", "vf_name", "ice_user", "action_type", "last_update"]
+    list_display = ["engagement_manual_id", "vf_name",
+                    "ice_user", "action_type", "last_update"]
     list_filter = ["action_type"]
 
     def vf_name(self, obj):
@@ -343,9 +410,19 @@ class VendorModelAdmin(admin.ModelAdmin):
 @admin.register(models.VF)
 class VFModelAdmin(admin.ModelAdmin):
 
-    list_display = ["name", "deployment_target", "ecomp_release", "progress", "target_completion_date",
-                    "target_lab_entry_date", "is_service_provider_internal", "git_repo_url", "engagement_stage", "engagement_manual_id"]
-    list_filter = ["deployment_target", "ecomp_release", "is_service_provider_internal", "vendor"]
+    list_display = [
+        "name",
+        "deployment_target",
+        "ecomp_release",
+        "progress",
+        "target_completion_date",
+        "target_lab_entry_date",
+        "is_service_provider_internal",
+        "git_repo_url",
+        "engagement_stage",
+        "engagement_manual_id"]
+    list_filter = ["deployment_target", "ecomp_release",
+                   "is_service_provider_internal", "vendor"]
     list_editable = ["is_service_provider_internal"]
     search_fields = ["name", "git_repo_url"]
 
@@ -365,7 +442,8 @@ class VFModelAdmin(admin.ModelAdmin):
 @admin.register(models.VFC)
 class VFCModelAdmin(admin.ModelAdmin):
 
-    list_display = ["name", "external_ref_id", "ice_mandated", "vf_name", "company_name", "engagement_manual_id"]
+    list_display = ["name", "external_ref_id", "ice_mandated",
+                    "vf_name", "company_name", "engagement_manual_id"]
     list_filter = ["ice_mandated", "company"]
     list_editable = ["external_ref_id", "ice_mandated"]
     search_fields = ["name", "external_ref_id"]

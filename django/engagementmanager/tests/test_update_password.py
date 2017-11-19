@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -51,9 +51,14 @@ class TestUpdatePasswordTestCase(TestBaseEntity):
         self.createDefaultRoles()
 
         # Create a user with role el
-        self.user = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.randomGenerator("main-vendor-email"),
-            '55501000199', 'user', self.standard_user, True)
+        self.user = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
+            '55501000199',
+            'user',
+            self.standard_user,
+            True)
 
         self.urlStr = self.urlPrefix + "users/pwd/"
         self.data = dict()
@@ -66,16 +71,22 @@ class TestUpdatePasswordTestCase(TestBaseEntity):
     def updatePwd(self, expectedStatus=200, httpMethod="PUT"):
         self.accountData = json.dumps(self.data, ensure_ascii=False)
         if (httpMethod == "PUT"):
-            response = self.c.put(self.urlStr, self.accountData, content_type='application/json',
-                                  **{'HTTP_AUTHORIZATION': "token " + self.token})
+            response = self.c.put(self.urlStr,
+                                  self.accountData,
+                                  content_type='application/json',
+                                  **{'HTTP_AUTHORIZATION': "token "
+                                     + self.token})
         elif (httpMethod == "POST"):
-            response = self.c.post(self.urlStr, self.accountData, content_type='application/json',
-                                   **{'HTTP_AUTHORIZATION': "token " + self.token})
-        print('Got response : ' + str(response.status_code) + " Expecting " + str(expectedStatus))
+            response = self.c.post(self.urlStr,
+                                   self.accountData,
+                                   content_type='application/json',
+                                   **{'HTTP_AUTHORIZATION': "token "
+                                      + self.token})
+        print('Got response : ' + str(response.status_code) +
+              " Expecting " + str(expectedStatus))
         self.assertEqual(response.status_code, expectedStatus)
         return response
 
-    ### TESTS ###
     def testUpdatePasswordPositive(self):
         self.initBody()
         print("testUpdatePasswordPositive")

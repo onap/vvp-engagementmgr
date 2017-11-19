@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -43,23 +43,29 @@ from engagementmanager.models import Checklist, VF
 from engagementmanager.service.checklist_service import CheckListSvc
 from engagementmanager.service.checklist_state_service import set_state
 from engagementmanager.utils import dict_path_get
-from engagementmanager.utils.constants import CheckListCategory, CheckListState, EngagementStage
+from engagementmanager.utils.constants import CheckListCategory, \
+    CheckListState
 from engagementmanager.utils.request_data_mgr import request_data_mgr
 from engagementmanager.service.logging_service import LoggingServiceFactory
 
 logger = LoggingServiceFactory.get_logger()
 
+file_name = "em_api.py"
+
 
 def test_finished_callback(checklist_test_results):
     logger.debug(
-        "test_finished_callback has signaled that a test has finished with test results %r", checklist_test_results)
+        "test_finished_callback has signaled that a test \
+        has finished with test results %r", checklist_test_results)
 
     if not checklist_test_results:
-        msg = "Couldn't find payload argument inside kwargs array, aborting signal"
+        msg = "Couldn't find payload argument inside kwargs array, aborting \
+        signal"
         logger.error(msg)
         raise KeyError(msg)
 
-    checklist_test_results['description'] = "Validation manager has indicated that checklist {} tests has been completed with results".format(
+    checklist_test_results['description'] = "Validation manager has indicated\
+     that checklist {} tests has been completed with results".format(
         checklist_test_results['checklist_uuid'])
 
     checklist = Checklist.objects.get(
@@ -76,17 +82,20 @@ def test_finished_callback(checklist_test_results):
 
 def git_push_callback(gitlab_data):
     """
-    When we are notified that a repo has received a push, we must reject any checklists not in the
+    When we are notified that a repo has received a push, we must reject any \
+    checklists not in the
     closed or archived state whose associated files have been modified.
     """
-    logger.debug("Validation manager has signaled that a git push has occurred")
+    logger.debug(
+        "Validation manager has signaled that a git push has occurred")
     msg = "OK"
     data = None
 
     # sanity check provided arguments
     for key in ['project', 'project/git_ssh_url', 'commits']:
         if not dict_path_get(gitlab_data, key):
-            msg = "{!r} in the git_push signal gitlab_data is missing or empty.".format(
+            msg = "{!r} in the git_push signal gitlab_data is missing or \
+            empty.".format(
                 key)
             logger.error(msg)
             raise KeyError(msg)
@@ -101,7 +110,9 @@ def git_push_callback(gitlab_data):
     if int(gitlab_data['total_commits_count']) == 0:
         logger.debug("total_commits_count = %s",
                      gitlab_data['total_commits_count'])
-        msg = "Something is wrong: Number of commits is 0 even after a push event has been invoked from validation manager to engagement manager"
+        msg = "Something is wrong: Number of commits is 0 even after a \
+        push event has been invoked from validation manager \
+        to engagement manager"
         logger.warn(msg)
         raise ValueError(msg)
 
@@ -123,7 +134,7 @@ def git_push_callback(gitlab_data):
                   .filter(engagement=vf.engagement)
                   # @UndefinedVariable
                   .exclude(state=CheckListState.archive.name)
-                  .exclude(state=CheckListState.closed.name))  # @UndefinedVariable
+                  .exclude(state=CheckListState.closed.name))
 
     committed_files = set(file
                           for commit in gitlab_data['commits']
@@ -139,7 +150,8 @@ def git_push_callback(gitlab_data):
     peer_reviewer = vf.engagement.peer_reviewer
     slack_client = SlackClient()
     slack_client.send_notifications_on_git_push(
-        engagement_manual_id, vf_name, reviewer, peer_reviewer, committed_files)
+        engagement_manual_id, vf_name, reviewer, peer_reviewer,
+        committed_files)
 
     # loop through the checklists and start automation if necessary
     for checklist in checklists:
@@ -156,32 +168,42 @@ def git_push_callback(gitlab_data):
                    for extension in ['.yaml', '.yml', '.env']
                    if file.lower().endswith(extension)):
             continue
-        if checklist.state == CheckListState.pending.name:  # @UndefinedVariable
-            description = "Checklist {checklist.name} (part of VF {vf.name}/{vf.uuid}) in Pending state will transition to Automation due to a push action on files [{mutual_files}]. chosen EL: {user.full_name}".format(
+        if checklist.state == CheckListState.pending.name:
+            description = "Checklist {checklist.name} (part of VF \
+            {vf.name}/{vf.uuid}) in Pending state will transition \
+            to Automation due to a push action on files \
+            [{mutual_files}]. chosen EL: \
+            {user.full_name}".format(
                 checklist=checklist,
                 vf=vf,
                 mutual_files=", ".join(mutual_files),
                 user=user,
             )
         else:
-            description = "Checklist {checklist.uuid} (part of VF {vf.name}/{vf.uuid}) has been rejected due to a push action made on files [{mutual_files}]. chosen EL is: {user.full_name}".format(
+            description = "Checklist {checklist.uuid} (part of VF \
+            {vf.name}/{vf.uuid}) has been rejected due to a push \
+            action made on files [{mutual_files}]. chosen EL is: \
+            {user.full_name}".format(
                 checklist=checklist,
                 vf=vf,
                 mutual_files=", ".join(mutual_files),
                 user=user,
             )
         logger.debug(description)
-        # FIXME Setting parameters into a global before calling a function that will break without
+        # FIXME Setting parameters into a global before
+        # calling a function that will break without
         # them is TERRIBLE. We must fix this before we open-source this code.
         request_data_mgr.set_cl_uuid(checklist.uuid)
         request_data_mgr.set_user(user)
-        data = set_state(  # means that the checklist will be declined and a cloned one is
+        data = set_state(  # means that the checklist will
+                           # be declined and a cloned one is
             # created in PENDING status
             decline=True,
             checklist_uuid=checklist.uuid,
             # means the checklist will be triggered into automation cycle
             isMoveToAutomation=True,
-            description="This change was triggered by an update to the engagement git repository.")
+            description="This change was triggered by an update \
+            to the engagement git repository.")
 
         logger.debug("set_state returned (%r)" % data)
 

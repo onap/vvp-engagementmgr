@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -57,7 +57,8 @@ class Feedback(VvpApiView):
     @auth(Permissions.add_feedback)
     def post(self, request):
         user = request_data_mgr.get_user()
-        if ('description' not in request.data or not request.data['description']):
+        if ('description' not in request.data or
+                not request.data['description']):
             raise KeyError("One of the input parameters are missing")
         new_description = request.data['description']
         new_feedback = FeedbackModal(
@@ -65,6 +66,7 @@ class Feedback(VvpApiView):
             description=new_description
         )
         new_feedback.save()
-        self.slack_client.send_slack_notifications_for_new_feedback(new_feedback, user)
+        self.slack_client.send_slack_notifications_for_new_feedback(
+            new_feedback, user)
 
         return Response(status.HTTP_200_OK)

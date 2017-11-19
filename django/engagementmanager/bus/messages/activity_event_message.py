@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,7 +36,8 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-from engagementmanager.bus.messages.service_bus_base_message import ServiceBusBaseMessage
+from engagementmanager.bus.messages.service_bus_base_message import \
+    ServiceBusBaseMessage
 from engagementmanager.utils.activities_data import ActivityData
 from engagementmanager.utils.vvp_exceptions import VvpGeneralException
 
@@ -44,6 +45,7 @@ from engagementmanager.utils.vvp_exceptions import VvpGeneralException
 class ActivityEventMessage(ServiceBusBaseMessage):
     def __init__(self, activity_data):
         if not issubclass(type(activity_data), ActivityData):
-            raise VvpGeneralException("Activity data can be from type ActivityData only.")
+            raise VvpGeneralException(
+                "Activity data can be from type ActivityData only.")
 
         self.activity_data = activity_data

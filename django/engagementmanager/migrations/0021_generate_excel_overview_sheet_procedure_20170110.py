@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -50,8 +50,13 @@ def forwards(apps, schema_editor):
         return
 
     cursor = connection.cursor()
-    cursor.execute(open(os.path.join(os.path.dirname(engagementmanager.__file__),
-                                     'sql-scripts/generate_excel_overview_sheet_procedure.sql'), "r").read())
+    cursor.execute(
+        open(
+            os.path.join(
+                os.path.dirname(
+                    engagementmanager.__file__),
+                'sql-scripts/generate_excel_overview_sheet_procedure.sql'),
+            "r").read())
 
 
 class Migration(migrations.Migration):

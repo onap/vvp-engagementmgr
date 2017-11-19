@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -39,13 +39,17 @@
 from django.conf.urls import url
 
 from engagementmanager.rest import checklist_audit_log
-from engagementmanager.rest import user, activation, activity, vf, invite, feedback, nextsteps, engagement, \
-    login, signup, notification, checklist, deployment_target_site, vendor, data_loader, checklist_decision, \
+from engagementmanager.rest import user, activation, activity, vf,\
+    invite, feedback, nextsteps, engagement, \
+    login, signup, notification, checklist, deployment_target_site,\
+    vendor, data_loader, checklist_decision, \
     vfc, checklist_set_state, deployment_target, ecomp, validation_details
 from engagementmanager.rest.cms.pages import Pages, PageById, PageSearch
 from engagementmanager.rest.cms.posts import Posts
-from engagementmanager.rest.engagement import EngagementProgressBar, ChangeTargetLabEntryDate, EngagementOps, \
-    EngagementReviewer, EngagementPeerReviewer, ArchiveEngagement, SwitchEngagementReviewers
+from engagementmanager.rest.engagement import EngagementProgressBar,\
+    ChangeTargetLabEntryDate, EngagementOps, \
+    EngagementReviewer, EngagementPeerReviewer,\
+    ArchiveEngagement, SwitchEngagementReviewers
 from engagementmanager.rest.user import User
 from engagementmanager.service.logging_service import LoggingServiceFactory
 
@@ -99,7 +103,8 @@ urlpatterns = [
         re_uuid, nextsteps.NextSteps.as_view()),
     url(r'^engagements/(?P<eng_uuid>%s)/nextsteps/order_next_steps$' %
         re_uuid, nextsteps.OrderNextSteps.as_view()),
-    url(r'^engagements/(?P<eng_uuid>%s)/nextsteps/(?P<eng_stage>%s)/?$' % (re_uuid, re_enum),
+    url(r'^engagements/(?P<eng_uuid>%s)/' % re_uuid +\
+        'nextsteps/(?P<eng_stage>%s)/?$' % re_enum,
         nextsteps.NextSteps.as_view()),  # Set Next Step State
     # Set Progress bar for Engagement
     url(r'^engagements/(?P<eng_uuid>%s)/progress/?$' %
@@ -127,21 +132,22 @@ urlpatterns = [
         re_uuid, activity.PullActivities.as_view()),
 
     # DeploymentTarget(version)
-    url(r'^engagement/(?P<engagement_uuid>%s)/deployment-targets/(?P<dt_uuid>%s)$'
-        % (re_uuid, re_uuid),
+    url(r'^engagement/(?P<engagement_uuid>%s)' % re_uuid +\
+        '/deployment-targets/(?P<dt_uuid>%s)$' % (re_uuid),
         deployment_target.DeploymentTargetRESTMethods.as_view()),
     url(r'^deployment-targets/?$',
         deployment_target.DeploymentTargetRESTMethods.as_view()),
 
     # ECOMP
-    url(r'^engagement/(?P<engagement_uuid>%s)/ecomp-releases/(?P<ecomp_uuid>%s)$' % (re_uuid, re_uuid),
+    url(r'^engagement/(?P<engagement_uuid>%s)' % re_uuid +\
+        '/ecomp-releases/(?P<ecomp_uuid>%s)$' % (re_uuid),
         ecomp.ECOMPReleaseRESTMethods.as_view()),
     url(r'^ecomp-releases/?$', ecomp.ECOMPReleaseRESTMethods.as_view()),
     # VFVERSION
     url(r'^vf/(?P<vf_uuid>%s)/vf-version/$' % re_uuid, vf.VF.as_view()),
     # DeploymentTargetSite%s
-    url(r'^vf/(?P<vf_uuid>%s)/validation-details/$' %
-        re_uuid, validation_details.UpdateValidationDetails.as_view()),
+    url(r'^vf/(?P<vf_uuid>%s)/validation-details/$' % re_uuid,
+        validation_details.UpdateValidationDetails.as_view()),
     url(r'^vf/(?P<vf_uuid>%s)/dtsites/$' %
         re_uuid, deployment_target_site.DTSites.as_view()),
     url(r'^vf/(?P<vf_uuid>%s)/dtsites/(?P<dts_uuid>%s)$' %
@@ -158,7 +164,8 @@ urlpatterns = [
         (re_uuid, re_uuid), vfc.VFCRest.as_view()),
 
     # Next Steps
-    url(r'^nextsteps/(?P<ns_uuid>%s)/engagement/(?P<eng_uuid>%s)?$' % (re_uuid, re_uuid),
+    url(r'^nextsteps/(?P<ns_uuid>%s)/' % re_uuid +\
+        'engagement/(?P<eng_uuid>%s)?$' % re_uuid,
         nextsteps.EditNextSteps.as_view()),  # Set State for a next step
     url(r'^nextsteps/(?P<ns_uuid>%s)/(?P<attr>state)/?$' %
         re_uuid, nextsteps.NextSteps.as_view()),  # Set State for a next step
@@ -212,7 +219,9 @@ urlpatterns = [
         re_uuid, checklist.CheckListTemplates.as_view()),
 
     # get Checklist (returns files and all templates)
-    url(r'^engagement/(?P<eng_uuid>%s)/checklist/(?P<checklistUuid>%s)/nextstep/$' % (re_uuid, re_uuid),
+    url(
+        r'^engagement/(?P<eng_uuid>%s)/checklist/' % re_uuid +\
+        '(?P<checklistUuid>%s)/nextstep/$' % re_uuid,\
         nextsteps.ChecklistNextStep.as_view()),
     url(r'^engagement/(?P<eng_uuid>%s)/checklist/new/$' %
         re_uuid, checklist.NewCheckList.as_view()),

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -37,7 +37,6 @@
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
 import json
-import random
 from engagementmanager.tests.test_base_entity import TestBaseEntity
 from engagementmanager.models import Vendor
 from engagementmanager.utils.constants import Constants
@@ -52,20 +51,29 @@ class TestAddContactTestCase(TestBaseEntity):
         self.createDefaultRoles()
 
         # Create a user with role el
-        self.el_user = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.randomGenerator(
-            "main-vendor-email"), '55501000199', 'el user', self.el, True)
+        self.el_user = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator(
+                "main-vendor-email"), '55501000199', 'el user', self.el, True)
 
-        self.inviter = self.creator.createUser(Vendor.objects.get(
-            name='Other'), self.randomGenerator(
-            "main-vendor-email"), '55501000199', 'inviter user', self.standard_user, True)
+        self.inviter = self.creator.createUser(
+            Vendor.objects.get(
+                name='Other'),
+            self.randomGenerator("main-vendor-email"),
+            '55501000199',
+            'inviter user',
+            self.standard_user,
+            True)
 
         self.reviewer = self.creator.createUser(Vendor.objects.get(
             name='Other'), self.randomGenerator(
-            "main-vendor-email"), '55501000199', 'reviewer user', self.el, True)
+            "main-vendor-email"), '55501000199',
+            'reviewer user', self.el, True)
         self.peer_reviewer = self.creator.createUser(Vendor.objects.get(
             name='Other'), self.randomGenerator(
-            "main-vendor-email"), '55501000199', 'peer-reviewer user', self.el, True)
+            "main-vendor-email"), '55501000199', 'peer-reviewer user',
+            self.el, True)
         # Create an Engagement with team
         self.engagement = self.creator.createEngagement(
             '123456789', 'Validation', None)
@@ -80,39 +88,52 @@ class TestAddContactTestCase(TestBaseEntity):
 
         # Create a VF
         self.deploymentTarget = self.creator.createDeploymentTarget(
-            self.randomGenerator("randomString"), self.randomGenerator("randomString"))
-        self.vf = self.creator.createVF(self.randomGenerator("randomString"), self.engagement,
-                                        self.deploymentTarget, False, Vendor.objects.get(name='Other'))
+            self.randomGenerator("randomString"),
+            self.randomGenerator("randomString"))
+        self.vf = self.creator.createVF(
+            self.randomGenerator("randomString"),
+            self.engagement,
+            self.deploymentTarget,
+            False,
+            Vendor.objects.get(
+                name='Other'))
 
         self.urlStr = self.urlPrefix + "add-contact/"
         self.data = dict()
         self.token = self.loginAndCreateSessionToken(self.el_user)
 
     def initBody(self):
-        self.data['company'] = Vendor.objects.get(name=Constants.service_provider_company_name).name
+        self.data['company'] = Vendor.objects.get(
+            name=Constants.service_provider_company_name).name
         self.data['full_name'] = "full name"
         self.data['email'] = self.randomGenerator("main-vendor-email")
         self.data['phone_number'] = "12345"
 
     def addContact(self, expectedStatus=200):
         self.contactData = json.dumps(self.data, ensure_ascii=False)
-        response = self.c.post(self.urlStr, self.contactData, content_type='application/json',
-                               **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.post(
+            self.urlStr,
+            self.contactData,
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, expectedStatus)
         return response
 
     def createContactUser(self):
-        self.contact = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.data['email'],
-            self.data['phone_number'], self.data['full_name'], self.standard_user, True)
+        self.contact = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.data['email'],
+            self.data['phone_number'],
+            self.data['full_name'],
+            self.standard_user,
+            True)
         print('-----------------------------------------------------')
         print('Created User:')
         print('UUID: ' + str(self.contact.uuid))
         print('Full Name: ' + self.contact.full_name)
         print('-----------------------------------------------------')
-
-    ### TESTS ###
 
     def testAddContactForNonExistingContact(self):
         self.initBody()
@@ -130,12 +151,14 @@ class TestAddContactTestCase(TestBaseEntity):
         self.initBody()
         self.data['eng_uuid'] = str(self.engagement.uuid)
         self.data['email'] = None
-        print("Negative test: removing mandatory field email --> Should fail on 400")
+        print("Negative test: removing mandatory field email --> " +
+              "Should fail on 400")
         self.addContact(400)
 
     def testNegativeAddContactForExistingContactAndFakeEngUUID(self):
         self.initBody()
         self.createContactUser()
         self.data['eng_uuid'] = "FakeUuid"
-        print("Negative test: Non existing engagement UUID --> Should fail on 500")
+        print("Negative test: Non existing engagement UUID --> " +
+              "Should fail on 500")
         self.addContact(401)

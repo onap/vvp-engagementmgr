@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -56,15 +56,16 @@ def create_user_for_pre_user_profiles(apps, schema_editor):
     CustomUser = apps.get_model("engagementmanager", "CustomUser")
     IceUserProfile = apps.get_model("engagementmanager", "IceUserProfile")
     users_list = IceUserProfile.objects.filter(user=None)
-    count = 0
     for profile in users_list:
         try:
-            custom_user, created = CustomUser.objects.get_or_create(username=profile.email)
+            custom_user, created = CustomUser.objects.get_or_create(
+                username=profile.email)
             custom_user.is_active = profile.is_active
             custom_user.email = profile.email
             custom_user.activation_token = profile.activation_token
             custom_user.password = profile.password
-            custom_user.activation_token_create_time = profile.activation_token_create_time
+            custom_user.activation_token_create_time = \
+                profile.activation_token_create_time
             custom_user.save()
             profile.user = custom_user
             profile.save()
@@ -78,19 +79,28 @@ class Migration(migrations.Migration):
 
     dependencies = [
         #         ('auth', '0009_auto_20170118_0740'),
-        ('engagementmanager', '0021_generate_excel_overview_sheet_procedure_20170110'),
+        ('engagementmanager',
+         '0021_generate_excel_overview_sheet_procedure_20170110'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='CustomUser',
             fields=[
-                ('user_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE,
-                                                  parent_link=True, primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL)),
-                ('activation_token', models.CharField(max_length=128, null=True, unique=True)),
+                ('user_ptr', models.OneToOneField(
+                    auto_created=True,
+                    on_delete=django.db.models.deletion.CASCADE,
+                    parent_link=True, primary_key=True,
+                    serialize=False,
+                    to=settings.AUTH_USER_MODEL)),
+                ('activation_token', models.CharField(
+                    max_length=128, null=True, unique=True)),
                 ('activation_token_create_time', models.DateTimeField(
-                    default=django.utils.timezone.now, null=True, verbose_name='activation_token_create_time')),
-                ('temp_password', models.CharField(blank=True, default=None, max_length=256, null=True)),
+                    default=django.utils.timezone.now, null=True,
+                    verbose_name='activation_token_create_time')),
+                ('temp_password', models.CharField(
+
+                    blank=True, default=None, max_length=256, null=True)),
             ],
             options={
                 'abstract': False,
@@ -107,69 +117,126 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='IceUserProfile',
             name='user',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.CASCADE, to='engagementmanager.CustomUser')
+            field=models.OneToOneField(
+                null=True, on_delete=django.db.models.CASCADE,
+                to='engagementmanager.CustomUser')
         ),
         migrations.AlterField(
             model_name='activity',
             name='activity_type',
-            field=models.CharField(choices=[(b'user_joined_eng', b'user_joined_eng'), (b'ssh_key_added', b'ssh_key_added'), (b'eng_validation_request', b'eng_validation_request'), (b'next_steps', b'next_steps'), (
-                b'vfc', b'vfc'), (b'change_checklist_state', b'change_checklist_state'), (b'vf_provisioing_event', b'vf_provisioing_event'), (b'test_finished_event', b'test_finished_event')], max_length=36),
+            field=models.CharField(
+                choices=[(b'user_joined_eng', b'user_joined_eng'),
+                         (b'ssh_key_added', b'ssh_key_added'),
+                         (b'eng_validation_request',
+                          b'eng_validation_request'),
+                         (b'next_steps', b'next_steps'), (b'vfc', b'vfc'),
+                         (b'change_checklist_state',
+                          b'change_checklist_state'),
+                         (b'vf_provisioing_event', b'vf_provisioing_event'),
+                         (b'test_finished_event', b'test_finished_event')],
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='checklist',
             name='state',
-            field=models.CharField(choices=[(b'pending', b'pending'), (b'automation', b'automation'), (b'review', b'review'), (b'peer_review', b'peer_review'), (
-                b'approval', b'approval'), (b'handoff', b'handoff'), (b'closed', b'closed'), (b'archive', b'archive')], default=b'pending', max_length=36),
+            field=models.CharField(choices=[(b'pending', b'pending'),
+                                            (b'automation', b'automation'),
+                                            (b'review', b'review'),
+                                            (b'peer_review', b'peer_review'),
+                                            (b'approval', b'approval'),
+                                            (b'handoff', b'handoff'),
+                                            (b'closed', b'closed'),
+                                            (b'archive', b'archive')],
+                                   default=b'pending', max_length=36),
         ),
         migrations.AlterField(
             model_name='checklistdecision',
             name='peer_review_value',
-            field=models.CharField(choices=[(b'na', b'na'), (b'approved', b'approved'),
-                                            (b'denied', b'denied'), (b'not_relevant', b'not_relevant')], max_length=36),
+            field=models.CharField(choices=[(b'na', b'na'),
+                                            (b'approved', b'approved'),
+                                            (b'denied', b'denied'),
+                                            (b'not_relevant',
+                                             b'not_relevant')],
+                                   max_length=36),
         ),
         migrations.AlterField(
             model_name='checklistdecision',
             name='review_value',
-            field=models.CharField(choices=[(b'na', b'na'), (b'approved', b'approved'),
-                                            (b'denied', b'denied'), (b'not_relevant', b'not_relevant')], max_length=36),
+            field=models.CharField(
+                choices=[(b'na', b'na'), (b'approved', b'approved'),
+                         (b'denied', b'denied'),
+                         (b'not_relevant',
+                          b'not_relevant')],
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='checklistlineitem',
             name='line_type',
             field=models.CharField(
-                choices=[(b'manual', b'manual'), (b'auto', b'auto')], default=b'auto', max_length=36),
+                choices=[(b'manual', b'manual'),
+                         (b'auto', b'auto')],
+                default=b'auto',
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='checklisttemplate',
             name='category',
-            field=models.CharField(choices=[(b'glance', b'glance'), (b'instantiation', b'instantiation'), (
-                b'asdc', b'asdc'), (b'overall', b'overall'), (b'heat', b'heat')], default=b'overall', max_length=36),
+            field=models.CharField(
+                choices=[(b'glance', b'glance'),
+                         (b'instantiation', b'instantiation'), (
+                    b'asdc', b'asdc'),
+                    (b'overall', b'overall'),
+                    (b'heat', b'heat')],
+                default=b'overall', max_length=36),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='engagement_stage',
-            field=models.CharField(choices=[(b'Archived', b'Archived'), (b'Intake', b'Intake'), (b'Active', b'Active'), (
-                b'Validated', b'Validated'), (b'Completed', b'Completed')], db_index=True, default=b'Intake', max_length=15),
+            field=models.CharField(
+                choices=[(b'Archived', b'Archived'),
+                         (b'Intake', b'Intake'),
+                         (b'Active', b'Active'), (
+                    b'Validated', b'Validated'),
+                    (b'Completed', b'Completed')],
+                db_index=True,
+                default=b'Intake',
+                max_length=15),
         ),
 
         migrations.AlterField(
             model_name='nextstep',
             name='next_step_type',
-            field=models.CharField(choices=[(b'user_defined', b'user_defined'), (b'set_ssh', b'set_ssh'), (b'trial_agreements', b'trial_agreements'), (
-                b'add_contact_person', b'add_contact_person'), (b'submit_vf_package', b'submit_vf_package'), (b'el_handoff', b'el_handoff')], default=b'user_defined', max_length=36),
+            field=models.CharField(
+                choices=[(b'user_defined', b'user_defined'),
+                         (b'set_ssh', b'set_ssh'),
+                         (b'trial_agreements', b'trial_agreements'), (
+                    b'add_contact_person', b'add_contact_person'),
+                    (b'submit_vf_package', b'submit_vf_package'),
+                    (b'el_handoff', b'el_handoff')],
+                default=b'user_defined', max_length=36),
         ),
 
         migrations.AlterField(
             model_name='nextstep',
             name='state',
             field=models.CharField(
-                choices=[(b'Confirmed', b'Confirmed'), (b'TODO', b'TODO'), (b'Completed', b'Completed')], max_length=15),
+                choices=[(b'Confirmed', b'Confirmed'),
+                         (b'TODO', b'TODO'),
+                         (b'Completed', b'Completed')],
+                max_length=15),
         ),
         migrations.AlterField(
             model_name='recentengagement',
             name='action_type',
-            field=models.CharField(choices=[(b'JOINED_TO_ENGAGEMENT', b'JOINED_TO_ENGAGEMENT'), (b'NEXT_STEP_ASSIGNED', b'NEXT_STEP_ASSIGNED'), (
-                b'GOT_OWNERSHIP_OVER_ENGAGEMENT', b'GOT_OWNERSHIP_OVER_ENGAGEMENT'), (b'NAVIGATED_INTO_ENGAGEMENT', b'NAVIGATED_INTO_ENGAGEMENT'), (b'NEW_VF_CREATED', b'NEW_VF_CREATED')], max_length=36),
+            field=models.CharField(
+                choices=[(b'JOINED_TO_ENGAGEMENT', b'JOINED_TO_ENGAGEMENT'),
+                         (b'NEXT_STEP_ASSIGNED', b'NEXT_STEP_ASSIGNED'), (
+                    b'GOT_OWNERSHIP_OVER_ENGAGEMENT',
+                    b'GOT_OWNERSHIP_OVER_ENGAGEMENT'),
+                    (b'NAVIGATED_INTO_ENGAGEMENT',
+                     b'NAVIGATED_INTO_ENGAGEMENT'),
+                    (b'NEW_VF_CREATED', b'NEW_VF_CREATED')],
+                max_length=36),
         ),
         #         migrations.DeleteModel(
         #             name='IceUser',
@@ -178,98 +245,141 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='notification',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='engagementmanager.IceUserProfile'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='engagementmanager.IceUserProfile'),
         ),
         migrations.AlterField(
             model_name='vfc',
             name='creator',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                    related_name='Vfc_creator', to='engagementmanager.IceUserProfile'),
+            field=models.ForeignKey(
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='Vfc_creator',
+                to='engagementmanager.IceUserProfile'),
         ),
         migrations.AlterField(
             model_name='nextstep',
             name='owner',
             field=models.ForeignKey(
-                blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='engagementmanager.IceUserProfile'),
+
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to='engagementmanager.IceUserProfile'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='engagement_team',
-            field=models.ManyToManyField(related_name='members', to='engagementmanager.IceUserProfile'),
+            field=models.ManyToManyField(
+                related_name='members',
+                to='engagementmanager.IceUserProfile'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='contact_user',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                    related_name='Engagement_contact_user', to='engagementmanager.IceUserProfile'),
+            field=models.ForeignKey(
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='Engagement_contact_user',
+                to='engagementmanager.IceUserProfile'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='creator',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                    related_name='Engagement_creator', to='engagementmanager.IceUserProfile'),
+            field=models.ForeignKey(
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='Engagement_creator',
+                to='engagementmanager.IceUserProfile'),
         ),
         migrations.AlterField(
             model_name='checklistauditlog',
             name='creator',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='engagementmanager.IceUserProfile'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='engagementmanager.IceUserProfile'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='peer_reviewer',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                    related_name='Engagement_peer_reviewer', to='engagementmanager.IceUserProfile'),
+            field=models.ForeignKey(
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='Engagement_peer_reviewer',
+                to='engagementmanager.IceUserProfile'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='reviewer',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                    related_name='Engagement_el_reviewer', to='engagementmanager.IceUserProfile'),
+            field=models.ForeignKey(
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='Engagement_el_reviewer',
+                to='engagementmanager.IceUserProfile'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='starred_engagement',
-            field=models.ManyToManyField(blank=True, default=None, to='engagementmanager.IceUserProfile'),
+            field=models.ManyToManyField(
+
+                blank=True, default=None,
+                to='engagementmanager.IceUserProfile'),
         ),
         migrations.AlterField(
             model_name='engagementstatus',
             name='creator',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                    related_name='status_creator', to='engagementmanager.IceUserProfile'),
+            field=models.ForeignKey(
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='status_creator',
+                to='engagementmanager.IceUserProfile'),
         ),
         migrations.AlterField(
             model_name='nextstep',
             name='assignees',
-            field=models.ManyToManyField(related_name='assignees', to='engagementmanager.IceUserProfile'),
+            field=models.ManyToManyField(
+                related_name='assignees',
+                to='engagementmanager.IceUserProfile'),
         ),
         migrations.AlterField(
             model_name='nextstep',
             name='creator',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
-                                    related_name='NextStep_creator', to='engagementmanager.IceUserProfile'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='NextStep_creator',
+                to='engagementmanager.IceUserProfile'),
         ),
         migrations.AlterField(
             model_name='nextstep',
             name='last_updater',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT,
-                                    related_name='NextStep_last_updater', to='engagementmanager.IceUserProfile'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='NextStep_last_updater',
+                to='engagementmanager.IceUserProfile'),
         ),
         migrations.AlterField(
             model_name='activity',
             name='activity_owner',
             field=models.ForeignKey(
-                blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='engagementmanager.IceUserProfile'),
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to='engagementmanager.IceUserProfile'),
         ),
         migrations.AlterField(
             model_name='checklist',
             name='creator',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                    related_name='checklist_creator', to='engagementmanager.IceUserProfile'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='checklist_creator',
+                to='engagementmanager.IceUserProfile'),
         ),
         migrations.AlterField(
             model_name='checklist',
             name='owner',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                    related_name='checklist_owner', to='engagementmanager.IceUserProfile'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='checklist_owner',
+                to='engagementmanager.IceUserProfile'),
         ),
     ]

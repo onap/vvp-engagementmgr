@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,7 +36,8 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-from engagementmanager.bus.handlers.service_bus_base_handler import ServiceBusBaseHandler
+from engagementmanager.bus.handlers.service_bus_base_handler import \
+    ServiceBusBaseHandler
 from engagementmanager.service.activities_service import ActivitiesSvc
 from engagementmanager.service.logging_service import LoggingServiceFactory
 
@@ -47,6 +48,7 @@ class ActivityEventHandler(ServiceBusBaseHandler):
     activities_service = ActivitiesSvc()
 
     def handle_message(self, bus_message):
-        logger.info("New ICE event from type '%s' arrived, activity will be generated." %
-                    bus_message.activity_data.activity_type.name)
+        logger.info(
+            "New ICE event from type '%s' arrived, activity will be generated"
+            % bus_message.activity_data.activity_type.name)
         self.activities_service.generate_activity(bus_message.activity_data)

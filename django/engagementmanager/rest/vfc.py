@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,7 +36,6 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-import json
 
 from rest_framework.response import Response
 from rest_framework.status import HTTP_204_NO_CONTENT
@@ -64,10 +63,13 @@ class VFCRest(VvpApiView):
         return Response(serializer.data)
 
     """
-    expecting: VF object uuid, VFC relevant fields(excluding the ones with default field)
-    result: addition of a VFC to the DB and concatenating them with the VF object
+    expecting: VF object uuid, VFC relevant fields
+    (excluding the ones with default field)
+    result: addition of a VFC to the DB and concatenating
+    them with the VF object
     """
-    # This method doesn't need to be decorated with auth since it doesn't pass any engagement data from the front-end
+    # This method doesn't need to be decorated with auth since it doesn't pass
+    # any engagement data from the front-end
 
     @auth(Permissions.add_vfc)
     def post(self, request):

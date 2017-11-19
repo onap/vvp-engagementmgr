@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -38,7 +38,8 @@
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
 import json
 from django.utils import timezone
-from engagementmanager.bus.messages.new_notification_message import NewNotificationMessage
+from engagementmanager.bus.messages.new_notification_message \
+    import NewNotificationMessage
 from engagementmanager.models import IceUserProfile, Activity, Notification
 from engagementmanager.utils import activities_data
 from engagementmanager.utils.constants import Constants
@@ -55,7 +56,8 @@ class ActivitiesSvc:
         if hasattr(activity_data, "users_list") and activity_data.users_list:
             for user in activity_data.users_list:
                 activity_data.user = user
-                if hasattr(activity_data, "multiple_users_as_owners") and activity_data.multiple_users_as_owners:
+                if hasattr(activity_data, "multiple_users_as_owners") and \
+                        activity_data.multiple_users_as_owners:
                     activity_data.owner = activity_data.user
                 self.set_description(activity_data)
                 self.set_metadata(activity_data)
@@ -67,13 +69,17 @@ class ActivitiesSvc:
 
     def __create_activity(self, activity_data):
         if activity_data.engagement is None:
-            msg = "Engagement provided is a None object, be careful not to generate " \
-                  "description and metadata with engagement properties."
+            msg = "Engagement provided is a None object, " +\
+                "be careful not to generate description and metadata " +\
+                "with engagement properties."
             logger.warn(msg)
-        if activity_data.owner and not isinstance(activity_data.owner, IceUserProfile):
-            raise ValueError("owner should be IceUserProfile, was %r", activity_data.owner)
+        if activity_data.owner and not isinstance(activity_data.owner,
+                                                  IceUserProfile):
+            raise ValueError(
+                "owner should be IceUserProfile, was %r", activity_data.owner)
         if activity_data.description is None:
-            logger.warn('createActivity called with description=None; setting to ""')
+            logger.warn(
+                'createActivity called with description=None; setting to ""')
             activity_data.description = ''
 
         new_activity = Activity.objects.create(
@@ -93,50 +99,75 @@ class ActivitiesSvc:
 
             if activity_data.owner is None:
                 if activity_data.engagement:
-                    users_to_notify = activity_data.engagement.engagement_team.all()
+                    users_to_notify = activity_data.engagement.\
+                        engagement_team.all()
             else:
                 users_to_notify.append(activity_data.owner)
 
             for user_to_notify in users_to_notify:
-                new_notification = Notification.objects.create(user=user_to_notify, activity=new_activity)
+                new_notification = Notification.objects.create(
+                    user=user_to_notify, activity=new_activity)
                 new_activity.notification_set.add(new_notification)
                 user_to_notify.notification_set.add(new_notification)
                 new_notification.save()
                 from engagementmanager.apps import bus_service
-                bus_service.send_message(NewNotificationMessage(new_notification))
+                bus_service.send_message(
+                    NewNotificationMessage(new_notification))
 
     def pull_recent_activities(self, engagement, recent_activities_limit):
-        """ expected: engagement object (Activity), recent_activities_limit (integer) - number of recent activities
+        """ expected: engagement object (Activity), recent_activities_limit
+        (integer) - number of recent activities
         result: Top-X Dict Activity objects (sort by create_time) """
         logger.debug("Pulling top X activities from DB")
         activities = Activity.objects.filter(
-            engagement=engagement, activity_owner=None).order_by('-create_time')[:recent_activities_limit]
+            engagement=engagement, activity_owner=None).order_by(
+                '-create_time')[:recent_activities_limit]
         return activities
 
     def set_description(self, activity_data):
         dt = timezone.now()
         description = ''
 
-        if isinstance(activity_data, activities_data.UserJoinedEngagementActivityData):
+        if isinstance(activity_data, activities_data.
+                      UserJoinedEngagementActivityData):
             description = "##user_name## joined ##vf_name## "
-        elif isinstance(activity_data, activities_data.UpdateNextStepsActivityData):
-            description = "##user_name## " + activity_data.update_type.lower() + " a next step"
-        elif isinstance(activity_data, activities_data.VFProvisioningActivityData):
-            description = "Failed Gitlab and/or Jenkins Provision ##vf_name##: " + activity_data.description
-        elif isinstance(activity_data, activities_data.TestFinishedActivityData):
-            description = "Failure in Jenkins Job: " + activity_data.description
-        elif isinstance(activity_data, activities_data.ChangeEngagementStageActivityData):
-            description = "Engagement stage is now " + activity_data.stage + " for the following VF: ##vf_name##"
-        elif isinstance(activity_data, activities_data.DeleteNextStepsActivityData):
+        elif isinstance(activity_data, activities_data.
+                        UpdateNextStepsActivityData):
+            description = "##user_name## " + activity_data.\
+                update_type.lower() + " a next step"
+        elif isinstance(activity_data, activities_data.
+                        VFProvisioningActivityData):
+            description = "Failed Gitlab and/or Jenkins Provision " +\
+                "##vf_name##: " + activity_data.description
+        elif isinstance(activity_data, activities_data.
+                        TestFinishedActivityData):
+            description = "Failure in Jenkins Job: "\
+                + activity_data.description
+        elif isinstance(activity_data, activities_data.
+                        ChangeEngagementStageActivityData):
+            description = "Engagement stage is now " + \
+                activity_data.stage + " for the following VF: ##vf_name##"
+        elif isinstance(activity_data, activities_data.
+                        DeleteNextStepsActivityData):
             description = activity_data.user.full_name + \
-                " has deleted a next step at " + dt.strftime("%Y-%m-%d %H:%M:%S")
-        elif isinstance(activity_data, activities_data.NoticeEmptyEngagementData):
-            description = "You have not added any parts of the VNF package to your engagement ##vf_name## since it was created " + activity_data.delta_days_from_creation +\
-                " days ago. Do note that if you have not added any parts of the VNF package by " + \
-                activity_data.max_empty_time + ", we will be automatically archive it."
-        elif isinstance(activity_data, activities_data.AddNextStepsActivityData):
-            description = activity_data.user.full_name + " has added a next step at " + dt.strftime("%Y-%m-%d %H:%M:%S")
-        elif isinstance(activity_data, activities_data.SSHKeyAddedActivityData):
+                " has deleted a next step at " + \
+                dt.strftime("%Y-%m-%d %H:%M:%S")
+        elif isinstance(activity_data, activities_data.
+                        NoticeEmptyEngagementData):
+            description = "You have not added any parts of the VNF package " +\
+                "to your engagement ##vf_name## since it was created " \
+                + activity_data.delta_days_from_creation + \
+                " days ago. Do note that if you have not added any " +\
+                "parts of the VNF package by " + \
+                activity_data.max_empty_time + ", we will be automatically " +\
+                "archive it."
+        elif isinstance(activity_data, activities_data.
+                        AddNextStepsActivityData):
+            description = activity_data.user.full_name + \
+                " has added a next step at " + dt.strftime(
+                    "%Y-%m-%d %H:%M:%S")
+        elif isinstance(activity_data, activities_data.
+                        SSHKeyAddedActivityData):
             if activity_data.action == 'add':
                 description = "You have added an SSH key to your profile"
             elif activity_data.action == 'set':
@@ -150,11 +181,15 @@ class ActivitiesSvc:
         dt = timezone.now()
         metadata = {}
 
-        if isinstance(activity_data, activities_data.UserJoinedEngagementActivityData):
+        if isinstance(activity_data, activities_data.
+                      UserJoinedEngagementActivityData):
             activity_data.is_notification = True
-            metadata['notification_subject'] = "Someone has joined the " + activity_data.vf.name + " team"
-            metadata['notification_message'] = activity_data.user.full_name + " joined the " + activity_data.vf.name + \
-                " team. You can reach the dashboard by going to this link: " + \
+            metadata['notification_subject'] = "Someone has joined the " + \
+                activity_data.vf.name + " team"
+            metadata['notification_message'] = activity_data.user.full_name +\
+                " joined the " + activity_data.vf.name + \
+                " team. You can reach the dashboard by " +\
+                "going to this link: " + \
                 Constants.dashboard_href
             metadata['macros'] = {
                 '##vf_name##': {
@@ -168,7 +203,8 @@ class ActivitiesSvc:
                     'long': activity_data.user.email,
                 }
             }
-        elif isinstance(activity_data, activities_data.UpdateNextStepsActivityData):
+        elif isinstance(activity_data, activities_data.
+                        UpdateNextStepsActivityData):
             metadata['macros'] = {
                 '##user_name##': {
                     'type': 'popover',
@@ -176,15 +212,24 @@ class ActivitiesSvc:
                     'long': activity_data.user.email,
                 }
             }
-        elif isinstance(activity_data, activities_data.NoticeEmptyEngagementData):
+        elif isinstance(activity_data, activities_data.
+                        NoticeEmptyEngagementData):
             activity_data.is_notification = True
-            metadata['notification_subject'] = "Inactive Engagement Alert - " + activity_data.vf_name
+            metadata['notification_subject'] = "Inactive Engagement Alert - "\
+                + activity_data.vf_name
 
-            metadata['notification_message'] = "We have noticed that you have not added any parts of the VNF package to your engagement <em>" +\
-                activity_data.engagement.engagement_manual_id + ": " + activity_data.vf_name + "</em> since it was created " + activity_data.delta_days_from_creation +\
-                " days ago. If you have any questions around how you add your VNF package please check the relevant parts of the online documentation.<br/><br/>" +\
-                "Do note that if you have not added any parts of the VNF package by " + \
-                activity_data.max_empty_time + ", we will be automatically archive it."
+            metadata['notification_message'] = "We have noticed that " +\
+                "you have not added any parts of the VNF " +\
+                "package to your engagement <em>"\
+                + activity_data.engagement.engagement_manual_id + ": "\
+                + activity_data.vf_name + "</em> since it was created "\
+                + activity_data.delta_days_from_creation +\
+                " days ago. If you have any questions around how you add " +\
+                "your VNF package please check the relevant parts of the " +\
+                "online documentation.<br/><br/>" +\
+                "Do note that if you have not added any parts of the VNF " +\
+                "package by " + activity_data.max_empty_time + ", we will " +\
+                "be automatically archive it."
 
             metadata['macros'] = {
                 '##vf_name##': {
@@ -194,9 +239,11 @@ class ActivitiesSvc:
                 },
             }
 
-        elif isinstance(activity_data, activities_data.VFProvisioningActivityData):
+        elif isinstance(activity_data, activities_data.
+                        VFProvisioningActivityData):
             activity_data.is_notification = True
-            metadata['notification_subject'] = "Failed Gitlab and/or Jenkins Provision: " + activity_data.vf.name
+            metadata['notification_subject'] = "Failed Gitlab and/or " +\
+                "Jenkins Provision: " + activity_data.vf.name
             metadata['notification_message'] = activity_data.description
             metadata['macros'] = {
                 '##vf_name##': {
@@ -205,16 +252,19 @@ class ActivitiesSvc:
                     'eng_uuid': activity_data.vf.engagement.uuid,
                 },
             }
-        elif isinstance(activity_data, activities_data.TestFinishedActivityData):
+        elif isinstance(activity_data, activities_data.
+                        TestFinishedActivityData):
             activity_data.is_notification = True
             metadata['notification_subject'] = "Failed test_finished signal "
             metadata['notification_message'] = activity_data.description
-        elif isinstance(activity_data, activities_data.ChangeEngagementStageActivityData):
+        elif isinstance(activity_data, activities_data.
+                        ChangeEngagementStageActivityData):
             activity_data.is_notification = True
-            metadata['notification_subject'] = "Engagement stage was changed for the following VF: " + \
-                                               activity_data.vf.name
-            metadata['notification_message'] = "Engagement stage is now " + activity_data.stage +\
-                                               " for the following VF: " + activity_data.vf.name
+            metadata['notification_subject'] = "Engagement stage was " +\
+                "changed for the following VF: " + activity_data.vf.name
+            metadata['notification_message'] = "Engagement stage is now " \
+                + activity_data.stage + " for the following VF: " \
+                + activity_data.vf.name
             metadata['macros'] = {
                 '##vf_name##': {
                     'type': 'select_engagement',
@@ -222,17 +272,22 @@ class ActivitiesSvc:
                     'eng_uuid': activity_data.engagement.uuid,
                 }
             }
-        elif isinstance(activity_data, activities_data.AddNextStepsActivityData):
+        elif isinstance(activity_data,
+                        activities_data.AddNextStepsActivityData):
             activity_data.is_notification = True
-            metadata['notification_subject'] = "New next-step was added to the following VF: " + activity_data.vf.name
-            metadata['notification_message'] = activity_data.user.full_name + " has added a next step at " +\
+            metadata['notification_subject'] = "New next-step was " +\
+                "added to the following VF: " + activity_data.vf.name
+            metadata['notification_message'] = activity_data.user.full_name \
+                + " has added a next step at " +\
                 dt.strftime("%Y-%m-%d %H:%M:%S") + \
                 ", You can reach the dashboard by going to this link: " \
                 + Constants.dashboard_href
-        elif isinstance(activity_data, activities_data.SSHKeyAddedActivityData):
+        elif isinstance(
+                activity_data, activities_data.SSHKeyAddedActivityData):
             activity_data.is_notification = True
             metadata['notification_subject'] = "You have set an SSH key"
-            metadata['notification_message'] = "You have set an SSH key to your profile. Please allow some time for" \
-                                               " it to propagate across the system."
+            metadata['notification_message'] = "You have set an SSH key to " +\
+                "your profile. Please allow some time for it to propagate " +\
+                "across the system."
 
         activity_data.metadata = metadata

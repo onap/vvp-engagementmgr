@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -44,14 +44,17 @@ from django.forms.models import model_to_dict
 from django.template.loader import render_to_string
 import requests
 from engagementmanager.decorator.retry import retry_connection
-from engagementmanager.models import Engagement, IceUserProfile, Role, Checklist, \
-    ChecklistDecision, ChecklistLineItem, CheckListState, ChecklistTemplate, VF
+from engagementmanager.models import Engagement, IceUserProfile, \
+    Role, Checklist,\
+    ChecklistDecision, ChecklistLineItem, CheckListState, \
+    ChecklistTemplate, VF
 from engagementmanager.serializers import VFModelSerializerForSignal
 from engagementmanager.utils.constants import Roles, EngagementStage, \
-    CheckListLineType, JenkinsBuildParametersNames, RGWApermission
+    CheckListLineType, JenkinsBuildParametersNames, RGWApermission, CheckListCategory
 from engagementmanager.utils.cryptography import CryptographyText
 from engagementmanager.utils.validator import logEncoding
-from mocks.gitlab_mock.rest.gitlab_files_respons_rest import GitlabFilesResultsREST
+from mocks.gitlab_mock.rest.gitlab_files_respons_rest import \
+    GitlabFilesResultsREST
 from mocks.jenkins_mock.rest.jenkins_tests_validation_rest import \
     JenkinsTestsResultsREST
 
@@ -59,6 +62,7 @@ from rgwa_mock.services.rgwa_keys_service import RGWAKeysService
 from validationmanager.rados.rgwa_client_factory import RGWAClientFactory
 from validationmanager.utils.clients import get_jenkins_client, \
     get_gitlab_client
+from validationmanager.tasks import request_scan
 from engagementmanager.service.logging_service import LoggingServiceFactory
 
 logger = LoggingServiceFactory.get_logger()
@@ -101,11 +105,16 @@ def cl_from_pending_to_automation_callback(vf, checklist):
         logger.debug(
             "Engagement Manager has signaled that a checklist state was " +
             "changed from pending to automation")
-        get_jenkins_client().build_job(
-            vf.jenkins_job_name(), {
-                'checklist_uuid': checklist.uuid,
-                'git_repo_url': vf.git_repo_url,
-            })
+        if checklist.template and checklist.template.category == CheckListCategory.glance.name:
+            logger.debug("Triggering image scan")
+            request_scan(vf, checklist)
+        elif checklist.template and checklist.template.category == CheckListCategory.heat.name:
+            logger.debug("Triggering heat template validation")
+            get_jenkins_client().build_job(
+                vf.jenkins_job_name(), {
+                    'checklist_uuid': checklist.uuid,
+                    'git_repo_url': vf.git_repo_url,
+                })
 
 
 def provision_new_vf_callback(vf):
@@ -134,10 +143,8 @@ def provision_new_vf_callback(vf):
 
 def get_list_of_repo_files_callback(vf):
     """Given a vf, return its file list.
-
     This function will either succeed (and return a list),
     or throw an exception.
-
     """
     logger.debug(
         "Engagement Manager has signaled that there is a need " +
@@ -159,10 +166,8 @@ def get_list_of_repo_files_callback(vf):
 def ssh_key_created_or_updated_callback(user):
     if not settings.IS_SIGNAL_ENABLED:
         return None
-
     logger.debug("Engagement Manager has signaled that a user has " +
                  "created or updated an ssh key")
-
     user_dict = model_to_dict(user)
     gitlab = get_gitlab_client()
     gitlab_user = gitlab.get_user_by_email(user.email)
@@ -173,9 +178,7 @@ def ssh_key_created_or_updated_callback(user):
     if 'id' not in gitlab_user:
         err_msg = "coudln't get gitlab user %s " % user.uuid
         raise ValueError(err_msg)
-
     update_user_ssh_keys(user_dict, gitlab, gitlab_user)
-
     logger.debug(
         "Successfuly created/updated user in the git in " +
         "key_created_or_updated signal")
@@ -228,7 +231,7 @@ def ensure_checklists(vf):
 
 @retry_connection
 def ensure_jenkins_job(vf):
-    """Given a vf, ensure that its jenkins/TestEngine job exists.
+    """Given a vf, ensure that its jenkins/TestEngine jobs exist.
 
     This function will either succeed (and return None), or throw an exception.
 
@@ -241,16 +244,19 @@ def ensure_jenkins_job(vf):
     jenkins = get_jenkins_client()
     job_name = vf.jenkins_job_name()
 
-    # FIXME test-then-set can cause a race condition, so maybe better
-    # to attempt to create and ignore "already exists" error.
-    if jenkins.job_exists(job_name):
-        logger.debug(
-            "TestEngine job %s for VF %s already provisioned, skipping.",
-            job_name, vf.name)
-        return None
+    for namesuffix, xml in config_xml_content.items():
+        name = job_name + namesuffix
 
-    logger.debug("creating TestEngine job %s for VF %s", job_name, vf.name)
-    jenkins.create_job(job_name, config_xml_content)
+        # FIXME test-then-set can cause a race condition, so maybe better
+        # to attempt to create and ignore "already exists" error.
+        if jenkins.job_exists(name):
+            logger.debug(
+                "TestEngine job %s for VF %s already provisioned, skipping.",
+                name, vf.name)
+            continue
+
+        logger.debug("creating TestEngine job %s for VF %s", name, vf.name)
+        jenkins.create_job(name, xml)
 
 
 @retry_connection
@@ -261,7 +267,8 @@ def get_jenkins_build_log(vf, checklistUuid):
 
     """
     if not settings.IS_SIGNAL_ENABLED:
-        return jenkins_mock_object.get(vf.engagement.engagement_manual_id, vf.name)
+        return jenkins_mock_object.get(
+            vf.engagement.engagement_manual_id, vf.name)
     logger.debug("Retrieving VF's(%s) last Jenkins build log " % (vf.name))
     jenkins = get_jenkins_client()
     job_name = vf.jenkins_job_name()
@@ -271,35 +278,43 @@ def get_jenkins_build_log(vf, checklistUuid):
     logs = ''
     for build in vf_builds['builds']:
         for parameter in build['actions'][0]['parameters']:
-            if parameter['name'] == JenkinsBuildParametersNames.CHECKLIST_UUID:
+            if parameter['name'] == \
+                    JenkinsBuildParametersNames.CHECKLIST_UUID:
                 if parameter['value'] == checklistUuid:
                     logger.debug(
-                        "I have succeeded to match the given checklist uuid to one of the VF's builds' checklist_uuid")
+                        "I have succeeded to match the given checklist uuid \
+                        to one of the VF's builds' checklist_uuid")
                     build_num = build['number']
     if build_num < 0:
         logger.error(
-            "Failed to match the given checklist uuid to one of the VF's builds' checklist_uuid")
+            "Failed to match the given checklist uuid to one of the VF's \
+            builds' checklist_uuid")
     else:
         logs = jenkins.server.get_build_console_output(job_name, build_num)
     return logs
 
 
 def get_jenkins_job_config():
-    """Return the XML configuration for a Jenkins/TestEngine build job.
+    """Return the XML configurations for the Jenkins/TestEngine build job and
+    the Jenkins/Imagescanner results processing job.
 
-    The configuration is templated, and the context provided will
-    include the appropriate webhook endpoint for its notification
-    callbacks. It is not cached; do that from a higher level caller.
+    The configurations are templated, and the context provided will include the
+    appropriate webhook endpoint for its notification callbacks. It is not
+    cached; do that from a higher level caller.
 
     """
     # replacing auth in the view name 'jenkins-notification-endpoint'
     # (url.py) and appending it to the url from settings
-    webhook_endpoint = "http://%s%s" % (
-        settings.API_DOMAIN,
-        reverse('jenkins-notification-endpoint',
-                kwargs={'auth_token': settings.WEBHOOK_TOKEN}))
-    return render_to_string('jenkins_job_config.xml',
-                            {'notification_endpoint': webhook_endpoint})
+    context = {
+        'notification_endpoint': "http://%s%s" % (
+            settings.API_DOMAIN,
+            reverse(
+                'jenkins-notification-endpoint',
+                kwargs={'auth_token': settings.WEBHOOK_TOKEN}))}
+    return {
+        '': render_to_string('jenkins_job_config.xml', context),
+        '_scanner': render_to_string('imagescanner_job_config.xml', context),
+    }
 
 
 @retry_connection
@@ -633,14 +648,14 @@ def ensure_rgwa_entities(vf):
     """
     formated_vf = VFModelSerializerForSignal(vf).data
     engagement_stage = formated_vf['engagement']['engagement_stage']
+    bucket_name = vf.engagement.engagement_manual_id + "_" + vf.name.lower()
     if engagement_stage == EngagementStage.Active.name:
-        bucket_name = vf.engagement.engagement_manual_id+"_"+vf.name.lower()
         bucket = get_or_create_bucket(bucket_name)
         add_bucket_users(bucket, vf)
     elif engagement_stage == EngagementStage.Validated.name or\
             engagement_stage == EngagementStage.Completed.name or\
             engagement_stage == EngagementStage.Archived.name:
-        bucket = get_or_create_bucket(vf.engagement.engagement_manual_id)
+        bucket = get_or_create_bucket(bucket_name)
         remove_bucket_users_grants(bucket, vf)
 
 
@@ -649,13 +664,18 @@ def create_user_rgwa(user):
         logger.debug("Engagement Manager has signaled that a user has " +
                      "created an rgwa")
         rgwa = RGWAClientFactory.admin()
-        rgwa_user = rgwa.get_user(user.full_name)
+        rgwa_user = rgwa.get_user(user.uuid)
         if rgwa_user is None:
             logger.debug(
                 user.full_name + "User does not exist, a new one is created!")
             try:
                 rgwa_user = rgwa.create_user(
-                    uid=user.full_name, display_name='User "%s"' % user.full_name)
+                    uid=user.uuid,
+                    display_name=user.full_name,
+                    # admin will create and own the buckets users use. note:
+                    # radosgw treats 0 as "unlimited", -1 as "none"
+                    max_buckets=-1,
+                )
                 user = IceUserProfile.objects.get(uuid=user.uuid)
                 access_key = rgwa_user['keys'][0]['access_key']
                 secret_key = CryptographyText.encrypt(
@@ -669,20 +689,21 @@ def create_user_rgwa(user):
                     str(rgwa_user))
             except Exception as e:
                 logger.error(str(e))
-                err_msg = "coudln't get rgwa user %s " % user.full_name
+                err_msg = "coudln't get rgwa user %s " % user.uuid
                 raise ValueError(err_msg)
     else:
         rgwa_user = RGWAKeysService().mock_create_user(
-            uid=user.full_name, display_name='User "%s"' % user.full_name)
+            uid=user.uuid, display_name=user.full_name)
         user = IceUserProfile.objects.get(uuid=user.uuid)
         user.rgwa_access_key = rgwa_user['access_key']
-        user.rgwa_secret_key = CryptographyText.encrypt(rgwa_user['secret_key'])
+        user.rgwa_secret_key = CryptographyText.encrypt(
+            rgwa_user['secret_key'])
         user.save()
 
 
-def validate_rgwa_user(full_name, uuid):
+def validate_rgwa_user(uuid):
     rgwa = RGWAClientFactory.admin()
-    rgwa_user = rgwa.get_user(full_name)
+    rgwa_user = rgwa.get_user(uuid)
     if rgwa_user is None:
         create_user_rgwa(IceUserProfile.objects.get(uuid=uuid))
 
@@ -695,14 +716,14 @@ def add_bucket_users(bucket, vf):
 
 def add_bucket_user(user, bucket):
     try:
-        validate_rgwa_user(user.full_name, user.uuid)
+        validate_rgwa_user(user.uuid)
         bucket_acl = bucket.get_acl()
         grants = set((grant.id, grant.permission)
                      for grant in bucket_acl.acl.grants)
         for permission in [RGWApermission.READ, RGWApermission.WRITE]:
-            if (user.full_name, permission) in grants:
+            if (user.uuid, permission) in grants:
                 continue
-            bucket_acl.acl.add_user_grant(permission, user.full_name)
+            bucket_acl.acl.add_user_grant(permission, user.uuid)
         bucket.set_acl(bucket_acl)
     except Exception as e:
         err_msg = "Failed: Engagement team user with uuid " + \
@@ -735,5 +756,6 @@ def remove_bucket_users_grants(bucket, vf):
 def remove_bucket_user_grants(bucket, user):
     bucket_acl = bucket.get_acl()
     bucket_acl.acl.grants = [
-        grant for grant in bucket_acl.acl.grants if not grant.id == user.full_name]
+        grant for grant in bucket_acl.acl.grants if not grant.id ==
+        user.uuid]
     bucket.set_acl(bucket_acl)

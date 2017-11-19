@@ -54,27 +54,31 @@ class Constants(object):
     role_standard_user = None
     role_admin = None
     role_admin_ro = None
-    service_provider_company_name = "ServiceProvider"
-    service_provider_mail_domain = ["example-domain.com"]
-    service_provider_admin_mail = "admin@example-domain.com"
-    service_provider_admin_ro_mail = "admin_ro@example-domain.com"
-    ice_base_ctx = "/vvp/v1/engmgr/"
-    rgwa_base_url ='http://localhost:8123/admin'
+    service_provider_company_name = settings.SERVICE_PROVIDER
+    service_provider_mail_domain = [settings.SERVICE_PROVIDER_DOMAIN]
+    service_provider_admin_mail = "admin@" + settings.SERVICE_PROVIDER_DOMAIN
+    service_provider_admin_ro_mail = "admin_ro@" + \
+                                     settings.SERVICE_PROVIDER_DOMAIN
+    ice_base_ctx = "/{prefix}/v1/engmgr/"\
+        .format(prefix=settings.PROGRAM_NAME_URL_PREFIX)
+    rgwa_base_url = 'http://localhost:8123/admin'
     default_vfc_version = "1.0.0"
-    dbConnectionStr = "dbname='icedb' user='iceuser' host='localhost' password='Aa123456' port='5433'"
+    dbConnectionStr = "dbname='icedb' user='iceuser' host='localhost' " +\
+                      "password='Aa123456' port='5433'"
     dashboard_href = "<A href=" + \
         str(settings.DOMAIN) + "/#/dashboard/" + ">Dashboard</A>"
-    prodDomain = 'https://www.vvp.example-domain.com'
+    prodDomain = 'https://' + settings.SERVICE_PROVIDER_DOMAIN
     invite_template_dir = "emails/invite/"
     activate_template_dir = "emails/activate/"
     notification_template_dir = "emails/notification/"
     reset_pwd_template_dir = "emails/reset_pwd/"
     activation_prefix = "/#/activate/"
-    program_name = "VVP"
+    program_name = settings.PROGRAM_NAME
 
 
 class TemplatesConstants(object):
-    logo_url = "https://www.d2ice.att.io/styles/images/d2sandbox_logos-150x30.png"
+    logo_url = \
+        "https://www.d2ice.att.io/styles/images/d2sandbox_logos-150x30.png"
     contact_mail = "d2ice@att.com"
     context = {"service_provider": Constants.service_provider_company_name,
                "program_name": Constants.program_name,
@@ -86,6 +90,8 @@ class TemplatesConstants(object):
 '''
 In order to get Enum Value as String use: EngagementType.Validation.name
 '''
+
+
 class EngagementModelValidationDate:
     HEAT_VALIDATED = "heat_validated_time"
     IMAGE_SCAN = "image_scan_time"
@@ -99,10 +105,12 @@ class JenkinsBuildParametersNames:
 
 
 class MockJenkinsBuildLog:
-    TEXT = "from server: Started by user admin \n \
-            Building in workspace /var/jenkins_home/workspace/{vf_name}_{eng_man_id} \n \
-            [{vf_name}_{eng_man_id}] $ /bin/sh /tmp/jenkins{random_id}.sh \n \
-            Cloning into '/var/jenkins_home/workspace/{vf_name}_{eng_man_id}/VF'"
+    TEXT = \
+        "from server: Started by user admin \n \
+        Building in workspace \
+        /var/jenkins_home/workspace/{vf_name}_{eng_man_id} \n \
+        [{vf_name}_{eng_man_id}] $ /bin/sh /tmp/jenkins{random_id}.sh \n \
+        Cloning into '/var/jenkins_home/workspace/{vf_name}_{eng_man_id}/VF'"
 
 
 class ChecklistDefaultNames:

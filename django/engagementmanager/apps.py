@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -41,6 +41,8 @@ from django.conf import settings
 from engagementmanager.scheduled_jobs import ScheduledJobs
 from engagementmanager.service.logging_service import LoggingServiceFactory
 
+logger = LoggingServiceFactory.get_logger()
+
 cms_client = None
 bus_service = None
 
@@ -52,12 +54,13 @@ class EngagementmanagerConfig(AppConfig):
     def ready(self):
         # This otherwise unused import causes the signal receivers
         # to register themselves at the appropriate time. Do not remove.
+        # We use logger.debug to ignore flake8's warning about unused import.
         import engagementmanager.vm_integration.em_api
+        logger.debug(engagementmanager.vm_integration.em_api.file_name)
         ###############################
         # Bootstrap Actions           #
         ###############################
         from engagementmanager.utils.constants import Constants
-        logger = LoggingServiceFactory.get_logger()
 
         if (settings.DOMAIN == Constants.prodDomain):
             logger.info("--Production Mode--")
@@ -77,20 +80,39 @@ class EngagementmanagerConfig(AppConfig):
         ice_scheduler.setup_hourly_job()
 
     def __register_bus_service_handlers(self):
-        from engagementmanager.bus.messages.activity_event_message import ActivityEventMessage
-        from engagementmanager.bus.messages.daily_scheduled_message import DailyScheduledMessage
-        from engagementmanager.bus.messages.new_notification_message import NewNotificationMessage
-        from engagementmanager.bus.handlers.activity_event_handler import ActivityEventHandler
-        from engagementmanager.bus.handlers.daily_resend_notifications_handler import DailyResendNotificationsHandler
-        from engagementmanager.bus.handlers.digest_email_notification_handler import DigestEmailNotificationHandler
-        from engagementmanager.bus.handlers.new_notification_handler import NewNotificationHandler
-        from engagementmanager.bus.messages.hourly_scheduled_message import HourlyScheduledMessage
-        from engagementmanager.bus.handlers.check_news_and_announcements_handler import CheckNewsAndAnnouncementsHandler
-        from engagementmanager.bus.handlers.daily_notify_inactive_engagements_handler import DailyNotifyInactiveEngagementsHandler
+        from engagementmanager.bus.messages.activity_event_message import \
+            ActivityEventMessage
+        from engagementmanager.bus.messages.daily_scheduled_message import \
+            DailyScheduledMessage
+        from engagementmanager.bus.messages.new_notification_message import \
+            NewNotificationMessage
+        from engagementmanager.bus.handlers.activity_event_handler import\
+            ActivityEventHandler
+        from engagementmanager.bus.handlers.daily_resend_notifications_handler\
+            import DailyResendNotificationsHandler
+        from engagementmanager.bus.handlers.digest_email_notification_handler\
+            import DigestEmailNotificationHandler
+        from engagementmanager.bus.handlers.new_notification_handler\
+            import NewNotificationHandler
+        from engagementmanager.bus.messages.hourly_scheduled_message\
+            import HourlyScheduledMessage
+        from engagementmanager.bus.handlers.\
+            check_news_and_announcements_handler import \
+            CheckNewsAndAnnouncementsHandler
+        from engagementmanager.bus.handlers.\
+            daily_notify_inactive_engagements_handler import \
+            DailyNotifyInactiveEngagementsHandler
+        from engagementmanager.bus.handlers.image_pushed_handler import \
+            ImagePushedHandler
 
         bus_service.register(ActivityEventHandler(), ActivityEventMessage)
         bus_service.register(NewNotificationHandler(), NewNotificationMessage)
-        bus_service.register(DigestEmailNotificationHandler(), DailyScheduledMessage)
-        bus_service.register(DailyResendNotificationsHandler(), DailyScheduledMessage)
-        bus_service.register(DailyNotifyInactiveEngagementsHandler(), DailyScheduledMessage)
-        bus_service.register(CheckNewsAndAnnouncementsHandler(), HourlyScheduledMessage)
+        bus_service.register(
+            DigestEmailNotificationHandler(), DailyScheduledMessage)
+        bus_service.register(
+            DailyResendNotificationsHandler(), DailyScheduledMessage)
+        bus_service.register(
+            DailyNotifyInactiveEngagementsHandler(), DailyScheduledMessage)
+        bus_service.register(
+            CheckNewsAndAnnouncementsHandler(), HourlyScheduledMessage)
+        bus_service.register(ImagePushedHandler(), HourlyScheduledMessage)

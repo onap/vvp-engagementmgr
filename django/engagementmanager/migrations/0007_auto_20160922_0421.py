@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -54,8 +54,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ECOMPRelease',
             fields=[
-                ('uuid', models.CharField(max_length=36, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=45)),
+                ('uuid',
+                 models.CharField(
+                     max_length=36,
+                     primary_key=True,
+                     serialize=False)),
+                ('name',
+                 models.CharField(
+                     max_length=45)),
             ],
             options={
                 'db_table': 'ice_ecomp_release',
@@ -64,7 +70,10 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='vf',
             name='ecomp_release',
-            field=models.ForeignKey(blank=True, null=True,
-                                    on_delete=django.db.models.deletion.SET_NULL, to='engagementmanager.ECOMPRelease'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to='engagementmanager.ECOMPRelease'),
         ),
     ]

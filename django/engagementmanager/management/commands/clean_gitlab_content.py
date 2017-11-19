@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -43,9 +43,11 @@ Will delete content from gitlab to create initial environment:
 3.Users
 
 This command uses gitlab client rest api to remove data.
-This command is part of clean_vvp_system command but can be used separately as well.
+This command is part of clean_vvp_system
+command but can be used separately as well.
 
-WARNING: It will delete almost everything, if you have necessary data DO NOT USE THIS COMMAND!
+WARNING: It will delete almost everything, if you have
+necessary data DO NOT USE THIS COMMAND!
 """
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -69,7 +71,8 @@ class Command(BaseCommand):
         for entity in entities:
             entities_deleted = []
             gitlab_entity_url = settings.GITLAB_URL + "api/v3/%s/" % entity
-            r1 = requests.get(gitlab_entity_url, headers=headers, verify=False)
+            r1 = requests.get(gitlab_entity_url, headers=headers,
+                              verify=False)
             data = r1.json()
 
             while len(data) > 1:
@@ -77,13 +80,14 @@ class Command(BaseCommand):
                     try:
                         if record['id'] not in entities_deleted \
                                 and record['name'] != 'Administrator':
-                            r2 = requests.delete(gitlab_entity_url +
-                                                 str(record['id']),
-                                                 headers=headers, verify=False)
-                            logger.info("Entity '%s' with id %s Will be deleted"
-                                        " in a bit (type: %s)" % (
-                                            record['name'],
-                                            record['id'], entity,))
+                            requests.delete(gitlab_entity_url +
+                                            str(record['id']),
+                                            headers=headers,
+                                            verify=False)
+                            logger.info(
+                                "Entity '%s' with id %s Will be deleted"
+                                " in a bit (type: %s)" %
+                                (record['name'], record['id'], entity,))
 
                             entities_deleted.append(record['id'])
                     except Exception as e:

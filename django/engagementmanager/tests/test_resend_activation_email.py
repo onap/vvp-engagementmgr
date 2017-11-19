@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -44,9 +44,15 @@ class TestResendActivationEmail(TestBaseEntity):
 
     def childSetup(self):
         self.createDefaultRoles()
-        uuid, vendor = self.creator.createVendor(Constants.service_provider_company_name)
-        self.user = self.creator.createUser(vendor, self.randomGenerator("email"), self.randomGenerator(
-            "randomNumber"), self.randomGenerator("randomString"), self.standard_user, False)
+        uuid, vendor = self.creator.createVendor(
+            Constants.service_provider_company_name)
+        self.user = self.creator.createUser(
+            vendor,
+            self.randomGenerator("email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.standard_user,
+            False)
         self.urlStr = self.urlPrefix + \
             "users/activation-mail/" + self.user.uuid
         self.params = {"email": self.user.email}

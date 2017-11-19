@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -37,13 +37,11 @@
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
 import json
-import random
 
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from engagementmanager.tests.test_base_entity import TestBaseEntity
 from engagementmanager.models import Vendor
 from engagementmanager.utils.constants import Constants
-from engagementmanager.utils.request_data_mgr import request_data_mgr
 
 
 class TestAddContactTestCase(TestBaseEntity):
@@ -52,8 +50,14 @@ class TestAddContactTestCase(TestBaseEntity):
 
         self.createVendors([Constants.service_provider_company_name, 'Other'])
         self.createDefaultRoles()
-        self.reviewer = self.creator.createUser(Vendor.objects.get(
-            name='Other'), self.randomGenerator("main-vendor-email"), '55501000199', 'reviewer user', self.el, True)
+        self.reviewer = self.creator.createUser(
+            Vendor.objects.get(
+                name='Other'),
+            self.randomGenerator("main-vendor-email"),
+            '55501000199',
+            'reviewer user',
+            self.el,
+            True)
         self.peer_reviewer = self.creator.createUser(Vendor.objects.get(
             name='Other'), self.randomGenerator("main-vendor-email"),
             '55501000199', 'peer-reviewer user', self.el, True)
@@ -70,9 +74,15 @@ class TestAddContactTestCase(TestBaseEntity):
 
         # Create a VF
         self.deploymentTarget = self.creator.createDeploymentTarget(
-            self.randomGenerator("randomString"), self.randomGenerator("randomString"))
-        self.vf = self.creator.createVF(self.randomGenerator("randomString"), self.engagement,
-                                        self.deploymentTarget, False, Vendor.objects.get(name='Other'))
+            self.randomGenerator("randomString"),
+            self.randomGenerator("randomString"))
+        self.vf = self.creator.createVF(
+            self.randomGenerator("randomString"),
+            self.engagement,
+            self.deploymentTarget,
+            False,
+            Vendor.objects.get(
+                name='Other'))
 
         self.urlStr = self.urlPrefix + "add-feedback/"
         self.data = dict()
@@ -80,17 +90,19 @@ class TestAddContactTestCase(TestBaseEntity):
 
     def initBody(self):
         self.data['description'] = Vendor.objects.get(
-            name=Constants.service_provider_company_name).name + "ruslan gafiulin"
+            name=Constants.service_provider_company_name).name \
+            + "ruslan gafiulin"
 
     def addFeedback(self, expectedStatus=HTTP_200_OK):
         self.feedbackData = json.dumps(self.data, ensure_ascii=False)
-        response = self.c.post(self.urlStr, self.feedbackData, content_type='application/json',
-                               **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.post(self.urlStr,
+                               self.feedbackData,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token "
+                                  + self.token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, expectedStatus)
         return response
-
-    ### TESTS ###
 
     def testAddFeedbackForNonExistingContact(self):
         self.initBody()

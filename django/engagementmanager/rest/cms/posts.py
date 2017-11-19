@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -47,11 +47,12 @@ from engagementmanager.service.cms.posts_service import CMSPostsService
 @classDecorator([logFuncEntry])
 class Posts(VvpApiView):
 
-    def get(self, request, format=None, **kwargs):
+    def get(self, request):
         categoryParam = request.GET.get('category', "")
         limitParam = request.GET.get('limit', 5)
         offsetParam = request.GET.get('offset', 0)
         fromLastDaysParam = request.GET.get('fromLastDays', None)
 
-        posts = CMSPostsService().getPosts(offsetParam, limitParam, fromLastDaysParam, categoryParam)
+        posts = CMSPostsService().getPosts(offsetParam, limitParam,
+                                           fromLastDaysParam, categoryParam)
         return Response(posts)

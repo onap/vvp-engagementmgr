@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -42,7 +42,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.status import HTTP_401_UNAUTHORIZED, \
     HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR
-from engagementmanager.service.authorization_service import AuthorizationService
+from engagementmanager.service.authorization_service import \
+    AuthorizationService
 from engagementmanager.utils.request_data_mgr import request_data_mgr
 from engagementmanager.service.logging_service import LoggingServiceFactory
 
@@ -59,10 +60,10 @@ def auth(action, is_internal=False):
 
             # Extract USER -  A MUST Have in KWARGS #
             user = request_data_mgr.get_user()
-            if user == None:
+            if user is None:
                 msg = "user couldn't be identified in the request"
                 logger.error(msg)
-                if (is_internal == True):
+                if (is_internal):
                     return msg, HTTP_400_BAD_REQUEST
                 return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
@@ -72,30 +73,42 @@ def auth(action, is_internal=False):
             try:
                 result = None
                 message = None
-                result, message = auth_service.is_user_able_to(user, action, eng_uuid, checklist_uuid)
-                logger.debug('Authorization Service : ' + action.name +
-                             '. Result=' + str(result) + '. message=' + str(message))
-                if result == False:
+                result, message = auth_service.is_user_able_to(
+                    user, action, eng_uuid, checklist_uuid)
+                logger.debug(
+                    'Authorization Service : ' +
+                    action.name +
+                    '. Result=' +
+                    str(result) +
+                    '. message=' +
+                    str(message))
+                if not result:
                     msg = "User not authorized: " + \
-                        str(user.uuid) + ". eng_uuid=" + str(eng_uuid) + ". checklist_uuid=" + str(checklist_uuid)
-                    if (is_internal == True):
+                        str(user.uuid) + ". eng_uuid=" + str(eng_uuid) + \
+                        ". checklist_uuid=" + str(checklist_uuid)
+                    if (is_internal):
                         return msg, HTTP_401_UNAUTHORIZED
                     msg = bleach.clean(msg, tags=['a', 'b'])
                     return Response(msg, status=status.HTTP_401_UNAUTHORIZED)
 
             except Exception as e:
-                logger.error("=====================Exception=====================")
-                msg = "A problem occurred while trying to authorize user.uuid= " + \
+                logger.error(
+                    "=====================Exception=====================")
+                msg = "A problem occurred while trying \
+                to authorize user.uuid= " + \
                     str(user.uuid) + ". eng_uuid=" + str(eng_uuid) + \
-                    ". checklist_uuid=" + str(checklist_uuid) + "action=" + str(action)
+                    ". checklist_uuid=" + \
+                    str(checklist_uuid) + "action=" + str(action)
                 logger.error(str(e) + " Message: " + msg)
                 logger.error(traceback.format_exc())
-                logger.error("===================================================")
+                logger.error(
+                    "===================================================")
 
-                if (is_internal == True):
+                if (is_internal):
                     return msg, HTTP_500_INTERNAL_SERVER_ERROR
                 msg = "Action was failed to be performed"
-                return Response(msg, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response(
+                    msg, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             return func(*args, **kwargs)
 
         return _new_func

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,7 +36,8 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-"""This module provides retry_connection, a simple wrapper around retrying.retry, for our most
+"""This module provides retry_connection,
+a simple wrapper around retrying.retry, for our most
 common use case.
 
 """
@@ -49,4 +50,5 @@ def is_connection_exception(exception):
     return isinstance(exception, (ConnectionError, Timeout))
 
 
-retry_connection = retry(stop_max_attempt_number=2, retry_on_exception=is_connection_exception)
+retry_connection = retry(stop_max_attempt_number=2,
+                         retry_on_exception=is_connection_exception)

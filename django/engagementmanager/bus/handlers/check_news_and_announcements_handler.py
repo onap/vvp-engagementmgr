@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,7 +36,8 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-from engagementmanager.bus.handlers.service_bus_base_handler import ServiceBusBaseHandler
+from engagementmanager.bus.handlers.service_bus_base_handler import \
+    ServiceBusBaseHandler
 from engagementmanager.service.logging_service import LoggingServiceFactory
 
 logger = LoggingServiceFactory.get_logger()
@@ -44,6 +45,8 @@ logger = LoggingServiceFactory.get_logger()
 
 class CheckNewsAndAnnouncementsHandler(ServiceBusBaseHandler):
     def handle_message(self, bus_message):
-        logger.debug("New hourly scheduled message arrived, will check for news and announcements and send notification"
-                     " if needed.")
+        logger.debug(
+            "New hourly scheduled message arrived, will check " +
+            "for news and announcements and send notification"
+            " if needed.")
         pass

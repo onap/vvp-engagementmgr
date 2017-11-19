@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -44,7 +44,8 @@ from rest_framework.status import HTTP_200_OK
 
 from engagementmanager.models import Vendor, ChecklistSection, Checklist
 from engagementmanager.tests.test_base_entity import TestBaseEntity
-from engagementmanager.utils.constants import CheckListState, EngagementType, Constants
+from engagementmanager.utils.constants import CheckListState, \
+    EngagementType, Constants
 
 
 class TestGitPushSignalCase(TestBaseEntity):
@@ -57,33 +58,48 @@ class TestGitPushSignalCase(TestBaseEntity):
         self.fileAdded = "CHANGELOG"
         self.fileModified = "app/controller/application.rb"
 #         self.associatedFiles = [self.fileAdded, self.fileModified]
-        self.associatedFiles = "[\"" + self.fileAdded + "\",\"" + self.fileModified + "\"]"
+        self.associatedFiles = "[\"" + self.fileAdded + \
+            "\",\"" + self.fileModified + "\"]"
 
         # Create full engagement:
-        self.createVendors([Constants.service_provider_company_name, 'Amdocs'])
+        self.createVendors([Constants.service_provider_company_name,
+                            'Amdocs'])
         self.createDefaultRoles()
         self.el_user = self.creator.createUser(Vendor.objects.get(
             name=Constants.service_provider_company_name),
-            self.randomGenerator("main-vendor-email"), '55501000199', 'el user', self.el, True)
+            self.randomGenerator("main-vendor-email"), '55501000199',
+            'el user', self.el, True)
         self.user = self.creator.createUser(Vendor.objects.get(
             name=Constants.service_provider_company_name),
-            self.randomGenerator("main-vendor-email"), '55501000199', 'user', self.standard_user, True)
+            self.randomGenerator("main-vendor-email"), '55501000199',
+            'user', self.standard_user, True)
         self.peer_reviewer = self.creator.createUser(Vendor.objects.get(
             name=Constants.service_provider_company_name),
-            self.randomGenerator("main-vendor-email"), '55501000199', 'peer-reviewer user', self.el, True)
+            self.randomGenerator("main-vendor-email"), '55501000199',
+            'peer-reviewer user', self.el, True)
         self.template = self.creator.createDefaultCheckListTemplate()
         self.engagement = self.creator.createEngagement(
-            'just-a-fake-uuid', EngagementType.Validation.name, None)  # @UndefinedVariable
+            'just-a-fake-uuid', EngagementType.Validation.name, None)
         self.engagement.engagement_team.add(self.el_user, self.user)
-        self.checklist = self.creator.createCheckList('some-checklist', CheckListState.review.name, 1,
-                                                      self.associatedFiles, self.engagement, self.template, self.el_user, self.el_user)  # @UndefinedVariable
-        self.section = ChecklistSection.objects.create(uuid=uuid4(), name=self.randomGenerator("randomString"), weight=1.0, description=self.randomGenerator(
-            "randomString"), validation_instructions=self.randomGenerator("randomString"), template=self.template)
-        self.vendor = Vendor.objects.get(name=Constants.service_provider_company_name)
+        self.checklist = self.creator.createCheckList(
+            'some-checklist', CheckListState.review.name, 1,
+            self.associatedFiles, self.engagement, self.template,
+            self.el_user, self.el_user)
+        self.section = ChecklistSection.objects.create(
+            uuid=uuid4(), name=self.randomGenerator("randomString"),
+            weight=1.0,
+            description=self.randomGenerator(
+                "randomString"), validation_instructions=self.randomGenerator(
+                    "randomString"), template=self.template)
+        self.vendor = Vendor.objects.get(
+            name=Constants.service_provider_company_name)
         self.deploymentTarget = self.creator.createDeploymentTarget(
-            self.randomGenerator("randomString"), self.randomGenerator("randomString"))
+            self.randomGenerator("randomString"), self.randomGenerator(
+                "randomString"))
         self.vf = self.creator.createVF("TestVF-GitPush", self.engagement,
-                                        self.deploymentTarget, False, self.vendor, git_repo_url=self.gitRepoURL)
+                                        self.deploymentTarget, False,
+                                        self.vendor,
+                                        git_repo_url=self.gitRepoURL)
 
     def initBody(self):  # Create JSON for body REST request.
         self.data['object_kind'] = "push"
@@ -101,13 +117,13 @@ class TestGitPushSignalCase(TestBaseEntity):
             commitsData['modified'] = [self.fileModified]
             commitsData['removed'] = []
             commitsList.append(commitsData)
-            for a in commitsData.values():  # Count number of commits in commitsData.
+            # Count number of commits in commitsData.
+            for a in commitsData.values():
                 if a != []:
                     totalCommits += 1
         self.data['commits'] = commitsList
         self.data['total_commits_count'] = totalCommits
 
-    ### TESTS ###
     def test_git_push_event_positive(self):
         if not settings.IS_SIGNAL_ENABLED:
             return
@@ -119,11 +135,14 @@ class TestGitPushSignalCase(TestBaseEntity):
         print(datajson)
         headers = {'HTTP_X_GITLAB_EVENT': "Push Hook"}
 
-        response = self.c.post(self.urlStr, datajson, content_type='application/json', **headers)
+        response = self.c.post(self.urlStr, datajson,
+                               content_type='application/json', **headers)
         print("Got response: " + str(response.status_code) +
               ", Expecting 200. Response body: " + response.reason_phrase)
         self.assertEqual(response.status_code, HTTP_200_OK)
 
         checklistState = Checklist.objects.get(uuid=self.checklist.uuid)
-        print("Checklist state (final, should be 'archive'): " + checklistState.state)
-        self.assertEqual(checklistState.state, CheckListState.archive.name)  # @UndefinedVariable
+        print("Checklist state (final, should be 'archive'): "
+              + checklistState.state)
+        # @UndefinedVariable
+        self.assertEqual(checklistState.state, CheckListState.archive.name)

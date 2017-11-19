@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -56,7 +56,8 @@ executor = concurrent.futures.ThreadPoolExecutor(max_workers=4)
 def send_jenkins_job_and_gitlab_repo_exists(vf):
     # A signal which check if jenkins job was created and also if gitlab repo
     logger.debug(
-        "Sending a call to validation manager. Call=jenkins_job_and_gitlab_repo_exists_callback. vf=%s", vf.uuid)
+        "Sending a call to validation manager." +
+        "Call=jenkins_job_and_gitlab_repo_exists_callback. vf=%s", vf.uuid)
     is_ready = vm_api.jenkins_job_and_gitlab_repo_exists_callback(vf=vf)
     return is_ready
 
@@ -67,28 +68,36 @@ def send_cl_from_pending_to_automation_event(checkListObj):
     # validation manager)
     vf = VF.objects.get(engagement=checkListObj.engagement)
     logger.debug(
-        "Sending a call to validation manager. Call=send_cl_from_pending_to_automation_event. checklistUuid=%s", checkListObj.uuid)
-    vm_api.cl_from_pending_to_automation_callback(vf=vf, checklist=checkListObj)
+        "Sending a call to validation manager." +
+        "Call=send_cl_from_pending_to_automation_event." +
+        "checklistUuid=%s", checkListObj.uuid)
+    vm_api.cl_from_pending_to_automation_callback(
+        vf=vf, checklist=checkListObj)
 
 
 def send_ssh_key_created_or_updated_event(user):
     # A signal which is sent from the EM to the VM when a user is adding or
     # updating their ssh key
     logger.debug(
-        "Sending a call to validation manager. Call=send_ssh_key_created_or_updated_event. user=%s", user.uuid)
+        "Sending a call to validation manager. " +
+        "Call=send_ssh_key_created_or_updated_event. user=%s", user.uuid)
     vm_api.ssh_key_created_or_updated_callback(user=user)
-    
+
+
 def send_create_user_in_rgwa_event(user):
     # A signal which is sent from the EM to the VM when a user is adding or
     # updating their ssh key
     logger.debug(
-        "Sending a call to validation manager. Call=send_create_user_in_rgwa_event. user=%s", user.full_name)
+        "Sending a call to validation manager. " +
+        "Call=send_create_user_in_rgwa_event. user=%s", user.full_name)
     vm_api.create_user_rgwa(user=user)
 
 
-def send_remove_all_standard_users_from_project_event(gitlab, project_id, formatted_vf):
+def send_remove_all_standard_users_from_project_event(
+        gitlab, project_id, formatted_vf):
     logger.debug(
-        "Sending a call to validation manager. Call=send_remove_all_standard_users_from_project_event.")
+        "Sending a call to validation manager." +
+        "Call=send_remove_all_standard_users_from_project_event.")
     vm_api.remove_all_standard_users_from_project(
         gitlab, project_id, formatted_vf)
 
@@ -97,21 +106,25 @@ def send_get_project_by_vf_event(vf, gitlab):
     if not settings.IS_SIGNAL_ENABLED:
         return None
     logger.debug(
-        "Sending a call to validation manager. Call=send_get_project_by_vf_event.")
+        "Sending a call to validation manager." +
+        "Call=send_get_project_by_vf_event.")
     vm_api.get_project_by_vf(vf, gitlab)
 
 
 def send_provision_new_vf_event(vf):
-    # A signal which is sent from the EM to the VM when a new VF is created. VM will than create a
+    # A signal which is sent from the EM to the
+    # VM when a new VF is created. VM will than create a
     # gitlab repo for that new VF.
     #
-    # Note: despite its name, this signal is not used only for new vfs, but to update existing gitlab
+    # Note: despite its name, this signal is not
+    # used only for new vfs, but to update existing gitlab
     # and jenkins provisioning when a vf changes e.g. when team members are
     # added or removed.
     try:
-        vm_api.provision_new_vf_callback(vf=vf) 
+        vm_api.provision_new_vf_callback(vf=vf)
         logger.debug(
-            "Sending a call to validation manager. Call=send_provision_new_vf_event. vf=%s", vf.uuid)
+            "Sending a call to validation manager. " +
+            "Call=send_provision_new_vf_event. vf=%s", vf.uuid)
     except Exception as e:
         el_role = Role.objects.get(name=Roles.el.name)  # @UndefinedVariable
         admin_role = Role.objects.get(
@@ -121,14 +134,15 @@ def send_provision_new_vf_event(vf):
         activity_data = VFProvisioningActivityData(
             vf, el_admin_list, vf.engagement, e)
         bus_service.send_message(ActivityEventMessage(activity_data))
-        
+
 
 def send_get_list_of_repo_files_event(vf):
     # A signal which is sent from the EM to the VM when a NextStep is created
     # and we need the VF associated files in the git repository
     files = vm_api.get_list_of_repo_files_callback(vf=vf)
     logger.debug(
-        "Sending a call to validation manager. Call=send_get_list_of_repo_files_event. vf=%s", vf.uuid)
+        "Sending a call to validation manager. " +
+        "Call=send_get_list_of_repo_files_event. vf=%s", vf.uuid)
 
     formatted_repo_files = []
 
@@ -142,11 +156,12 @@ def send_get_list_of_repo_files_event(vf):
 '''''''''''''''''''''''''''
  UTIL FUNCTIONS FOR SIGNALS
 '''''''''''''''''''''''''''
-    
+
 
 def fire_event_in_bg(function_name, obj):
     event_function = globals()[function_name]
     logger.debug(
-        " . . . . . . . . . . . . Fire event in background started: %s . . . . . . . . .  . . . ", function_name)
-    future = executor.submit(event_function, obj)
+        " . . . . . . . . . . . . Fire event in background started: %s " +
+        ". . . . . . . . .  . . . ", function_name)
+    executor.submit(event_function, obj)
     logger.debug("Main thread continue without blocking...")

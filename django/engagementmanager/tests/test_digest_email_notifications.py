@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -39,10 +39,13 @@
 import json
 import mock
 from rest_framework.status import HTTP_202_ACCEPTED
-from engagementmanager.bus.messages.activity_event_message import ActivityEventMessage
-from engagementmanager.bus.messages.daily_scheduled_message import DailyScheduledMessage
+from engagementmanager.bus.messages.activity_event_message import \
+    ActivityEventMessage
+from engagementmanager.bus.messages.daily_scheduled_message import \
+    DailyScheduledMessage
 from engagementmanager.models import Vendor
-from engagementmanager.utils.activities_data import UserJoinedEngagementActivityData
+from engagementmanager.utils.activities_data import \
+    UserJoinedEngagementActivityData
 from engagementmanager.tests.test_base_entity import TestBaseEntity
 from engagementmanager.utils.constants import Constants, EngagementStage
 from engagementmanager.apps import bus_service
@@ -67,14 +70,30 @@ class DigestEmailNotificationsTestCase(TestBaseEntity):
         self.createVendors([Constants.service_provider_company_name, 'Other'])
 
         self.createDefaultRoles()
-        vendor = Vendor.objects.get(name=Constants.service_provider_company_name)
-        self.el_user = self.creator.createUser(vendor, self.randomGenerator(
-            "main-vendor-email"), self.randomGenerator("randomNumber"), self.randomGenerator("randomString"), self.el, True)
+        vendor = Vendor.objects.get(
+            name=Constants.service_provider_company_name)
+        self.el_user = self.creator.createUser(
+            vendor,
+            self.randomGenerator("main-vendor-email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.el,
+            True)
         vendor = Vendor.objects.get(name='Other')
-        self.user = self.creator.createUser(vendor, self.randomGenerator("email"), self.randomGenerator(
-            "randomNumber"), self.randomGenerator("randomString"), self.standard_user, True)
-        self.pruser = self.creator.createUser(vendor, self.randomGenerator("email"), self.randomGenerator(
-            "randomNumber"), self.randomGenerator("randomString"), self.standard_user, True)
+        self.user = self.creator.createUser(
+            vendor,
+            self.randomGenerator("email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.standard_user,
+            True)
+        self.pruser = self.creator.createUser(
+            vendor,
+            self.randomGenerator("email"),
+            self.randomGenerator("randomNumber"),
+            self.randomGenerator("randomString"),
+            self.standard_user,
+            True)
 
         self.engagement = self.creator.createEngagement(self.randomGenerator(
             "randomString"), self.randomGenerator("randomString"), None)
@@ -84,22 +103,32 @@ class DigestEmailNotificationsTestCase(TestBaseEntity):
         self.engagement.save()
 
         self.deploymentTarget = self.creator.createDeploymentTarget(
-            self.randomGenerator("randomString"), self.randomGenerator("randomString"))
-        self.vf = self.creator.createVF(self.randomGenerator("randomString"),
-                                        self.engagement, self.deploymentTarget, False, vendor)
+            self.randomGenerator("randomString"),
+            self.randomGenerator("randomString"))
+        self.vf = self.creator.createVF(
+            self.randomGenerator("randomString"),
+            self.engagement,
+            self.deploymentTarget,
+            False,
+            vendor)
 
     def testDigestEmailForActivities(self):
         """
-        Will check if the service bus deliver the message of sending digested mails
-        No need to check if the mail is sent or if the python scheduling is working
+        Will check if the service bus deliver the
+        message of sending digested mails
+        No need to check if the mail is sent or if the
+        python scheduling is working
         """
         # Create the activities:
-        self.urlStr = self.urlPrefix + "single-engagement/" + str(self.engagement.uuid) + "/stage/@stage"
+        self.urlStr = self.urlPrefix + "single-engagement/" + \
+            str(self.engagement.uuid) + "/stage/@stage"
 
         random_user = self.creator.createUser(Vendor.objects.get(name='Other'),
                                               self.randomGenerator("email"),
-                                              self.randomGenerator("randomNumber"),
-                                              self.randomGenerator("randomString"),
+                                              self.randomGenerator(
+                                                  "randomNumber"),
+                                              self.randomGenerator(
+                                                  "randomString"),
                                               self.el, True)
 
         self.engagement.engagement_team.add(random_user)
@@ -107,18 +136,22 @@ class DigestEmailNotificationsTestCase(TestBaseEntity):
 
         users_list = []
         users_list.append(random_user)
-        activity_data = UserJoinedEngagementActivityData(self.vf, users_list, self.engagement)
+        activity_data = UserJoinedEngagementActivityData(
+            self.vf, users_list, self.engagement)
         bus_service.send_message(ActivityEventMessage(activity_data))
 
         token = self.loginAndCreateSessionToken(random_user)
-        response = self.c.put(self.urlStr.replace("@stage", EngagementStage.Active.name),
-                              json.dumps(dict(), ensure_ascii=False), content_type='application/json',
+        response = self.c.put(self.urlStr.replace("@stage",
+                                                  EngagementStage.Active.name),
+                              json.dumps(dict(),
+                                         ensure_ascii=False),
+                              content_type='application/json',
                               **{'HTTP_AUTHORIZATION': "token " + token})
         self.assertEqual(response.status_code, HTTP_202_ACCEPTED)
 
         urlStr = self.urlPrefix + 'engagement/${uuid}/activities/'
-        response = self.c.get(urlStr.replace('${uuid}', str(self.engagement.uuid)),
-                              **{'HTTP_AUTHORIZATION': "token " + token})
+        response = self.c.get(urlStr.replace('${uuid}', str(
+            self.engagement.uuid)), **{'HTTP_AUTHORIZATION': "token " + token})
         content = json.loads(response.content)
         self.assertEqual(len(content), 2)
 

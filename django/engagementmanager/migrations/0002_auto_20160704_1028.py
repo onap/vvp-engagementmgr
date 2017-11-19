@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -85,24 +85,34 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='engagement',
             name='create_time',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='creation time'),
+            field=models.DateTimeField(
+                default=django.utils.timezone.now,
+                verbose_name='creation time'),
         ),
         migrations.AddField(
             model_name='engagement',
             name='creator',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                    related_name='Engagement_creator', to='engagementmanager.IceUser'),
+            field=models.ForeignKey(
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='Engagement_creator',
+                to='engagementmanager.IceUser'),
         ),
         migrations.AddField(
             model_name='vfc',
             name='create_time',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='creation time'),
+            field=models.DateTimeField(
+                default=django.utils.timezone.now,
+                verbose_name='creation time'),
         ),
         migrations.AddField(
             model_name='vfc',
             name='creator',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                    related_name='Vfc_creator', to='engagementmanager.IceUser'),
+            field=models.ForeignKey(
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='Vfc_creator',
+                to='engagementmanager.IceUser'),
         ),
         migrations.AddField(
             model_name='vfc',
@@ -117,20 +127,29 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='activity',
             name='activity_owner',
-            field=models.ForeignKey(blank=True, null=True,
-                                    on_delete=django.db.models.deletion.CASCADE, to='engagementmanager.IceUser'),
+            field=models.ForeignKey(
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to='engagementmanager.IceUser'),
         ),
         migrations.AlterField(
             model_name='activity',
             name='activity_type',
-            field=models.CharField(choices=[(b'3', b'eng_validation_request'), (b'4', b'next_steps'),
-                                            (b'2', b'ssh_key_added'), (b'1', b'user_joined_eng'), (b'5', b'vfc')], max_length=36),
+            field=models.CharField(
+                choices=[(b'3', b'eng_validation_request'),
+                         (b'4', b'next_steps'),
+                         (b'2', b'ssh_key_added'),
+                         (b'1', b'user_joined_eng'),
+                         (b'5', b'vfc')], max_length=36),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='contact_user',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                    related_name='Engagement_contact_user', to='engagementmanager.IceUser'),
+            field=models.ForeignKey(
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='Engagement_contact_user',
+                to='engagementmanager.IceUser'),
         ),
         migrations.AlterField(
             model_name='engagement',
@@ -146,7 +165,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='vfc',
             name='uuid',
-            field=models.CharField(max_length=36, primary_key=True, serialize=False, unique=True),
+            field=models.CharField(
+                max_length=36, primary_key=True,
+                serialize=False, unique=True),
         ),
         migrations.AlterUniqueTogether(
             name='vfc',

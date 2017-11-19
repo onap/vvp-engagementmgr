@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -41,7 +41,8 @@ import json
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_204_NO_CONTENT
 
-from engagementmanager.bus.messages.activity_event_message import ActivityEventMessage
+from engagementmanager.bus.messages.activity_event_message import \
+    ActivityEventMessage
 from engagementmanager.decorator.auth import auth
 from engagementmanager.decorator.class_decorator import classDecorator
 from engagementmanager.decorator.log_func_entry import logFuncEntry
@@ -82,16 +83,20 @@ class NextSteps(VvpApiView):
         data = NextStepSvc().addNextStep(dataList)
 
         for next_step in data:
-            if (next_step['files'] != None):
+            if next_step['files']:
                 next_step['files'] = json.loads(next_step['files'])
 
-        self.logger.debug("Successfully added a Next Step to engagement_uuid=" +
-                          eng_uuid + " for creator with uuid=" + str(user))
+        self.logger.debug(
+            "Successfully added a Next Step to engagement_uuid=" +
+            eng_uuid +
+            " for creator with uuid=" +
+            str(user))
         return Response(data)
 
     @auth(Permissions.eng_membership)
     def get(self, request, **kwargs):
-        next_steps_data = NextStepSvc().get_next_steps(eng_stage=kwargs['eng_stage'])
+        next_steps_data = NextStepSvc().get_next_steps(
+            eng_stage=kwargs['eng_stage'])
         return Response(next_steps_data.data)
 
     @auth(Permissions.update_personal_next_step)
@@ -129,7 +134,8 @@ class EditNextSteps(VvpApiView):
         ns = self.get_entity(NextStep, request_data_mgr.get_ns_uuid())
         ns.delete()
 
-        activity_data = DeleteNextStepsActivityData(request_data_mgr.get_user(), ns.engagement)
+        activity_data = DeleteNextStepsActivityData(
+            request_data_mgr.get_user(), ns.engagement)
         bus_service.send_message(ActivityEventMessage(activity_data))
 
         return Response(status=HTTP_204_NO_CONTENT)
@@ -144,20 +150,23 @@ class ChecklistNextStep(VvpApiView):
         dataList = json.loads(body_unicode)
         msg = "OK"
 
-        if (request_data_mgr.get_cl_uuid() == None or request_data_mgr.get_eng_uuid() == None):
-            msg = "check list uuid or engagement uuid is missing from the url path parameters"
+        if (not request_data_mgr.get_cl_uuid() or not
+                request_data_mgr.get_eng_uuid()):
+            msg = "check list uuid or engagement uuid is missing from the " +\
+                "url path parameters"
             self.logger.error(msg)
             return Response(msg, status=HTTP_400_BAD_REQUEST)
 
         for data in dataList:
             if ('assigneesUuids' not in data or not data['assigneesUuids'] or
-               'description' not in data or not data['description'] or
-               'duedate' not in data or not data['duedate']):
+                'description' not in data or not data['description'] or
+                    'duedate' not in data or not data['duedate']):
                 msg = "One of the CheckList's input parameters is missing"
                 self.logger.error(msg)
                 return Response(msg, status=HTTP_400_BAD_REQUEST)
 
         data = NextStepSvc().addNextStep(
-            dataList, desc="Checklist is denied due to a creation of a new NextStep")
+            dataList, desc="Checklist is denied due to a creation " +
+            "of a new NextStep")
 
         return Response(data)

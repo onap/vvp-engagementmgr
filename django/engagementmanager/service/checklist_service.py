@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -43,12 +43,16 @@ from engagementmanager.apps import bus_service
 from engagementmanager.bus.messages.activity_event_message import \
     ActivityEventMessage
 from engagementmanager.git.git_manager import GitManager
-from engagementmanager.models import ChecklistTemplate, Checklist, Engagement, \
-    ChecklistAuditLog, ChecklistDecision, ChecklistLineItem, IceUserProfile, VF, \
+from engagementmanager.models import ChecklistTemplate, \
+    Checklist, Engagement, \
+    ChecklistAuditLog, ChecklistDecision, ChecklistLineItem, \
+    IceUserProfile, VF, \
     ChecklistSection, Role
 from engagementmanager.serializers import ThinChecklistModelSerializer, \
-    ThinChecklistAuditLogModelSerializer, ThinChecklistDecisionModelSerializer, \
-    ThinPostChecklistResponseModelSerializer, ChecklistTemplateModelSerializer, \
+    ThinChecklistAuditLogModelSerializer, \
+    ThinChecklistDecisionModelSerializer, \
+    ThinPostChecklistResponseModelSerializer, \
+    ChecklistTemplateModelSerializer, \
     ChecklistSectionModelSerializer, ChecklistLineItemModelSerializer
 from engagementmanager.service.checklist_audit_log_service import \
     addAuditLogToDecision, addAuditLogToChecklist
@@ -72,15 +76,19 @@ logger = LoggingServiceFactory.get_logger()
 
 
 class CheckListSvc(BaseSvc):
+
     def retreive_cl_files_for_engagment(self, eng_uuid):
         vf_associated_files_list = []
 
-        checklists_of_eng = Checklist.objects.filter(engagement__uuid=eng_uuid).exclude(
-            state=CheckListState.archive.name).exclude(state=CheckListState.closed.name)  # @UndefinedVariable
+        checklists_of_eng = Checklist.objects.filter(
+            engagement__uuid=eng_uuid).exclude(
+            state=CheckListState.archive.name).exclude(
+            state=CheckListState.closed.name)
 
         for checklistObj in checklists_of_eng:
             associated_files = json.loads(checklistObj.associated_files)
-            vf_associated_files_list = vf_associated_files_list + associated_files
+            vf_associated_files_list = \
+                vf_associated_files_list + associated_files
         return vf_associated_files_list
 
     def getDataForCreateNewChecklist(self, user, eng_uuid):
@@ -95,12 +103,14 @@ class CheckListSvc(BaseSvc):
         # Get all templates
         data = self.getChecklistTemplates()
 
-        data['checkListAssociatedFiles'] = self.gitManager.getRepoAssociatedFilesForUser(
+        data['checkListAssociatedFiles'] = \
+            self.gitManager.getRepoAssociatedFilesForUser(
             eng_uuid)
         return data
 
     def getChecklistTemplates(self, templateUuid=None):
-        """Return  checklist template with nested sections and their nested line items"""
+        """Return  checklist template with
+        nested sections and their nested line items"""
         data = dict()
         if not templateUuid:
             checkListTemplates = ChecklistTemplate.objects.all()
@@ -109,11 +119,11 @@ class CheckListSvc(BaseSvc):
                     checkListTemplates, many=True).data
             return data
         cl_template = ChecklistTemplate.objects.get(uuid=templateUuid)
-        if (cl_template != None):
+        if (cl_template is not None):
             data = ChecklistTemplateModelSerializer(
                 cl_template, many=False).data
             sections = ChecklistSection.objects.filter(template=cl_template)
-            if (sections != None):
+            if (sections is not None):
                 section_list = []
                 for sec in sections:
                     section_data = dict()
@@ -121,7 +131,8 @@ class CheckListSvc(BaseSvc):
                         sec, many=False).data
 
                     lineItems = ChecklistLineItem.objects.filter(section=sec)
-                    section_data['lineItems'] = ChecklistLineItemModelSerializer(
+                    section_data['lineItems'] = \
+                        ChecklistLineItemModelSerializer(
                         lineItems, many=True).data
                     section_list.append(section_data)
 
@@ -134,8 +145,10 @@ class CheckListSvc(BaseSvc):
         logger.debug(
             "Creating a new section. Section name = " + section['name'])
 
-        weight = int(ChecklistSection.objects.filter(template=templateObj).aggregate(
-            max_weight=Max('weight'))['max_weight'] or 0) + 1
+        weight = int(
+            ChecklistSection.objects.filter(
+                template=templateObj).aggregate(
+                max_weight=Max('weight'))['max_weight'] or 0) + 1
 
         newSection = ChecklistSection.objects.create(
             name=section.get('name', None),
@@ -147,11 +160,14 @@ class CheckListSvc(BaseSvc):
 
         return newSection
 
-    def createNewLineItemForSection(self, newSectionObj, listItem, templateObj):
+    def createNewLineItemForSection(
+            self, newSectionObj, listItem, templateObj):
         """Create new line item for a given section and template """
 
-        weight = int(ChecklistLineItem.objects.filter(section=newSectionObj).aggregate(
-            max_weight=Max('weight'))['max_weight'] or 0) + 1
+        weight = int(
+            ChecklistLineItem.objects.filter(
+                section=newSectionObj).aggregate(
+                max_weight=Max('weight'))['max_weight'] or 0) + 1
 
         ChecklistLineItem.objects.create(
             name=listItem['name'],
@@ -165,22 +181,27 @@ class CheckListSvc(BaseSvc):
             weight=weight)
 
     def delete(self, dict_structure, query_set, entity, isDirty):
-        """Generically find the xor result of the user input and the db data. Assumption: If entities exits in DB but not in user input they'll be deleted"""
-        uuid_client = [dict['uuid'] for dict in dict_structure]
+        """Generically find the xor result of the user input and the
+        db data. Assumption: If entities exits in DB but not in
+        user input they'll be deleted"""
+        uuid_client = [dictio['uuid'] for dictio in dict_structure]
         uuid_db = [record.uuid for record in query_set]
         uuids_to_delete = set(uuid_db) - set(uuid_client)
         for u_uid in uuids_to_delete:
             entity.objects.filter(uuid=u_uid).delete()
-            # Note: No need to delete ChecklistLineItem corresponding to this section
+            # Note: No need to delete ChecklistLineItem
+            # corresponding to this section
             # since there is a CASCADE operation on delete section
             isDirty[0] = True
 
     def editIfChanged(self, entity, uidict, fieldList):
-        """Generic function to check that set of fields are modified on a certain entity"""
+        """Generic function to check that set of fields
+        are modified on a certain entity"""
         isChanged = False
         for field in fieldList:
             if (field in uidict):
-                if (isChanged != True and entity.__dict__[field] == uidict[field]):
+                if (not isChanged and entity.__dict__[
+                        field] == uidict[field]):
                     isChanged = False
                 else:
                     entity.__dict__[field] = uidict[field]
@@ -198,13 +219,17 @@ class CheckListSvc(BaseSvc):
             isDirty[0] = True
 
     def updateLineItemFields(self, lineitem, li, isDirty):
-        if (self.editIfChanged(lineitem, li, ['name', 'description', 'validation_instructions', 'line_type'])):
+        if (self.editIfChanged(lineitem, li, [
+                'name', 'description',
+                'validation_instructions', 'line_type'])):
             lineitem.save()
             isDirty[0] = True
 
     def editChecklistTemplate(self, checklistTemplate):
         """edit the template+section+line-item of user input"""
-        NEW_ENTITY = "newEntity"  # this is an indication on top of the provided json to create the entity
+        # this is an indication on top of the provided json to create the
+        # entity
+        NEW_ENTITY = "newEntity"
         templateObj = None
         isDirty = [False]
         if ('uuid' in checklistTemplate):
@@ -239,7 +264,8 @@ class CheckListSvc(BaseSvc):
                             else:  # line-item was only updated
                                 lineitem = ChecklistLineItem.objects.get(
                                     uuid=li['uuid'])
-                                self.updateLineItemFields(lineitem, li, isDirty)
+                                self.updateLineItemFields(
+                                    lineitem, li, isDirty)
 
         executor.submit(self.decline_all_template_checklists,
                         isDirty[0], templateObj, request_data_mgr.get_user())
@@ -250,26 +276,36 @@ class CheckListSvc(BaseSvc):
 
         start = time.clock()
         try:
-            if (isDirty == True):
-                states_to_exclude = [CheckListState.archive.name, CheckListState.closed.name,
-                                     CheckListState.pending.name]  # @UndefinedVariable
+            if (isDirty):
+                states_to_exclude = [
+                    CheckListState.archive.name,
+                    CheckListState.closed.name,
+                    CheckListState.pending.name]  # @UndefinedVariable
                 checklists = Checklist.objects.filter(
                     template=templateObj).exclude(state__in=states_to_exclude)
                 logger.debug("Number of checklists=" +
-                                  str(len(checklists)))
+                             str(len(checklists)))
                 for checklist in checklists:
                     request_data_mgr.set_cl_uuid(checklist.uuid)
                     request_data_mgr.set_eng_uuid(checklist.engagement.uuid)
                     set_state(
-                        True,  # means that the checklist will be declined and a cloned one is created in PENDING status
+                        # means that the checklist will be declined and a
+                        # cloned one is created in PENDING status
+                        True,
                         checklist.uuid,
                         isMoveToAutomation=True,
-                        description="""Checklist {name} was rejected since its template ({template}) was edited/deleted""".format(
-                            name=checklist.name, template=templateObj.name),  # means the checklist will be triggered into automation cycle
+                        description="""Checklist {name} was rejected """ +\
+                        """since its template ({template}) was """ +\
+                        """edited/deleted""".format(
+                            name=checklist.name, template=templateObj.name),
+                        # means the checklist will be triggered into automation
+                        # cycle
                     )
         except Exception as e:
-            msg = """Something went wrong while trying to reject check-lists which its template was changed. template={template}. Error:""".format(
-                template=templateObj.name)
+            msg = """Something went wrong while trying to reject """ +\
+                """check-lists which its template was changed. """ +\
+                """template={template}. Error:""".format(
+                    template=templateObj.name)
             logger.error(msg + " " + str(e))
             raise e  # Don't remove try-except, it supports async invocation
         end = time.clock()
@@ -280,15 +316,17 @@ class CheckListSvc(BaseSvc):
         data = dict()
         checklist = None
 
-        if user.role.name == Roles.admin.name or user.role.name == Roles.admin_ro.name:  # @UndefinedVariable
+        if user.role.name == Roles.admin.name or \
+                user.role.name == Roles.admin_ro.name:
             checklist = Checklist.objects.get(uuid=checklistUuid)
         else:
             checklist = Checklist.objects.get(
                 Q(uuid=checklistUuid), Q(creator=user) | Q(owner=user))
 
         # CheckList
-        if checklist.state == CheckListState.archive.name:  # @UndefinedVariable
-            msg = "got a request for a checklist which is an archived one, might have been due to an admin edit of a checklist template."
+        if checklist.state == CheckListState.archive.name:
+            msg = "got a request for a checklist which is an archived one, " +\
+                "might have been due to an admin edit of a checklist template."
             logger.error(msg)
             msg = "Requested checklist is archived, reloading checklists list"
             raise VvpObjectNotAvailable(msg)
@@ -322,15 +360,18 @@ class CheckListSvc(BaseSvc):
             section_key = str(section_weight) + "_" + section_uuid
             if section_key not in checklistLineItems:
                 checklistLineItems[section_key] = {}
-                checklistLineItems[section_key]['section'] = checklistDecision['lineitem']['section']
+                checklistLineItems[section_key]['section'] = \
+                    checklistDecision['lineitem']['section']
                 checklistLineItems[section_key]['decisions'] = {}
                 checklistLineItems[section_key]['weight'] = section_weight
 
             decision_uuid = checklistDecision['uuid']
             line_item_weight = checklistDecision['lineitem']['weight']
             decision_key = str(line_item_weight) + "_" + decision_uuid
-            checklistLineItems[section_key]['decisions'][decision_key] = checklistDecision
-            checklistLineItems[section_key]['decisions'][decision_key]['weight'] = line_item_weight
+            checklistLineItems[section_key]['decisions'][decision_key] = \
+                checklistDecision
+            checklistLineItems[section_key]['decisions'][
+                decision_key]['weight'] = line_item_weight
 
         data['checklistDecisions'] = checklistLineItems
 
@@ -343,10 +384,16 @@ class CheckListSvc(BaseSvc):
             if decisionAuditLogs.count() > 0:
                 serializedAuditLogsData = ThinChecklistAuditLogModelSerializer(
                     decisionAuditLogs, many=True).data
-                data['decisionAuditLogs'][checklistDecision.uuid] = serializedAuditLogsData
+                data['decisionAuditLogs'][
+                    checklistDecision.uuid] = serializedAuditLogsData
 
-        logger.debug("get existing checklist has succeeded for checklist.uuid=" + str(checklist.uuid) +
-                          ", user.uuid=" + str(user.uuid) + ", checklist.uuid=" + str(checklistUuid))
+        logger.debug("get existing checklist has " +
+                     "succeeded for checklist.uuid=" +
+                     str(checklist.uuid) +
+                     ", user.uuid=" +
+                     str(user.uuid) +
+                     ", checklist.uuid=" +
+                     str(checklistUuid))
 
         return data
 
@@ -354,7 +401,12 @@ class CheckListSvc(BaseSvc):
         repo_files = self.gitManager.getRepoAssociatedFilesForUser(eng_uuid)
         return repo_files
 
-    def createOrUpdateChecklist(self, checkListName, checkListTemplateUuid, checkListAssociatedFiles, checklistUuid=None):
+    def createOrUpdateChecklist(
+            self,
+            checkListName,
+            checkListTemplateUuid,
+            checkListAssociatedFiles,
+            checklistUuid=None):
         template = None
         checklist = None
         user = request_data_mgr.get_user()
@@ -362,19 +414,18 @@ class CheckListSvc(BaseSvc):
 
         vf = VF.objects.get(engagement__uuid=eng_uuid)
 
+        # associated_files may be delivered in this format
+        #   [{"File": "bar"}, {"File": "baz"},
+        # {"File": "foo"}, {"File": "quux"}]
+        # but we want to store it in this format
+        #   ["bar", "baz", "foo", "quux"]
+
+        repo_files = self.gitManager.getRepoAssociatedFilesForUser(eng_uuid)
         if not send_jenkins_job_and_gitlab_repo_exists(vf):
             msg = "Jenkins job or gitlab repo is still missing"
             logger.error(msg)
             msg = "Create or update checklist is not ready yet"
             raise Exception(msg)
-
-        # associated_files may be delivered in this format
-        #   [{"File": "bar"}, {"File": "baz"}, {"File": "foo"}, {"File": "quux"}]
-        # but we want to store it in this format
-        #   ["bar", "baz", "foo", "quux"]
-
-        repo_files = self.gitManager.getRepoAssociatedFilesForUser(eng_uuid)
-#         checklist_files_list = [f['File'] if isinstance(f, dict) else f for f in checkListAssociatedFiles]
         checklist_files_list = []
         for file in checkListAssociatedFiles:
             if isinstance(file, dict):
@@ -384,7 +435,7 @@ class CheckListSvc(BaseSvc):
         for added_name in checklist_files_list:
             if added_name not in repo_files:
                 logger.error("Update checklist has failed. " +
-                                  added_name + " doesnt exist in repo")
+                             added_name + " doesnt exist in repo")
                 msg = "Failed to create checklist, please select valid file"
                 raise ValueError(msg)
 
@@ -393,19 +444,21 @@ class CheckListSvc(BaseSvc):
         engagement = Engagement.objects.get(uuid=eng_uuid)
         template = ChecklistTemplate.objects.get(uuid=checkListTemplateUuid)
 
-        if (checklistUuid != None):  # Update Checklist
+        if (checklistUuid is not None):  # Update Checklist
             checklist = Checklist.objects.get(uuid=checklistUuid)
             checklist.name = checkListName
             checklist.associated_files = associated_files
             checklist.template = template
             checklist.save()
-
-            if (associated_files != None and len(checklist_files_list) > 0):
+            if (associated_files and len(checklist_files_list) > 0):
                 set_state(
                     decline=True,
                     description="Checklist: " + checklist.name +
-                    "in Pending state will transition to Automation because it has associated files",
-                    isMoveToAutomation=True,  # means the checklist will be triggered into automation cycle
+                    "in Pending state will transition to \
+                    Automation because it has associated files",
+                    isMoveToAutomation=True,
+                    # means the checklist will be triggered into automation
+                    # cycle
                     checklist_uuid=checklist.uuid
                 )
         else:  # create ChcekList
@@ -416,35 +469,46 @@ class CheckListSvc(BaseSvc):
             vf = None
             vf = VF.objects.get(engagement=engagement)
 
-            if (vf.git_repo_url == None):
+            if (vf.git_repo_url is None):
                 msg = "Can't create checklist since the attached VF (" + \
                     vf.name + ") doesn't contain git_repo_url"
                 logger.error(
                     "Update checklist has failed. " + logEncoding(msg))
                 raise ObjectDoesNotExist(msg)
 
-            checklist = Checklist(name=checkListName, validation_cycle=1, associated_files=associated_files,
-                                  state=CheckListState.pending.name, engagement=engagement, template=template, creator=user, owner=incharge_personal)  # @UndefinedVariable
+            checklist = Checklist(
+                name=checkListName,
+                validation_cycle=1,
+                associated_files=associated_files,
+                state=CheckListState.pending.name,
+                engagement=engagement,
+                template=template,
+                creator=user,
+                owner=incharge_personal)  # @UndefinedVariable
             line_items_list = ChecklistLineItem.objects.filter(
                 template=template)
             checklist.save()
             for lineitem in line_items_list:
-                new_decision = ChecklistDecision(checklist=checklist,
-                                                 template=template, lineitem=lineitem)
+                new_decision = ChecklistDecision(
+                    checklist=checklist, template=template, lineitem=lineitem)
                 new_decision.save()
 
             # When Checklist is created with files move it it automation
-            if (associated_files != None and len(checklist_files_list) > 0):
+            if (associated_files and len(checklist_files_list) > 0):
                 set_state(
                     decline=False,
                     checklist_uuid=checklist.uuid,
                     description="Checklist: " + checklist.name +
-                    "in Pending state will transition to Automation because it has associated files",
-                    isMoveToAutomation=True  # means the checklist will be triggered into automation cycle
+                    "in Pending state will transition to \
+                    Automation because it has associated files",
+                    isMoveToAutomation=True
+                    # means the checklist will be triggered into automation
+                    # cycle
                 )
 
         logger.debug(
-            "Create/Update checklist has succeeded for checklist.uuid=" + str(checklist.uuid))
+            "Create/Update checklist has succeeded for checklist.uuid="
+            + str(checklist.uuid))
 
         return ThinPostChecklistResponseModelSerializer(checklist).data
 
@@ -453,14 +517,26 @@ class CheckListSvc(BaseSvc):
         checklist.delete()
 
         logger.debug(
-            "Delete checklist has succeeded for checklist.uuid=" + str(checklist_uuid))
+            "Delete checklist has succeeded for checklist.uuid=" +
+            str(checklist_uuid))
 
-    def setChecklistDecisionsFromValMgr(self, user, checklist_uuid, decisions, checklist_results_from_jenkins):
-        checklist = Checklist.objects.get(uuid=checklist_uuid, owner=user,
-                                          state=CheckListState.automation.name)  # @UndefinedVariable
+    def setChecklistDecisionsFromValMgr(
+            self,
+            user,
+            checklist_uuid,
+            decisions,
+            checklist_results_from_jenkins):
+        checklist = Checklist.objects.get(
+            uuid=checklist_uuid,
+            owner=user,
+            state=CheckListState.automation.name)
 
-        logger.debug("setChecklistDecisionsFromValMgr() checklist_uuid=%r, len(decisions)=%d",
-                          checklist_uuid, len(decisions),)
+        logger.debug(
+            "setChecklistDecisionsFromValMgr() " +
+            "checklist_uuid=%r, len(decisions)=%d",
+            checklist_uuid,
+            len(decisions),
+        )
 
         if ('error' in checklist_results_from_jenkins):
             el_role = Role.objects.get(name=Roles.el.name)
@@ -469,23 +545,24 @@ class CheckListSvc(BaseSvc):
                 Q(role=el_role) | Q(role=admin_role))
 
             activity_data = TestFinishedActivityData(
-                el_admin_list, checklist.engagement, checklist_results_from_jenkins['error'])
+                el_admin_list, checklist.engagement,
+                checklist_results_from_jenkins['error'])
             bus_service.send_message(ActivityEventMessage(activity_data))
 
-            msg = "test_finished signal from Jenkins has arrived with error: {}".format(
-                checklist_results_from_jenkins['error'])
+            msg = "test_finished signal from Jenkins has arrived with " +\
+                "error: {}".format(checklist_results_from_jenkins['error'])
             logger.error(msg)
             set_state(True, checklist_uuid, isMoveToAutomation=False,
                       description=checklist_results_from_jenkins['error'])
             raise Exception(msg)
 
         ChecklistLineItem.objects.filter(template=checklist.template).update(
-            line_type=CheckListLineType.manual.name)  # @UndefinedVariable
+            line_type=CheckListLineType.manual.name)
 
         for decision in decisions:
             lineitem_obj = ChecklistLineItem.objects.get(
                 uuid=decision['line_item_id'])
-            lineitem_obj.line_type = CheckListLineType.auto.name  # @UndefinedVariable
+            lineitem_obj.line_type = CheckListLineType.auto.name
             lineitem_obj.save()
 
             decision_obj = ChecklistDecision.objects.get(
@@ -493,16 +570,22 @@ class CheckListSvc(BaseSvc):
             setDecision(decisionUuid=decision_obj.uuid,
                         user=user, value=decision['value'])
 
-            if (decision['audit_log_text'] != '' and decision['audit_log_text'] != None):
-                addAuditLogToDecision(decision=decision_obj,
-                                      description=decision['audit_log_text'], user=user, category='')
+            if (decision['audit_log_text'] !=
+                    '' and decision['audit_log_text'] is not None):
+                addAuditLogToDecision(
+                    decision=decision_obj,
+                    description=decision['audit_log_text'],
+                    user=user,
+                    category='')
 
         desc = "The {} validation test suite has completed. The decisions " +\
-               "based on the test results have successfully been set in the " +\
+               "based on the test results \
+               have successfully been set in the " +\
                "checklist.".format(checklist.template.category)
         addAuditLogToChecklist(checklist=checklist, description=desc,
                                user=user, category='')
-        checklistData = ThinChecklistModelSerializer(checklist, many=False).data
+        checklistData = ThinChecklistModelSerializer(
+            checklist, many=False).data
         set_state(False, checklist.uuid,
                   isMoveToAutomation=True, description="")
 

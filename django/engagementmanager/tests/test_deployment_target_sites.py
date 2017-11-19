@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -52,19 +52,35 @@ class DeploymentTargetSitesTestCase(TestBaseEntity):
         self.createDefaultRoles()
 
         # Create users:
-        self.admin, self.el, self.standard_user = self.creator.createAndGetDefaultRoles()
-        self.el_user = self.creator.createUser(Vendor.objects.get(name=Constants.service_provider_company_name),
-                                               self.randomGenerator("main-vendor-email"), 'Aa123456',
-                                               'el user1', self.el, True)
+        self.admin, self.el, self.standard_user = \
+            self.creator.createAndGetDefaultRoles()
+        self.el_user = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
+            'Aa123456',
+            'el user1',
+            self.el,
+            True)
         self.peer_reviewer = self.creator.createUser(Vendor.objects.get(
             name='Other'), self.randomGenerator("main-vendor-email"),
             '55501000199', 'peer-reviewer user', self.el, True)
-        self.user = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.randomGenerator("main-vendor-email"), 'Aa123456',
-                                            'user', self.standard_user, True)
-        self.admin_user = self.creator.createUser(Vendor.objects.get(name=Constants.service_provider_company_name),
-                                                  Constants.service_provider_admin_mail, 'Aa123456',
-                                                  'admin user', self.admin, True)
+        self.user = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
+            'Aa123456',
+            'user',
+            self.standard_user,
+            True)
+        self.admin_user = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            Constants.service_provider_admin_mail,
+            'Aa123456',
+            'admin user',
+            self.admin,
+            True)
 
         # Create an Engagement with team
         self.engagement = self.creator.createEngagement(
@@ -73,11 +89,17 @@ class DeploymentTargetSitesTestCase(TestBaseEntity):
         self.engagement.peer_reviewer = self.peer_reviewer
         self.engagement.engagement_team.add(self.user, self.el_user)
         self.engagement.save()
-        self.deploymentTarget = self.creator.createDeploymentTarget(self.randomGenerator("randomString"),
-                                                                    self.randomGenerator("randomString"))
-        self.vendor = Vendor.objects.get(name=Constants.service_provider_company_name)
-        self.vf = self.creator.createVF(self.randomGenerator("randomString"), self.engagement,
-                                        self.deploymentTarget, False, self.vendor)
+        self.deploymentTarget = self.creator.createDeploymentTarget(
+            self.randomGenerator("randomString"),
+            self.randomGenerator("randomString"))
+        self.vendor = Vendor.objects.get(
+            name=Constants.service_provider_company_name)
+        self.vf = self.creator.createVF(
+            self.randomGenerator("randomString"),
+            self.engagement,
+            self.deploymentTarget,
+            False,
+            self.vendor)
 
         # Login with users:
         self.user_token = self.loginAndCreateSessionToken(self.user)
@@ -91,8 +113,11 @@ class DeploymentTargetSitesTestCase(TestBaseEntity):
             str(self.vf.uuid) + '"}'
         print(myjson)
 
-        response = self.c.post(urlStr, myjson, content_type='application/json',
-                               **{'HTTP_AUTHORIZATION': "token " + self.user_token})
+        response = self.c.post(
+            urlStr,
+            myjson,
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.user_token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_401_UNAUTHORIZED)
 
@@ -103,8 +128,11 @@ class DeploymentTargetSitesTestCase(TestBaseEntity):
             str(self.vf.uuid) + '"}'
         print(myjson)
 
-        response = self.c.post(urlStr, myjson, content_type='application/json',
-                               **{'HTTP_AUTHORIZATION': "token " + self.el_token})
+        response = self.c.post(
+            urlStr,
+            myjson,
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.el_token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
 
@@ -115,8 +143,11 @@ class DeploymentTargetSitesTestCase(TestBaseEntity):
             str(self.vf.uuid) + '"}'
         print(myjson)
 
-        response = self.c.post(urlStr, myjson, content_type='application/json',
-                               **{'HTTP_AUTHORIZATION': "token " + self.admin_token})
+        response = self.c.post(
+            urlStr,
+            myjson,
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.admin_token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
 

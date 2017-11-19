@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -39,6 +39,9 @@
 # To avoid the server reloading this class twice, run it with --noreload flag
 
 from django.apps import AppConfig
+from engagementmanager.service.logging_service import LoggingServiceFactory
+
+logger = LoggingServiceFactory.get_logger()
 
 
 class ValidationmanagerConfig(AppConfig):
@@ -48,4 +51,7 @@ class ValidationmanagerConfig(AppConfig):
     def ready(self):
         # This otherwise unused import causes the signal receivers
         # to register themselves at the appropriate time. Do not remove.
+        # We use logger.debug to ignore flake8's warning about unused import.
         import validationmanager.em_integration.vm_api
+        logger.debug(
+            validationmanager.em_integration.vm_api.config_xml_content)

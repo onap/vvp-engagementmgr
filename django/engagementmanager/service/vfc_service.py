@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -54,14 +54,19 @@ class VFCSvc(BaseSvc):
         duplicate = False
         many = True
         dict = {}
-        # Iterate through all the VFCs that are received from the user, if there's duplication -> check the VF, if it is the same ->duplicate = True
-        # If there's a duplication and the other VFCs trying to be created are not
-        # duplicated -> Many = True -> they would be successfully created any way
+        # Iterate through all the VFCs that are received from the user,
+        # if there's duplication -> check the VF,
+        # if it is the same ->duplicate = True
+        # If there's a duplication and the other
+        # VFCs trying to be created are not
+        # duplicated -> Many = True -> they would be successfully created any
+        # way
         for i in range(len(data['vfcs'])):
             dict.update(data['vfcs'][i])
             # check if the VFC already exist (filter by name)
             try:
-                vfc = VFC.objects.filter(name=dict['name'], external_ref_id=dict['external_ref_id'])
+                vfc = VFC.objects.filter(
+                    name=dict['name'], external_ref_id=dict['external_ref_id'])
                 # if found VFC with same name and ref id
                 if (vfc.count() > 0):
                     for item in vfc:
@@ -69,8 +74,10 @@ class VFCSvc(BaseSvc):
                             if (not duplicate):
                                 duplicate = True
                             duplicateNames.append(dict['name'])
-                    # if found a similar VFC with name and ref_id, but VF is different (
-                    # cannot use else, and raise, since the for has to check all vfcs that
+                    # if found a similar VFC with name and ref_id,\
+                    # but VF is different (
+                    # cannot use else, and raise,
+                    # since the for has to check all vfcs that
                     # match - for example, 2 VFs with same vfc)
                     if not duplicate:
                         raise VFC.DoesNotExist
@@ -79,19 +86,26 @@ class VFCSvc(BaseSvc):
                     raise VFC.DoesNotExist
             # If the VFC Does not exist, then continue as usual and create it.
             except VFC.DoesNotExist:
-                many = True  # not used, unless there's a duplicate as well, just a helper
+                many = True
+                # not used, unless there's a duplicate as well, just a helper
 
-                user = IceUserProfile.objects.get(email=data['creator']['email'])
+                user = IceUserProfile.objects.get(
+                    email=data['creator']['email'])
                 vf = VF.objects.get(uuid=data['vf_uuid'])
                 # Check if the company that the user entered already exist.
                 try:
                     company = Vendor.objects.get(name=dict['company'])
                 except Vendor.DoesNotExist:
-                    company = Vendor.objects.create(name=dict['company'], public=False)
+                    company = Vendor.objects.create(
+                        name=dict['company'], public=False)
                     company.save()
                 # create the VFC
-                vfc = VFC.objects.create(name=dict['name'], company=company, vf=vf,
-                                         creator=user, external_ref_id=dict['external_ref_id'])
+                vfc = VFC.objects.create(
+                    name=dict['name'],
+                    company=company,
+                    vf=vf,
+                    creator=user,
+                    external_ref_id=dict['external_ref_id'])
                 if 'ice_mandated' in dict:
                     vfc.ice_mandated = dict['ice_mandated']
                 vfc.save()
@@ -101,7 +115,8 @@ class VFCSvc(BaseSvc):
             num = 1
             for vfc_name in duplicateNames:
                 msg = msg + str(num) + ". The VFC " + vfc_name + \
-                    " already exist, the VF that it is related to is: " + item.vf.name + "\n"
+                    " already exist, the VF that it is related to is: "\
+                    + item.vf.name + "\n"
                 num += 1
             msg = msg + "\nThe other VFCs were created succesfully\n"
             self.logger.error(msg)

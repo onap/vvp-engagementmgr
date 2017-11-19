@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -40,9 +40,11 @@
 Will delete content(jobs) from jenkins to create initial environment.
 
 This command uses jenkins_client api to remove data.
-This command is part of clean_vvp_system command but can be used separately as well.
+This command is part of clean_vvp_system command
+but can be used separately as well.
 
-WARNING: It will delete almost everything, if you have necessary data DO NOT USE THIS COMMAND!
+WARNING: It will delete almost everything, if you
+have necessary data DO NOT USE THIS COMMAND!
 """
 from validationmanager.utils.clients import get_jenkins_client
 from django.core.management.base import BaseCommand
@@ -63,7 +65,8 @@ class Command(BaseCommand):
 
             for job_name in job_names:
                 jenkins_client.delete_job(job_name)
-                logger.info("Jenkins job '%s' deleted successfully." % job_name)
+                logger.info(
+                    "Jenkins job '%s' deleted successfully." % job_name)
         except Exception as e:
             logger.error("Some problem occurred while trying "
                          "cleaning Jenkins...", e)

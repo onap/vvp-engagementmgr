@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -272,18 +272,23 @@ class JenkinsWebhookEndpoint(APIView):
             }}
         logger.debug('sending test_finished with payload %s', payload)
 
-        # The Validation Engine suite will always include a successful result with the description
-        # "test_this_sentinel_always_succeeds'. If it is not present, we assume something has gone
+        # The Validation Engine suite will always include a successful
+        # result with the description.
+        # "test_this_sentinel_always_succeeds'. If it is not present,
+        # we assume something has gone
         # wrong with the Validation Engine itself.
         # if 'test_this_sentinel_always_succeeds' not in test_results:
-        #    logger.error('Validation Engine failed to include sentinel. Assuming it failed. Full log: %s',
+        #    logger.error('Validation Engine failed to include sentinel.
+        # Assuming it failed. Full log: %s',
         #                 logEncoding(request.data['build']['log']))
-        #    payload['checklist']['error'] = 'The Validation Engine encountered an error.'
-        #    # If possible, identify what specifically went wrong and provide a message to return to
-        #    # the user.
-        #    if 'fatal: Could not read from remote repository' in request.data['build']['log']:
-        #        payload['checklist']['error'] += " There was a problem cloning a git repository."
-
+        #    payload['checklist']['error'] = 'The Validation Engine \
+        # encountered an error.'
+        #     If possible, identify what specifically went wrong and
+        # provide a message to return to the user.
+        #    if 'fatal: Could not read from remote repository'
+        #     in request.data['build']['log']:
+        #         payload['checklist']['error'] += " There was a problem \
+        # cloning a git repository."
         # Send Signal
         em_client.test_finished(checklist_test_results=payload['checklist'])
 

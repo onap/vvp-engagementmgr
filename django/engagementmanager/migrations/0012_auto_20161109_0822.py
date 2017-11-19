@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -54,29 +54,46 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='engagement',
             name='reviewer',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
-                                    related_name='Engagement_el_reviewer', to='engagementmanager.IceUser'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='Engagement_el_reviewer',
+                to='engagementmanager.IceUser'),
         ),
         migrations.AlterField(
             model_name='engagement',
             name='engagement_manual_id',
-            field=models.CharField(default=-1, max_length=36),
+            field=models.CharField(
+                default=-1,
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='nextstep',
             name='state',
-            field=models.CharField(choices=[(b'Completed', b'Completed'), (b'Confirmed',
-                                                                           b'Confirmed'), (b'TODO', b'TODO')], max_length=15),
+            field=models.CharField(
+                choices=[
+                    (b'Completed',
+                     b'Completed'),
+                    (b'Confirmed',
+                     b'Confirmed'),
+                    (b'TODO',
+                     b'TODO')],
+                max_length=15),
         ),
         migrations.AlterField(
             model_name='vf',
             name='engagement',
-            field=models.ForeignKey(default=-1, on_delete=django.db.models.deletion.CASCADE,
-                                    to='engagementmanager.Engagement'),
+            field=models.ForeignKey(
+                default=-1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to='engagementmanager.Engagement'),
         ),
         migrations.AlterField(
             model_name='vf',
             name='git_repo_url',
-            field=models.CharField(default=-1, max_length=512),
+            field=models.CharField(
+                default=-1,
+                max_length=512),
         ),
     ]

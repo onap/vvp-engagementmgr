@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -41,9 +41,11 @@ from uuid import uuid4
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST,\
     HTTP_401_UNAUTHORIZED, HTTP_500_INTERNAL_SERVER_ERROR,\
     HTTP_405_METHOD_NOT_ALLOWED
-from engagementmanager.models import Vendor, Checklist, ChecklistAuditLog, ChecklistDecision, ChecklistLineItem, ChecklistSection
+from engagementmanager.models import Vendor, Checklist, ChecklistAuditLog, \
+    ChecklistDecision, ChecklistLineItem, ChecklistSection
 from engagementmanager.tests.test_base_entity import TestBaseEntity
-from engagementmanager.utils.constants import CheckListLineType, CheckListDecisionValue, CheckListState, Constants
+from engagementmanager.utils.constants import CheckListLineType, \
+    CheckListDecisionValue, CheckListState, Constants
 from engagementmanager.service.logging_service import LoggingServiceFactory
 
 logger = LoggingServiceFactory.get_logger()
@@ -53,19 +55,31 @@ class AuditLogAndDecisionAPITest(TestBaseEntity):
 
     def childSetup(self):
 
-        self.createVendors([Constants.service_provider_company_name, 'Amdocs', 'Other'])
+        self.createVendors(
+            [Constants.service_provider_company_name, 'Amdocs', 'Other'])
         self.createDefaultRoles()
 
         # Create a user with role el
-        self.el_user = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.randomGenerator("main-vendor-email"), '12323245435', 'el user', self.el, True)
+        self.el_user = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
+            '12323245435',
+            'el user',
+            self.el,
+            True)
         self.peer_reviewer = self.creator.createUser(Vendor.objects.get(
             name='Other'), self.randomGenerator("main-vendor-email"),
             '55501000199', 'peer-reviewer user', self.el, True)
         # For negative tests
         self.user = self.creator.createUser(
-            Vendor.objects.get(name=Constants.service_provider_company_name),
-            self.randomGenerator("main-vendor-email"), '12323245435', 'user', self.standard_user, True)
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
+            '12323245435',
+            'user',
+            self.standard_user,
+            True)
 
         self.template = self.creator.createDefaultCheckListTemplate()
         self.engagement = self.creator.createEngagement(
@@ -77,14 +91,36 @@ class AuditLogAndDecisionAPITest(TestBaseEntity):
         self.clbodydata = dict()
         self.initCLBody()
         self.auditdata = dict()
-        self.checklist = Checklist.objects.create(uuid=uuid4(), name=self.clbodydata['checkListName'], validation_cycle=1, associated_files=self.clbodydata[
-                                                  'checkListAssociatedFiles'], engagement=self.engagement, template=self.template, creator=self.el_user, owner=self.el_user)
-        self.section = ChecklistSection.objects.create(uuid=uuid4(), name=self.randomGenerator("randomString"), weight=1.0, description=self.randomGenerator(
-            "randomString"), validation_instructions=self.randomGenerator("randomString"), template=self.template)
-        self.line_item = ChecklistLineItem.objects.create(uuid=uuid4(), name=self.randomGenerator("randomString"), weight=1.0, description=self.randomGenerator(
-            "randomString"), line_type=CheckListLineType.auto.name, validation_instructions=self.randomGenerator("randomString"), template=self.template, section=self.section)  # @UndefinedVariable
+        self.checklist = Checklist.objects.create(
+            uuid=uuid4(),
+            name=self.clbodydata['checkListName'],
+            validation_cycle=1,
+            associated_files=self.clbodydata['checkListAssociatedFiles'],
+            engagement=self.engagement,
+            template=self.template,
+            creator=self.el_user,
+            owner=self.el_user)
+        self.section = ChecklistSection.objects.create(
+            uuid=uuid4(),
+            name=self.randomGenerator("randomString"),
+            weight=1.0,
+            description=self.randomGenerator("randomString"),
+            validation_instructions=self.randomGenerator("randomString"),
+            template=self.template)
+        self.line_item = ChecklistLineItem.objects.create(
+            uuid=uuid4(),
+            name=self.randomGenerator("randomString"),
+            weight=1.0,
+            description=self.randomGenerator("randomString"),
+            line_type=CheckListLineType.auto.name,
+            validation_instructions=self.randomGenerator("randomString"),
+            template=self.template,
+            section=self.section)  # @UndefinedVariable
         self.decision = ChecklistDecision.objects.create(
-            uuid=uuid4(), checklist=self.checklist, template=self.template, lineitem=self.line_item)
+            uuid=uuid4(),
+            checklist=self.checklist,
+            template=self.template,
+            lineitem=self.line_item)
         self.section.save()
         self.line_item.save()
         self.decision.save()
@@ -96,10 +132,13 @@ class AuditLogAndDecisionAPITest(TestBaseEntity):
         self.clbodydata['checkListName'] = "ice-checklist-for-test"
         self.clbodydata['checkListTemplateUuid'] = str(self.template.uuid)
         self.clbodydata[
-            'checkListAssociatedFiles'] = "[\"file0/f69f4ce7-51d5-409c-9d0e-ec6b1e79df28\", \"file1/f69f4ce7-51d5-409c-9d0e-ec6b1e79df28\", \"file2/f69f4ce7-51d5-409c-9d0e-ec6b1e79df28\"]"
+            'checkListAssociatedFiles'] = "\
+            [\"file0/f69f4ce7-51d5-409c-9d0e-ec6b1e79df28\",\
+             \"file1/f69f4ce7-51d5-409c-9d0e-ec6b1e79df28\",\
+              \"file2/f69f4ce7-51d5-409c-9d0e-ec6b1e79df28\"]"
 
-    def loggerTestFailedOrSucceded(self, bool):
-        if bool:
+    def loggerTestFailedOrSucceded(self, bool_flag):
+        if bool_flag:
             logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             logger.debug(" Test Succeeded")
             logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n")
@@ -119,8 +158,12 @@ class AuditLogAndDecisionAPITest(TestBaseEntity):
         self.auditdata['description'] = "description text"
         datajson = json.dumps(self.auditdata, ensure_ascii=False)
 
-        response = self.c.post(self.urlStr.replace("@cl_uuid", str(self.checklist.uuid)), datajson,
-                               content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.post(self.urlStr.replace("@cl_uuid",
+                                                   str(self.checklist.uuid)),
+                               datajson,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token "
+                                  + self.ELtoken})
         logger.debug('Got response : ' + str(response.status_code) +
                      " Expecting " + str(HTTP_200_OK))
 
@@ -140,7 +183,8 @@ class AuditLogAndDecisionAPITest(TestBaseEntity):
     def testCreateAuditLogViaChecklistNegativeEmptyDescription(self):
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.debug(
-            " Negative Test started: Create AuditLog Via Checklist with empty description")
+            " Negative Test started: Create AuditLog Via \
+            Checklist with empty description")
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n")
 
         self.urlStr = self.urlPrefix + "checklist/@cl_uuid/auditlog/"
@@ -150,8 +194,12 @@ class AuditLogAndDecisionAPITest(TestBaseEntity):
         self.auditdata['description'] = ""
         datajson = json.dumps(self.auditdata, ensure_ascii=False)
 
-        response = self.c.post(self.urlStr.replace("@cl_uuid", str(self.checklist.uuid)), datajson,
-                               content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.post(self.urlStr.replace("@cl_uuid",
+                                                   str(self.checklist.uuid)),
+                               datajson,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token "
+                                  + self.ELtoken})
         logger.debug('Got response : ' + str(response.status_code) +
                      " Expecting " + str(HTTP_400_BAD_REQUEST))
 
@@ -165,7 +213,8 @@ class AuditLogAndDecisionAPITest(TestBaseEntity):
     def testCreateAuditLogViaChecklistNegativeBadCLUuid(self):
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.debug(
-            " Negative Test started: Create AuditLog Via Checklist with bad CL uuid")
+            " Negative Test started: Create AuditLog Via \
+            Checklist with bad CL uuid")
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n")
 
         self.urlStr = self.urlPrefix + "checklist/@cl_uuid/auditlog/"
@@ -175,8 +224,11 @@ class AuditLogAndDecisionAPITest(TestBaseEntity):
         self.auditdata['description'] = "description text"
         datajson = json.dumps(self.auditdata, ensure_ascii=False)
 
-        response = self.c.post(self.urlStr.replace("@cl_uuid", str(uuid4())),
-                               datajson, content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.post(self.urlStr.replace("@cl_uuid",
+                                                   str(uuid4())),
+                               datajson,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token " + self.token})
         logger.debug('Got response : ' + str(response.status_code) +
                      " Expecting " + str(HTTP_500_INTERNAL_SERVER_ERROR))
 
@@ -192,15 +244,20 @@ class AuditLogAndDecisionAPITest(TestBaseEntity):
         logger.debug(" Test started: Create AuditLog Via Decision")
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n")
 
-        self.urlStr = self.urlPrefix + "checklist/decision/@decision_uuid/auditlog/"
+        self.urlStr = self.urlPrefix + \
+            "checklist/decision/@decision_uuid/auditlog/"
 
         logger.debug("Creating a checklist")
 
         self.auditdata['description'] = "description text"
         datajson = json.dumps(self.auditdata, ensure_ascii=False)
 
-        response = self.c.post(self.urlStr.replace("@decision_uuid", str(self.decision.uuid)), datajson,
-                               content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.post(self.urlStr.replace("@decision_uuid",
+                                                   str(self.decision.uuid)),
+                               datajson,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token "
+                                  + self.ELtoken})
         logger.debug('Got response : ' + str(response.status_code) +
                      " Expecting " + str(HTTP_200_OK))
 
@@ -214,18 +271,24 @@ class AuditLogAndDecisionAPITest(TestBaseEntity):
     def testCreateAuditLogViaDecisionNegativeEmptyDescription(self):
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.debug(
-            " Negative Test started: Create AuditLog Via Decision with empty description")
+            " Negative Test started: Create AuditLog Via \
+            Decision with empty description")
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n")
 
-        self.urlStr = self.urlPrefix + "checklist/decision/@decision_uuid/auditlog/"
+        self.urlStr = self.urlPrefix + \
+            "checklist/decision/@decision_uuid/auditlog/"
 
         logger.debug("Creating a checklist")
 
         self.auditdata['description'] = ""
         datajson = json.dumps(self.auditdata, ensure_ascii=False)
 
-        response = self.c.post(self.urlStr.replace("@decision_uuid", str(self.decision.uuid)), datajson,
-                               content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.post(self.urlStr.replace("@decision_uuid",
+                                                   str(self.decision.uuid)),
+                               datajson,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token "
+                                  + self.ELtoken})
         logger.debug('Got response : ' + str(response.status_code) +
                      " Expecting " + str(HTTP_400_BAD_REQUEST))
 
@@ -239,18 +302,24 @@ class AuditLogAndDecisionAPITest(TestBaseEntity):
     def testCreateAuditLogViaDecisionNegativeBadCLUuid(self):
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.debug(
-            " Negative Test started: Create AuditLog Via Decision with bad Decision uuid")
+            " Negative Test started: Create AuditLog Via \
+            Decision with bad Decision uuid")
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n")
 
-        self.urlStr = self.urlPrefix + "checklist/decision/@decision_uuid/auditlog/"
+        self.urlStr = self.urlPrefix + \
+            "checklist/decision/@decision_uuid/auditlog/"
 
         logger.debug("Creating a checklist")
 
         self.auditdata['description'] = "description text"
         datajson = json.dumps(self.auditdata, ensure_ascii=False)
 
-        response = self.c.post(self.urlStr.replace("@decision_uuid", str(uuid4())), datajson,
-                               content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.post(self.urlStr.replace("@decision_uuid",
+                                                   str(uuid4())),
+                               datajson,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token "
+                                  + self.ELtoken})
         logger.debug('Got response : ' + str(response.status_code) +
                      " Expecting " + str(HTTP_400_BAD_REQUEST))
 
@@ -270,20 +339,25 @@ class AuditLogAndDecisionAPITest(TestBaseEntity):
 
         logger.debug("Creating a checklist")
 
-        self.checklist.state = CheckListState.review.name  # @UndefinedVariable
+        self.checklist.state = CheckListState.review.name
         self.checklist.owner = self.el_user
         self.checklist.save()
         # @UndefinedVariable
         self.auditdata['value'] = CheckListDecisionValue.approved.name
         datajson = json.dumps(self.auditdata, ensure_ascii=False)
 
-        response = self.c.put(self.urlStr.replace("@decision_uuid", str(self.decision.uuid)), datajson,
-                              content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.put(
+            self.urlStr.replace("@decision_uuid",
+                                str(self.decision.uuid)),
+            datajson,
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
         logger.debug('Got response : ' + str(response.status_code) +
                      " Expecting " + str(HTTP_200_OK))
 
         check = ChecklistDecision.objects.get(checklist=self.checklist)
-        if (response.status_code == HTTP_200_OK and check.review_value == 'approved'):
+        if (response.status_code == HTTP_200_OK and
+                check.review_value == 'approved'):
             self.loggerTestFailedOrSucceded(True)
             self.assertEqual(response.status_code, HTTP_200_OK)
         else:
@@ -299,15 +373,19 @@ class AuditLogAndDecisionAPITest(TestBaseEntity):
 
         logger.debug("Creating a checklist")
 
-        self.checklist.state = CheckListState.review.name  # @UndefinedVariable
+        self.checklist.state = CheckListState.review.name
         self.checklist.owner = self.user
         self.checklist.save()
         # @UndefinedVariable
         self.auditdata['value'] = CheckListDecisionValue.approved.name
         datajson = json.dumps(self.auditdata, ensure_ascii=False)
 
-        response = self.c.put(self.urlStr.replace("@decision_uuid", str(self.decision.uuid)), datajson,
-                              content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.put(
+            self.urlStr.replace("@decision_uuid",
+                                str(self.decision.uuid)),
+            datajson,
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
         logger.debug('Got response : ' + str(response.status_code) +
                      " Expecting " + str(HTTP_401_UNAUTHORIZED))
 
@@ -327,14 +405,18 @@ class AuditLogAndDecisionAPITest(TestBaseEntity):
 
         logger.debug("Creating a checklist")
 
-        self.checklist.state = CheckListState.review.name  # @UndefinedVariable
+        self.checklist.state = CheckListState.review.name
         self.checklist.owner = self.el_user
         self.checklist.save()
         self.auditdata['value'] = self.randomGenerator("randomString")
         datajson = json.dumps(self.auditdata, ensure_ascii=False)
 
-        response = self.c.put(self.urlStr.replace("@decision_uuid", str(self.decision.uuid)), datajson,
-                              content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.put(
+            self.urlStr.replace("@decision_uuid",
+                                str(self.decision.uuid)),
+            datajson,
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
         logger.debug('Got response : ' + str(response.status_code) +
                      " Expecting " + str(HTTP_400_BAD_REQUEST))
 
@@ -362,8 +444,12 @@ class AuditLogAndDecisionAPITest(TestBaseEntity):
         self.auditdata['value'] = CheckListDecisionValue.approved.name
         datajson = json.dumps(self.auditdata, ensure_ascii=False)
 
-        response = self.c.put(self.urlStr.replace("@decision_uuid", str(self.decision.uuid)), datajson,
-                              content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.put(
+            self.urlStr.replace("@decision_uuid",
+                                str(self.decision.uuid)),
+            datajson,
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
         logger.debug('Got response : ' + str(response.status_code) +
                      " Expecting " + str(HTTP_400_BAD_REQUEST))
 
@@ -372,4 +458,5 @@ class AuditLogAndDecisionAPITest(TestBaseEntity):
             self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         else:
             self.loggerTestFailedOrSucceded(False)
-            self.assertEqual(response.status_code, HTTP_405_METHOD_NOT_ALLOWED)
+            self.assertEqual(response.status_code,
+                             HTTP_405_METHOD_NOT_ALLOWED)

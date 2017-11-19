@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -42,10 +42,12 @@ Will clean all program data:
 2. Deletes all data stored in database.
 3. Deletes all jobs stored in jenkins.
 
-It's recommended to clean the vvp system if you desire in a fresh copy of the vvp program
+It's recommended to clean the vvp system if
+you desire in a fresh copy of the vvp program
 without installing it all over again.
 
-WARNING: It will delete almost everything, if you have necessary data DO NOT USE THIS COMMAND!
+WARNING: It will delete almost everything,
+if you have necessary data DO NOT USE THIS COMMAND!
 """
 from django.core.management.base import BaseCommand
 from engagementmanager.management.commands import clean_gitlab_content
@@ -61,7 +63,8 @@ logger = LoggingServiceFactory.get_logger()
 class Command(BaseCommand):
     def handle(self, *args, **options):
         logger.info("***************************************")
-        logger.info("%s system is about to be cleaned up!" % Constants.program_name)
+        logger.info("%s system is about to be cleaned up!" %
+                    Constants.program_name)
         logger.info("***************************************")
 
         try:
@@ -80,14 +83,14 @@ class Command(BaseCommand):
             clean_vvp_db_command = clean_vvp_db.Command()
             clean_vvp_db_command.handle(args, options)
         except Exception as e:
-            logger.error("There was a problem cleaning %s db" % Constants.program_name, e)
-
+            logger.error("There was a problem cleaning %s db" %
+                         Constants.program_name, e)
         try:
             initial_populate_db_command = initial_populate_db.Command()
             initial_populate_db_command.handle(args, options)
         except Exception as e:
-            logger.error("There was a problem populate %s db after cleaning" % Constants.program_name, e)
-
+            logger.error("There was a problem populate %s db \
+            after cleaning" % Constants.program_name, e)
         logger.info("***************************************")
         logger.info("Done!")
         logger.info("***************************************")

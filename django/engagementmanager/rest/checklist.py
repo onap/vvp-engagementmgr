@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,8 +36,6 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-import json
-
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST,\
     HTTP_500_INTERNAL_SERVER_ERROR
@@ -71,8 +69,9 @@ class NewCheckList(VvpApiView):
         data = request.data
 
         if ('checkListName' not in data or not data['checkListName'] or
-           'checkListTemplateUuid' not in data or not data['checkListTemplateUuid'] or
-           'checkListAssociatedFiles' not in data):
+            'checkListTemplateUuid' not in data or
+            not data['checkListTemplateUuid'] or
+                'checkListAssociatedFiles' not in data):
             msg = "One of the CheckList's input parameters is missing"
             self.logger.error(msg)
             return Response(msg, status=HTTP_400_BAD_REQUEST)
@@ -83,7 +82,8 @@ class NewCheckList(VvpApiView):
             return Response(msg, status=HTTP_400_BAD_REQUEST)
 
         data = CheckListSvc().createOrUpdateChecklist(
-            data['checkListName'], data['checkListTemplateUuid'], data['checkListAssociatedFiles'], None)
+            data['checkListName'], data['checkListTemplateUuid'],
+            data['checkListAssociatedFiles'], None)
 
         return Response(data)
 
@@ -107,9 +107,10 @@ class ExistingCheckList(VvpApiView):
     def put(self, request, checklistUuid):
         data = request.data
         if ('checklistUuid' not in data or not data['checklistUuid'] or
-           'checkListName' not in data or not data['checkListName'] or
-           'checkListTemplateUuid' not in data or not data['checkListTemplateUuid'] or
-           'checkListAssociatedFiles' not in data):
+            'checkListName' not in data or not data['checkListName'] or
+            'checkListTemplateUuid' not in data or
+            not data['checkListTemplateUuid'] or
+                'checkListAssociatedFiles' not in data):
             msg = "One of the CheckList's input parameters is missing"
             self.logger.error(msg)
             return Response(msg, status=HTTP_400_BAD_REQUEST)
@@ -119,7 +120,8 @@ class ExistingCheckList(VvpApiView):
             return Response(msg, status=HTTP_400_BAD_REQUEST)
 
         data = CheckListSvc().createOrUpdateChecklist(
-            data['checkListName'], data['checkListTemplateUuid'], data['checkListAssociatedFiles'], data['checklistUuid'])
+            data['checkListName'], data['checkListTemplateUuid'],
+            data['checkListAssociatedFiles'], data['checklistUuid'])
 
         return Response(data)
 

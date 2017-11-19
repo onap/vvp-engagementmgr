@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -52,15 +52,26 @@ class EngagementStatusTestCase(TestBaseEntity):
     def childSetup(self):  # Variables to use in this class.
         self.createVendors([Constants.service_provider_company_name, 'Other'])
         self.createDefaultRoles()
-        self.admin, self.el, self.standard_user = self.creator.createAndGetDefaultRoles()
+        self.admin, self.el, self.standard_user = \
+            self.creator.createAndGetDefaultRoles()
 
         # Create a user with role el
-        self.el_user = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.randomGenerator("main-vendor-email"),
-            '55501000199', 'el user', self.el, True)
-        self.peer_review_user = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.randomGenerator("main-vendor-email"),
-            '55501000199', 'peer-reviewer user', self.el, True)
+        self.el_user = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
+            '55501000199',
+            'el user',
+            self.el,
+            True)
+        self.peer_review_user = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
+            '55501000199',
+            'peer-reviewer user',
+            self.el,
+            True)
         # Create a user with role standard_user
         self.user = self.creator.createUser(Vendor.objects.get(
             name='Other'), self.randomGenerator("main-vendor-email"),
@@ -69,19 +80,25 @@ class EngagementStatusTestCase(TestBaseEntity):
             name='Other'), self.randomGenerator("main-vendor-email"),
             '55501000199', 'user not team', self.standard_user, True)
         # Create an Engagement with team
-        self.engagement = self.creator.createEngagement(uuid4(), 'Validation', None)
+        self.engagement = self.creator.createEngagement(
+            uuid4(), 'Validation', None)
         self.engagement.engagement_team.add(self.user, self.el_user)
         self.engagement.reviewer = self.el_user
         self.engagement.peer_reviewer = self.peer_review_user
         self.engagement.save()
         self.token = self.loginAndCreateSessionToken(self.user)
         self.ELtoken = self.loginAndCreateSessionToken(self.el_user)
-        self.user_not_team_token = self.loginAndCreateSessionToken(self.user_not_team)
+        self.user_not_team_token = self.loginAndCreateSessionToken(
+            self.user_not_team)
 
         urlStr = self.urlPrefix + 'engagements/${uuid}/status'
         myjson = json.dumps({"description": "blah blah"}, ensure_ascii=False)
-        response = self.c.post(urlStr.replace('${uuid}', str(self.engagement.uuid)), myjson,
-                               content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.post(
+            urlStr.replace(
+                '${uuid}', str(
+                    self.engagement.uuid)), myjson,
+            content_type='application/json', **{
+                'HTTP_AUTHORIZATION': "token " + self.ELtoken})
         self.created_status = json.loads(response.content)
 
     def testPutStatus(self):
@@ -89,19 +106,34 @@ class EngagementStatusTestCase(TestBaseEntity):
 
         self.printTestName("START - testPutStatus")
 
-        logger.debug("action should fail (401), Only Engagement Lead can set Engagement Progress")
+        logger.debug(
+            "action should fail (401), Only \
+            Engagement Lead can set Engagement Progress")
 
         myjson = json.dumps(
-            {"eng_status_uuid": self.created_status['uuid'], "description": "blah2 blah2"}, ensure_ascii=False)
-        response = self.c.put(urlStr.replace('${uuid}', str(self.engagement.uuid)), myjson,
-                              content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.token})
+            {
+                "eng_status_uuid": self.created_status['uuid'],
+                "description": "blah2 blah2"},
+            ensure_ascii=False)
+        response = self.c.put(urlStr.replace('${uuid}',
+                                             str(self.engagement.uuid)),
+                              myjson,
+                              content_type='application/json',
+                              **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_401_UNAUTHORIZED)
 
         myjson = json.dumps(
-            {"eng_status_uuid": self.created_status['uuid'], "description": "blah2 blah2"}, ensure_ascii=False)
-        response = self.c.put(urlStr.replace('${uuid}', str(self.engagement.uuid)), myjson,
-                              content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+            {
+                "eng_status_uuid": self.created_status['uuid'],
+                "description": "blah2 blah2"},
+            ensure_ascii=False)
+        response = self.c.put(
+            urlStr.replace(
+                '${uuid}', str(
+                    self.engagement.uuid)), myjson,
+            content_type='application/json', **{
+                'HTTP_AUTHORIZATION': "token " + self.ELtoken})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
 
@@ -112,24 +144,36 @@ class EngagementStatusTestCase(TestBaseEntity):
 
         self.printTestName("START - testPostStatus")
 
-        logger.debug("action should fail (401), Only Engagement Lead can set Engagement Progress")
+        logger.debug(
+            "action should fail (401), Only Engagement \
+            Lead can set Engagement Progress")
 
         myjson = json.dumps({"description": "blah blah"}, ensure_ascii=False)
-        response = self.c.post(urlStr.replace('${uuid}', str(self.engagement.uuid)), myjson,
-                               content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.post(urlStr.replace('${uuid}',
+                                              str(self.engagement.uuid)),
+                               myjson,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_401_UNAUTHORIZED)
 
         logger.debug("action should fail (400), For fake engagement uuid")
         myjson = json.dumps({"description": "blah blah"}, ensure_ascii=False)
-        response = self.c.post(urlStr.replace(
-            '${uuid}', str(uuid4())), myjson, content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.post(
+            urlStr.replace(
+                '${uuid}', str(
+                    uuid4())), myjson, content_type='application/json', **{
+                'HTTP_AUTHORIZATION': "token " + self.ELtoken})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_401_UNAUTHORIZED)
 
         myjson = json.dumps({"description": "blah blah"}, ensure_ascii=False)
-        response = self.c.post(urlStr.replace('${uuid}', str(self.engagement.uuid)), myjson,
-                               content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.post(
+            urlStr.replace(
+                '${uuid}', str(
+                    self.engagement.uuid)), myjson,
+            content_type='application/json', **{
+                'HTTP_AUTHORIZATION': "token " + self.ELtoken})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
 
@@ -140,21 +184,30 @@ class EngagementStatusTestCase(TestBaseEntity):
 
         self.printTestName("START - testGetStatus")
 
-        response = self.c.get(urlStr.replace('${uuid}', str(self.engagement.uuid)),
-                              content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.get(urlStr.replace('${uuid}',
+                                             str(self.engagement.uuid)),
+                              content_type='application/json',
+                              **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
 
-        logger.debug("action should fail (401), Only team members can get status")
+        logger.debug(
+            "action should fail (401), Only team members can get status")
 
-        response = self.c.get(urlStr.replace('${uuid}', str(
-            self.engagement.uuid)), content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.user_not_team_token})
+        response = self.c.get(
+            urlStr.replace(
+                '${uuid}',
+                str(self.engagement.uuid)),
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.user_not_team_token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_401_UNAUTHORIZED)
 
-        logger.debug("action should fail (401), Only existing eng_uuid cab ne fetched")
+        logger.debug(
+            "action should fail (401), Only existing eng_uuid cab ne fetched")
         response = self.c.get(urlStr.replace('${uuid}', str(
-            uuid4())), content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.token})
+            uuid4())), content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_401_UNAUTHORIZED)
 

@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -53,13 +53,42 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='checklist',
             name='state',
-            field=models.CharField(choices=[(b'(4,)', b'approval'), (b'(7,)', b'archive'), (b'(1,)', b'automation'), (b'(6,)', b'closed'), (
-                b'(5,)', b'handoff'), (b'(3,)', b'peer_review'), (b'8', b'pending'), (b'(2,)', b'review')], default=b'pending', max_length=36),
+            field=models.CharField(
+                choices=[
+                    (b'(4,)',
+                     b'approval'),
+                    (b'(7,)',
+                     b'archive'),
+                    (b'(1,)',
+                     b'automation'),
+                    (b'(6,)',
+                     b'closed'),
+                    (b'(5,)',
+                     b'handoff'),
+                    (b'(3,)',
+                     b'peer_review'),
+                    (b'8',
+                     b'pending'),
+                    (b'(2,)',
+                     b'review')],
+                default=b'pending',
+                max_length=36),
         ),
         migrations.AlterField(
             model_name='recentengagement',
             name='action_type',
-            field=models.CharField(choices=[(b'(3,)', b'GOT_OWNERSHIP_OVER_ENGAGEMENT'), (b'(1,)', b'JOINED_TO_ENGAGEMENT'), (
-                b'(4,)', b'NAVIGATED_INTO_ENGAGEMENT'), (b'(5,)', b'NEW_VF_CREATED'), (b'(2,)', b'NEXT_STEP_ASSIGNED')], max_length=36),
+            field=models.CharField(
+                choices=[
+                    (b'(3,)',
+                     b'GOT_OWNERSHIP_OVER_ENGAGEMENT'),
+                    (b'(1,)',
+                     b'JOINED_TO_ENGAGEMENT'),
+                    (b'(4,)',
+                     b'NAVIGATED_INTO_ENGAGEMENT'),
+                    (b'(5,)',
+                     b'NEW_VF_CREATED'),
+                    (b'(2,)',
+                     b'NEXT_STEP_ASSIGNED')],
+                max_length=36),
         ),
     ]

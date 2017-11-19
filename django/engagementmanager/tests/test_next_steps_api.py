@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -57,9 +57,14 @@ class TestNextStepsAPI(TestBaseEntity):
         self.createDefaultRoles()
 
         # Create a user with role el
-        self.el_user = self.creator.createUser(Vendor.objects.get(
-            name=Constants.service_provider_company_name), self.randomGenerator("main-vendor-email"),
-            '55501000199', 'el user', self.el, True)
+        self.el_user = self.creator.createUser(
+            Vendor.objects.get(
+                name=Constants.service_provider_company_name),
+            self.randomGenerator("main-vendor-email"),
+            '55501000199',
+            'el user',
+            self.el,
+            True)
         print('-----------------------------------------------------')
         print('Created User:')
         print('UUID: ' + str(self.el_user.uuid))
@@ -87,9 +92,15 @@ class TestNextStepsAPI(TestBaseEntity):
         print('-----------------------------------------------------')
 
         # Create a user with role standard_user with SSH key
-        self.user_with_ssh = self.creator.createUser(Vendor.objects.get(
-            name='Other'), self.randomGenerator("main-vendor-email"),
-            '55501000199', 'ssh user', self.standard_user, True, 'just-a-fake-ssh-key')
+        self.user_with_ssh = self.creator.createUser(
+            Vendor.objects.get(
+                name='Other'),
+            self.randomGenerator("main-vendor-email"),
+            '55501000199',
+            'ssh user',
+            self.standard_user,
+            True,
+            'just-a-fake-ssh-key')
         print('-----------------------------------------------------')
         print('Created User:')
         print('UUID: ' + str(self.user_with_ssh.uuid))
@@ -97,7 +108,8 @@ class TestNextStepsAPI(TestBaseEntity):
         print('-----------------------------------------------------')
 
         # Create an Engagement with team
-        self.engagement = self.creator.createEngagement('just-a-fake-uuid', 'Validation', None)
+        self.engagement = self.creator.createEngagement(
+            'just-a-fake-uuid', 'Validation', None)
         self.engagement.reviewer = self.el_user
         self.engagement.peer_reviewer = self.el_user
         self.engagement.engagement_team.add(self.user, self.el_user)
@@ -108,8 +120,10 @@ class TestNextStepsAPI(TestBaseEntity):
         print('-----------------------------------------------------')
 
         # Create another Engagement with team with SSH Key
-        self.engagement_ssh = self.creator.createEngagement('just-another-fake-uuid', 'Validation', None)
-        self.engagement_ssh.engagement_team.add(self.user_with_ssh, self.el_user)
+        self.engagement_ssh = self.creator.createEngagement(
+            'just-another-fake-uuid', 'Validation', None)
+        self.engagement_ssh.engagement_team.add(
+            self.user_with_ssh, self.el_user)
         self.engagement_ssh.peer_reviewer = self.pruser
         self.engagement_ssh.save()
 
@@ -119,8 +133,10 @@ class TestNextStepsAPI(TestBaseEntity):
         print('-----------------------------------------------------')
 
         # Create another Engagement with Main Contact
-        self.engagement_with_contact = self.creator.createEngagement('yet-just-another-fake-uuid', 'Validation', None)
-        self.engagement_with_contact.engagement_team.add(self.user, self.el_user)
+        self.engagement_with_contact = self.creator.createEngagement(
+            'yet-just-another-fake-uuid', 'Validation', None)
+        self.engagement_with_contact.engagement_team.add(
+            self.user, self.el_user)
         self.engagement_with_contact.contact_user = self.user
         self.engagement_with_contact.peer_reviewer = self.pruser
         self.engagement_with_contact.save()
@@ -131,26 +147,35 @@ class TestNextStepsAPI(TestBaseEntity):
         print('-----------------------------------------------------')
 
         # Create another Engagement with Main Contact
-        self.engagement_4_createNS = self.creator.createEngagement('yet-just-another-fake-uuid2', 'Validation', None)
+        self.engagement_4_createNS = self.creator.createEngagement(
+            'yet-just-another-fake-uuid2', 'Validation', None)
         self.engagement_4_createNS.reviewer = self.el_user
         self.engagement_4_createNS.peer_reviewer = self.el_user
-        self.engagement_4_createNS.engagement_team.add(self.user_with_ssh, self.el_user)
+        self.engagement_4_createNS.engagement_team.add(
+            self.user_with_ssh, self.el_user)
         self.engagement_4_createNS.contact_user = self.user_with_ssh
         self.engagement_4_createNS.save()
 
         # Create engagement for order
-        self.engagement_4_order = self.creator.createEngagement('yet-just-another-fake-uuid3', 'Validation', None)
+        self.engagement_4_order = self.creator.createEngagement(
+            'yet-just-another-fake-uuid3', 'Validation', None)
         self.engagement_4_order.reviewer = self.el_user
         self.engagement_4_order.peer_reviewer = self.el_user
-        self.engagement_4_order.engagement_team.add(self.user_with_ssh, self.el_user)
+        self.engagement_4_order.engagement_team.add(
+            self.user_with_ssh, self.el_user)
         self.engagement_4_order.contact_user = self.user_with_ssh
         self.engagement_4_order.save()
 
         self.deploymentTarget = self.creator.createDeploymentTarget(
-            self.randomGenerator("randomString"), self.randomGenerator("randomString"))
+            self.randomGenerator("randomString"),
+            self.randomGenerator("randomString"))
         self.vendor = Vendor.objects.get(name='Other')
-        self.vf = self.creator.createVF(self.randomGenerator("randomString"),
-                                        self.engagement_4_createNS, self.deploymentTarget, False, self.vendor)
+        self.vf = self.creator.createVF(
+            self.randomGenerator("randomString"),
+            self.engagement_4_createNS,
+            self.deploymentTarget,
+            False,
+            self.vendor)
 
         print('-----------------------------------------------------')
         print('Created Engagement:')
@@ -163,12 +188,15 @@ class TestNextStepsAPI(TestBaseEntity):
 
     def testCreateDefaultNextStepsAndSetNextStepsState(self):
         urlStr = self.urlPrefix + 'engagements/${uuid}/nextsteps/Intake'
-        NextStepSvc().create_default_next_steps(self.user, self.engagement, self.el_user)
-        NextStepSvc().create_default_next_steps_for_user(self.user, self.el_user)
+        NextStepSvc().create_default_next_steps(
+            self.user, self.engagement, self.el_user)
+        NextStepSvc().create_default_next_steps_for_user(
+            self.user, self.el_user)
         num_of_steps = 3
 
-        response = self.c.get(urlStr.replace('${uuid}', str(self.engagement.uuid)),
-                              **{'HTTP_AUTHORIZATION': "token " + self.token})
+        response = self.c.get(
+            urlStr.replace('${uuid}', str(self.engagement.uuid)),
+            **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         print("DATA After JSON Parse:" + str(response.content))
 
@@ -180,32 +208,45 @@ class TestNextStepsAPI(TestBaseEntity):
         print('Test that GET nextsteps in Intake state returns 3 items ')
         self.assertEqual(len(response.json()), num_of_steps)
 
-        print('Test First item state is Incomplete: ' + response.json()[0]['state'])
+        print('Test First item state is Incomplete: ' +
+              response.json()[0]['state'])
         self.assertEqual(response.json()[0]['state'], 'Incomplete')
 
         step_uuid = response.json()[0]['uuid']
         urlStr = self.urlPrefix + 'nextsteps/' + step_uuid + '/state'
 
-        print('attempt change state of next step Incomplete->COMPLETED by standard_user. This should succeed...')
-        response = self.c.put(urlStr, '{ "state" : "Completed" }',
-                              content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        print('attempt change state of next step Incomplete->' +
+              'COMPLETED by standard_user. This should succeed...')
+        response = self.c.put(
+            urlStr,
+            '{ "state" : "Completed" }',
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
 
-        print('Negative: attempt change state of next step COMPLETED->Incomplete by EL. This should success')
-        response = self.c.put(urlStr, '{ "state" : "Incomplete" }',
-                              content_type='application/json', **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        print('Negative: attempt change state of next step COMPLETED->' +
+              'Incomplete by EL. This should success')
+        response = self.c.put(
+            urlStr,
+            '{ "state" : "Incomplete" }',
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
 
     def testCreateDefaultNextStepsForUserWithSSHKey(self):
         urlStr = self.urlPrefix + 'engagements/${uuid}/nextsteps/Intake'
-        NextStepSvc().create_default_next_steps(self.user_with_ssh, self.engagement_ssh, self.el_user)
-        # Would not create any next step, due to the reason that the user already has an SSH
-        NextStepSvc().create_default_next_steps_for_user(self.user_with_ssh, self.el_user)
+        NextStepSvc().create_default_next_steps(
+            self.user_with_ssh, self.engagement_ssh, self.el_user)
+        # Would not create any next step, due to the reason that the user
+        # already has an SSH
+        NextStepSvc().create_default_next_steps_for_user(self.user_with_ssh,
+                                                         self.el_user)
         num_of_steps = 2
 
-        response = self.c.get(urlStr.replace('${uuid}', str(self.engagement_ssh.uuid)),
+        response = self.c.get(urlStr.replace('${uuid}',
+                                             str(self.engagement_ssh.uuid)),
                               **{'HTTP_AUTHORIZATION': "token " + self.token})
         print('Got response : ' + str(response.status_code))
         print("DATA After JSON Parse:" + str(response.content))
@@ -222,33 +263,51 @@ class TestNextStepsAPI(TestBaseEntity):
         nsDict["position"] = 4
         nsDict["creator_uuid"] = str(self.el_user.uuid)
         nsDict[
-            "description"] = "Please submit the first version of the VF package. If you have any problems or questions please contact your Engagement Lead (EL)"
+            "description"] = "Please submit the first version of the " +\
+            "VF package. If you have any problems or questions please " +\
+            "contact your Engagement Lead (EL)"
         nsDict["state"] = "Incomplete"
         nsDict["engagement_stage"] = "Active"
 
         myjson = json.dumps([nsDict], ensure_ascii=False)
 
-        create_nextsteps_url = self.urlPrefix + "engagements/" + str(self.engagement_4_order.uuid) + "/nextsteps/"
-        response = self.c.post(create_nextsteps_url, myjson, content_type='application/json',
-                               **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
-        response = self.c.post(create_nextsteps_url, myjson, content_type='application/json',
-                               **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
-        response = self.c.post(create_nextsteps_url, myjson, content_type='application/json',
-                               **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        create_nextsteps_url = self.urlPrefix + "engagements/" + \
+            str(self.engagement_4_order.uuid) + "/nextsteps/"
+        response = self.c.post(create_nextsteps_url,
+                               myjson,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token "
+                                  + self.ELtoken})
+        response = self.c.post(create_nextsteps_url,
+                               myjson,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token "
+                                  + self.ELtoken})
+        response = self.c.post(create_nextsteps_url,
+                               myjson,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token "
+                                  + self.ELtoken})
 
-        get_nextsteps_url = self.urlPrefix + 'engagements/${uuid}/nextsteps/Intake'
+        get_nextsteps_url = self.urlPrefix + \
+            'engagements/${uuid}/nextsteps/Intake'
         response = self.c.get(get_nextsteps_url.replace('${uuid}', str(
-            self.engagement_4_order.uuid)), **{'HTTP_AUTHORIZATION': "token " + self.sshtoken})
+            self.engagement_4_order.uuid)), **{'HTTP_AUTHORIZATION': "token "
+                                               + self.sshtoken})
 
         decoded_ns = json.loads(response.content)
         myjson = json.dumps(decoded_ns, ensure_ascii=False)
         order_nextsteps_url = self.urlPrefix + 'engagements/' + \
             str(self.engagement_4_order.uuid) + '/nextsteps/order_next_steps/'
-        response = self.c.put(order_nextsteps_url, myjson, content_type='application/json',
-                              **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.put(
+            order_nextsteps_url,
+            myjson,
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
 
         response = self.c.get(get_nextsteps_url.replace('${uuid}', str(
-            self.engagement_4_order.uuid)), **{'HTTP_AUTHORIZATION': "token " + self.sshtoken})
+            self.engagement_4_order.uuid)), **{'HTTP_AUTHORIZATION': "token "
+                                               + self.sshtoken})
 
         decoded_ns = json.loads(response.content)
         counter = 0
@@ -258,12 +317,15 @@ class TestNextStepsAPI(TestBaseEntity):
 
     def testCreateDefaultNextStepsWhenENGContactExist(self):
         urlStr = self.urlPrefix + 'engagements/${uuid}/nextsteps/Intake'
-        NextStepSvc().create_default_next_steps(self.user, self.engagement_with_contact, self.el_user)
-        NextStepSvc().create_default_next_steps_for_user(self.user, self.el_user)
+        NextStepSvc().create_default_next_steps(
+            self.user, self.engagement_with_contact, self.el_user)
+        NextStepSvc().create_default_next_steps_for_user(
+            self.user, self.el_user)
         num_of_steps = 2
 
         response = self.c.get(urlStr.replace('${uuid}', str(
-            self.engagement_with_contact.uuid)), **{'HTTP_AUTHORIZATION': "token " + self.token})
+            self.engagement_with_contact.uuid)), **{
+                'HTTP_AUTHORIZATION': "token " + self.token})
 
         print('Got response : ' + str(response.status_code))
         print("DATA After JSON Parse:" + str(response.content))
@@ -275,61 +337,90 @@ class TestNextStepsAPI(TestBaseEntity):
         self.assertEqual(len(response.json()), num_of_steps)
 
     def testAddNextStepToEng(self):
-        urlStr = self.urlPrefix + "engagements/" + str(self.engagement_4_createNS.uuid) + "/nextsteps/"
+        urlStr = self.urlPrefix + "engagements/" + \
+            str(self.engagement_4_createNS.uuid) + "/nextsteps/"
 
-        NextStepSvc().create_default_next_steps(self.user_with_ssh, self.engagement_4_createNS, self.el_user)
-        # Would not create any next step, due to the reason that the user already has an SSH
-        NextStepSvc().create_default_next_steps_for_user(self.user_with_ssh, self.el_user)
+        NextStepSvc().create_default_next_steps(
+            self.user_with_ssh, self.engagement_4_createNS, self.el_user)
+        # Would not create any next step, due to the reason that the user
+        # already has an SSH
+        NextStepSvc().create_default_next_steps_for_user(
+            self.user_with_ssh, self.el_user)
 
         nsDict = {}
         nsDict["position"] = "4"
         nsDict["creator_uuid"] = str(self.el_user.uuid)
         nsDict[
-            "description"] = "Please submit the first version of the VF package. If you have any problems or questions please contact your Engagement Lead (EL)"
+            "description"] = "Please submit the first version of the VF " +\
+            "package. If you have any problems or questions please contact " +\
+            "your Engagement Lead (EL)"
         nsDict["state"] = "Incomplete"
         nsDict["engagement_stage"] = "Active"
 
         myjson = json.dumps([nsDict], ensure_ascii=False)
         print(myjson)
 
-        response = self.c.post(urlStr, myjson, content_type='application/json',
-                               **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.post(urlStr,
+                               myjson,
+                               content_type='application/json',
+                               **{'HTTP_AUTHORIZATION': "token "
+                                  + self.ELtoken})
         print('Got response : ' + str(response.status_code))
         print("DATA After JSON Parse:" + str(response.content))
 
         self.assertEqual(response.status_code, HTTP_200_OK)
 
     def testDelNextStepToEng(self):
-        nsObj = NextStep.objects.create(uuid=uuid4(), creator=self.el_user, position=2, description="testDelNextStepToEng",
-                                        state='Incomplete', engagement_stage="Intake", engagement=self.engagement)
+        nsObj = NextStep.objects.create(
+            uuid=uuid4(),
+            creator=self.el_user,
+            position=2,
+            description="testDelNextStepToEng",
+            state='Incomplete',
+            engagement_stage="Intake",
+            engagement=self.engagement)
         urlStr = self.urlPrefix + "nextsteps/" + str(nsObj.uuid)
 
-        response = self.c.delete(urlStr, **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.delete(
+            urlStr, **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
         print('Got response : ' + str(response.status_code))
         print("DATA After JSON Parse:" + str(response.content))
 
         self.assertEqual(response.status_code, HTTP_204_NO_CONTENT)
 
     def testNegativeDelNextStepToEngNoHeader(self):
-        nsObj = NextStep.objects.create(uuid=uuid4(), creator=self.el_user, position=2, description="testDelNextStepToEng",
-                                        state='Incomplete', engagement_stage="Intake", engagement=self.engagement)
+        nsObj = NextStep.objects.create(
+            uuid=uuid4(),
+            creator=self.el_user,
+            position=2,
+            description="testDelNextStepToEng",
+            state='Incomplete',
+            engagement_stage="Intake",
+            engagement=self.engagement)
         urlStr = self.urlPrefix + "nextsteps/" + str(nsObj.uuid)
 
         response = self.c.delete(urlStr)
-        print('Negative: Expecting response 403, got: ' + str(response.status_code))
+        print('Negative: Expecting response 403, got: ' +
+              str(response.status_code))
         print("DATA After JSON Parse:" + str(response.content))
 
         self.assertEqual(response.status_code, HTTP_403_FORBIDDEN)
 
     def testEditNextSteps(self):
         print(
-            '---------------------------------- testEditNextSteps, Expecting 200 ------------------------------------')
-        print('---------------------------------- Creating a next step ------------------------------------')
-        step = NextStep.objects.create(position="4", creator=self.el_user, engagement=self.engagement,
-                                       description="Please submit the first version of the VF package. If you have any problems or questions please contact your Engagement Lead (EL)",
-                                       state="TODO", engagement_stage="Active",
-                                       uuid=uuid4())
-        print('---------------------------------- Editing the next step ------------------------------------')
+            '---------- testEditNextSteps, Expecting 200 ----------')
+        print('---------- Creating a next step ----------')
+        step = NextStep.objects.create(
+            position="4",
+            creator=self.el_user,
+            engagement=self.engagement,
+            description="Please submit the first version of the VF package. " +
+            "If you have any problems or questions please contact " +
+            "your Engagement Lead (EL)",
+            state="TODO",
+            engagement_stage="Active",
+            uuid=uuid4())
+        print('---------- Editing the next step ----------')
         urlStr = self.urlPrefix + "nextsteps/" + str(step.uuid)
         body = {}
         files = []
@@ -341,17 +432,23 @@ class TestNextStepsAPI(TestBaseEntity):
         body['assigneesUuids'] = [str(self.user.uuid), str(self.el_user.uuid)]
         myjson = json.dumps(body, ensure_ascii=False)
         print(myjson)
-        response = self.c.put(urlStr, myjson, content_type='application/json',
-                              **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.put(
+            urlStr,
+            myjson,
+            content_type='application/json',
+            **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
         print(urlStr)
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def testUserNextSteps(self):
-        NextStepSvc().create_default_next_steps(self.user_with_ssh, self.engagement_4_createNS, self.el_user)
-        # Needs to return 0 elements for regular user which is not the assignee:
+        NextStepSvc().create_default_next_steps(
+            self.user_with_ssh, self.engagement_4_createNS, self.el_user)
+        # Needs to return 0 elements for regular user which is not the
+        # assignee:
         urlStr = self.urlPrefix + 'engagements/user/nextsteps/'
-        response = self.c.get(urlStr, **{'HTTP_AUTHORIZATION': "token " + self.sshtoken})
+        response = self.c.get(
+            urlStr, **{'HTTP_AUTHORIZATION': "token " + self.sshtoken})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
 
@@ -360,7 +457,8 @@ class TestNextStepsAPI(TestBaseEntity):
         self.assertEqual(data["count"], 0)
 
         # Needs to return 3 elements to el user which is the assignee:
-        response = self.c.get(urlStr, **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
+        response = self.c.get(
+            urlStr, **{'HTTP_AUTHORIZATION': "token " + self.ELtoken})
         print('Got response : ' + str(response.status_code))
         self.assertEqual(response.status_code, HTTP_200_OK)
         data = json.loads(response.content)

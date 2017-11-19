@@ -1,5 +1,4 @@
-#  
-# ============LICENSE_START========================================== 
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -59,12 +58,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Activity',
             fields=[
-                ('uuid', models.CharField(max_length=36, primary_key=True, serialize=False, unique=True)),
-                ('create_time', models.DateTimeField(default=django.utils.timezone.now)),
+                ('uuid', models.CharField(max_length=36,
+                                          primary_key=True, serialize=False,
+                                          unique=True)),
+                ('create_time', models.DateTimeField(
+                    default=django.utils.timezone.now)),
                 ('description', models.CharField(max_length=512)),
                 ('is_notification', models.BooleanField(default=False)),
                 ('activity_type', models.CharField(choices=[
-                 (b'3', b'eng_validation_request'), (b'4', b'next_steps'), (b'2', b'ssh_key_added'), (b'1', b'user_joined_eng')], max_length=36)),
+                 (b'3', b'eng_validation_request'), (b'4', b'next_steps'),
+                 (b'2', b'ssh_key_added'), (b'1', b'user_joined_eng')],
+                    max_length=36)),
                 ('metadata', models.CharField(max_length=1024)),
             ],
             options={
@@ -75,7 +79,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ApplicationServiceInfrastructure',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('name', models.CharField(max_length=100, unique=True)),
                 ('uuid', models.CharField(max_length=36, unique=True)),
             ],
@@ -86,12 +92,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ContactRequest',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('create_time', models.DateTimeField(default=django.utils.timezone.now, verbose_name='creation time')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
+                ('create_time', models.DateTimeField(
+                    default=django.utils.timezone.now,
+                    verbose_name='creation time')),
                 ('uuid', models.CharField(max_length=36, unique=True)),
                 ('fname', models.CharField(max_length=50)),
                 ('lname', models.CharField(max_length=50)),
-                ('email', models.EmailField(max_length=254, verbose_name='email')),
+                ('email', models.EmailField(max_length=254,
+                                            verbose_name='email')),
                 ('company', models.CharField(max_length=50)),
                 ('phone_number', models.CharField(max_length=30)),
                 ('message', models.TextField()),
@@ -103,7 +114,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DeploymentTarget',
             fields=[
-                ('uuid', models.CharField(max_length=36, primary_key=True, serialize=False)),
+                ('uuid', models.CharField(max_length=36,
+                                          primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=45)),
                 ('version', models.CharField(max_length=100)),
             ],
@@ -114,12 +126,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Engagement',
             fields=[
-                ('uuid', models.CharField(max_length=64, primary_key=True, serialize=False)),
-                ('engagement_manual_id', models.CharField(blank=True, max_length=36, null=True)),
+                ('uuid', models.CharField(max_length=64,
+                                          primary_key=True, serialize=False)),
+                ('engagement_manual_id', models.CharField(
+                    blank=True, max_length=36, null=True)),
                 ('progress', models.IntegerField(default=0)),
-                ('target_completion_date', models.DateField(blank=True, default=datetime.datetime(
-                    2016, 6, 29, 14, 7, 41, 103000, tzinfo=utc), null=True)),
-                ('engagement_stage', models.CharField(default=b'Intake', max_length=15)),
+                ('target_completion_date',
+                 models.DateField(blank=True, default=datetime.datetime(
+                     2016, 6, 29, 14, 7, 41, 103000, tzinfo=utc), null=True)),
+                ('engagement_stage', models.CharField(
+                    default=b'Intake', max_length=15)),
             ],
             options={
                 'db_table': 'ice_engagement',
@@ -128,19 +144,25 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='EngagementRequest',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('create_time', models.DateTimeField(default=django.utils.timezone.now, verbose_name='creation time')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
+                ('create_time', models.DateTimeField(
+                    default=django.utils.timezone.now,
+                    verbose_name='creation time')),
                 ('uuid', models.CharField(max_length=36, unique=True)),
                 ('fname', models.CharField(max_length=50)),
                 ('lname', models.CharField(max_length=50)),
-                ('email', models.EmailField(max_length=254, verbose_name='email')),
+                ('email', models.EmailField(max_length=254,
+                                            verbose_name='email')),
                 ('company', models.CharField(max_length=50)),
                 ('country_code', models.CharField(max_length=5)),
                 ('phone_number', models.CharField(max_length=30)),
                 ('vf_csv', models.CharField(max_length=80)),
                 ('att_contact_fname', models.CharField(max_length=50)),
                 ('att_contact_lname', models.CharField(max_length=50)),
-                ('att_contact_email', models.EmailField(max_length=254, verbose_name='email')),
+                ('att_contact_email', models.EmailField(
+                    max_length=254, verbose_name='email')),
                 ('att_contact_phone', models.CharField(max_length=30)),
                 ('request_type', models.CharField(max_length=20)),
                 ('description', models.TextField()),
@@ -153,24 +175,36 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='IceUser',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('uuid', models.CharField(max_length=36, unique=True)),
                 ('phone_number', models.CharField(max_length=30)),
                 ('full_name', models.CharField(max_length=30)),
-                ('email', models.EmailField(max_length=254, unique=True, verbose_name='email')),
+                ('email', models.EmailField(
+                    max_length=254,
+                    unique=True, verbose_name='email')),
                 ('password', models.CharField(max_length=256)),
-                ('create_time', models.DateTimeField(default=django.utils.timezone.now, verbose_name='creation time')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last_login')),
+                ('create_time', models.DateTimeField(
+                    default=django.utils.timezone.now,
+                    verbose_name='creation time')),
+                ('last_login', models.DateTimeField(
+                    blank=True, null=True, verbose_name='last_login')),
                 ('ssh_public_key', models.CharField(
-                    blank=True, max_length=1024, null=True, verbose_name='ssh_public_key')),
+                    blank=True, max_length=1024, null=True,
+                    verbose_name='ssh_public_key')),
                 ('regular_email_updates', models.BooleanField(default=False)),
-                ('email_updates_on_every_notification', models.BooleanField(default=True)),
-                ('email_updates_daily_digest', models.BooleanField(default=False)),
+                ('email_updates_on_every_notification',
+                 models.BooleanField(default=True)),
+                ('email_updates_daily_digest',
+                 models.BooleanField(default=False)),
                 ('is_active', models.BooleanField()),
                 ('is_att_contact', models.BooleanField()),
-                ('activation_token', models.CharField(max_length=128, unique=True)),
+                ('activation_token', models.CharField(max_length=128,
+                                                      unique=True)),
                 ('activation_token_create_time', models.DateTimeField(
-                    default=django.utils.timezone.now, verbose_name='activation_token_create_time')),
+                    default=django.utils.timezone.now,
+                    verbose_name='activation_token_create_time')),
             ],
             options={
                 'db_table': 'ice_user',
@@ -179,21 +213,31 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='NextStep',
             fields=[
-                ('uuid', models.CharField(max_length=36, primary_key=True, serialize=False)),
-                ('create_time', models.DateTimeField(default=django.utils.timezone.now, verbose_name='creation time')),
+                ('uuid', models.CharField(max_length=36,
+                                          primary_key=True, serialize=False)),
+                ('create_time', models.DateTimeField(
+                    default=django.utils.timezone.now,
+                    verbose_name='creation time')),
                 ('last_update_time', models.DateTimeField(
-                    default=django.utils.timezone.now, verbose_name='last update time')),
-                ('last_update_type', models.CharField(default='Added', max_length=15)),
+                    default=django.utils.timezone.now,
+                    verbose_name='last update time')),
+                ('last_update_type', models.CharField(
+                    default='Added', max_length=15)),
                 ('position', models.IntegerField()),
                 ('description', models.TextField()),
                 ('state', models.CharField(max_length=15)),
                 ('engagement_stage', models.CharField(max_length=15)),
-                ('creator', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
-                                              related_name='NextStep_creator', to='engagementmanager.IceUser')),
+                ('creator', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT,
+                    related_name='NextStep_creator',
+                    to='engagementmanager.IceUser')),
                 ('engagement', models.ForeignKey(
-                    on_delete=django.db.models.deletion.PROTECT, to='engagementmanager.Engagement')),
-                ('last_updater', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT,
-                                                   related_name='NextStep_last_updater', to='engagementmanager.IceUser')),
+                    on_delete=django.db.models.deletion.PROTECT,
+                    to='engagementmanager.Engagement')),
+                ('last_updater', models.ForeignKey(
+                    null=True, on_delete=django.db.models.deletion.PROTECT,
+                    related_name='NextStep_last_updater',
+                    to='engagementmanager.IceUser')),
             ],
             options={
                 'db_table': 'ice_next_step',
@@ -203,13 +247,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Notification',
             fields=[
-                ('uuid', models.CharField(max_length=36, primary_key=True, serialize=False, unique=True)),
+                ('uuid', models.CharField(max_length=36,
+                                          primary_key=True, serialize=False,
+                                          unique=True)),
                 ('is_sent', models.BooleanField(default=False)),
                 ('is_read', models.BooleanField(default=False)),
                 ('activity', models.ForeignKey(
-                    null=True, on_delete=django.db.models.deletion.CASCADE, to='engagementmanager.Activity')),
+                    null=True, on_delete=django.db.models.deletion.CASCADE,
+                    to='engagementmanager.Activity')),
                 ('user', models.ForeignKey(
-                    on_delete=django.db.models.deletion.CASCADE, to='engagementmanager.IceUser')),
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='engagementmanager.IceUser')),
             ],
             options={
                 'db_table': 'ice_notification',
@@ -218,7 +266,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Role',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('uuid', models.CharField(max_length=36, unique=True)),
                 ('name', models.CharField(max_length=36, unique=True)),
             ],
@@ -229,7 +279,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Test',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('name', models.CharField(max_length=45)),
                 ('uuid', models.CharField(max_length=36, unique=True)),
             ],
@@ -240,7 +292,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ValidationCycle',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('uuid', models.CharField(max_length=36, unique=True)),
                 ('start_date', models.DateTimeField()),
                 ('end_date', models.DateTimeField()),
@@ -264,7 +318,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ValidationException',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('uuid', models.CharField(max_length=36, unique=True)),
                 ('type', models.CharField(max_length=45)),
                 ('external_ref_id', models.CharField(max_length=45)),
@@ -276,16 +332,24 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ValidationSteps',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('uuid', models.CharField(max_length=36)),
-                ('requirment_id', models.CharField(blank=True, max_length=36, null=True)),
+                ('requirment_id', models.CharField(
+                    blank=True, max_length=36, null=True)),
                 ('passed', models.BooleanField()),
                 ('log', models.BinaryField()),
-                ('validation_notes', models.CharField(blank=True, max_length=200, null=True)),
-                ('test', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='engagementmanager.Test')),
+                ('validation_notes', models.CharField(
+                    blank=True, max_length=200, null=True)),
+                ('test', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT,
+                    to='engagementmanager.Test')),
                 ('validation_cycle', models.ForeignKey(
-                    on_delete=django.db.models.deletion.PROTECT, to='engagementmanager.ValidationCycle')),
-                ('validation_exceptions', models.ManyToManyField(to='engagementmanager.ValidationException')),
+                    on_delete=django.db.models.deletion.PROTECT,
+                    to='engagementmanager.ValidationCycle')),
+                ('validation_exceptions', models.ManyToManyField(
+                    to='engagementmanager.ValidationException')),
             ],
             options={
                 'db_table': 'ice_validation_step',
@@ -295,7 +359,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Vendor',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('uuid', models.CharField(max_length=36, unique=True)),
                 ('name', models.CharField(max_length=100, unique=True)),
             ],
@@ -307,16 +373,25 @@ class Migration(migrations.Migration):
             name='VF',
             fields=[
                 ('name', models.CharField(max_length=100)),
-                ('uuid', models.CharField(max_length=36, primary_key=True, serialize=False, unique=True)),
+                ('uuid', models.CharField(max_length=36,
+                                          primary_key=True, serialize=False,
+                                          unique=True)),
                 ('is_att_internal', models.BooleanField(default=False)),
-                ('git_repo_url', models.CharField(blank=True, max_length=512, null=True)),
-                ('target_lab_entry_date', models.DateField(verbose_name='target_lab_entry_date')),
-                ('deployment_target', models.ForeignKey(blank=True, null=True,
-                                                        on_delete=django.db.models.deletion.SET_NULL, to='engagementmanager.DeploymentTarget')),
-                ('engagement', models.ForeignKey(blank=True, null=True,
-                                                 on_delete=django.db.models.deletion.SET_NULL, to='engagementmanager.Engagement')),
+                ('git_repo_url', models.CharField(
+                    blank=True, max_length=512, null=True)),
+                ('target_lab_entry_date', models.DateField(
+                    verbose_name='target_lab_entry_date')),
+                ('deployment_target', models.ForeignKey(
+                    blank=True, null=True,
+                    on_delete=django.db.models.deletion.SET_NULL,
+                    to='engagementmanager.DeploymentTarget')),
+                ('engagement', models.ForeignKey(
+                    blank=True, null=True,
+                    on_delete=django.db.models.deletion.SET_NULL,
+                    to='engagementmanager.Engagement')),
                 ('vendor', models.ForeignKey(
-                    on_delete=django.db.models.deletion.PROTECT, to='engagementmanager.Vendor')),
+                    on_delete=django.db.models.deletion.PROTECT,
+                    to='engagementmanager.Vendor')),
             ],
             options={
                 'db_table': 'ice_vf',
@@ -325,12 +400,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='VFC',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('name', models.CharField(max_length=45)),
                 ('version', models.CharField(max_length=45)),
                 ('uuid', models.CharField(max_length=36, unique=True)),
-                ('vf_acronym', models.CharField(blank=True, max_length=100, null=True)),
-                ('vf', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='engagementmanager.VF')),
+                ('vf_acronym', models.CharField(
+                    blank=True, max_length=100, null=True)),
+                ('vf', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT,
+                    to='engagementmanager.VF')),
             ],
             options={
                 'db_table': 'ice_vfc',
@@ -343,28 +423,37 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='validationcycle',
             name='vfc',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='engagementmanager.VFC'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                to='engagementmanager.VFC'),
         ),
         migrations.AddField(
             model_name='iceuser',
             name='company',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='engagementmanager.Vendor'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                to='engagementmanager.Vendor'),
         ),
         migrations.AddField(
             model_name='iceuser',
             name='role',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='engagementmanager.Role'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                to='engagementmanager.Role'),
         ),
         migrations.AddField(
             model_name='engagement',
             name='contact_user',
-            field=models.ForeignKey(blank=True, null=True,
-                                    on_delete=django.db.models.deletion.PROTECT, to='engagementmanager.IceUser'),
+            field=models.ForeignKey(
+                blank=True, null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to='engagementmanager.IceUser'),
         ),
         migrations.AddField(
             model_name='engagement',
             name='engagement_team',
-            field=models.ManyToManyField(related_name='members', to='engagementmanager.IceUser'),
+            field=models.ManyToManyField(
+                related_name='members', to='engagementmanager.IceUser'),
         ),
         migrations.AlterUniqueTogether(
             name='deploymenttarget',
@@ -377,13 +466,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='activity',
             name='activity_owner',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
-                                    to='engagementmanager.IceUser'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to='engagementmanager.IceUser'),
         ),
         migrations.AddField(
             model_name='activity',
             name='engagement',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='engagementmanager.Engagement'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                to='engagementmanager.Engagement'),
         ),
         migrations.AlterUniqueTogether(
             name='vfc',

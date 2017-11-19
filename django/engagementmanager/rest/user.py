@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -36,7 +36,6 @@
 # ============LICENSE_END============================================
 #
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
-import json
 import uuid
 
 from django.conf import settings
@@ -91,7 +90,8 @@ class UpdatePassword(VvpApiView):
         user.user.set_password(data['password'])
         user.user.temp_password = None
         user.user.save()
-        self.logger.info("Reset Password finished successfully for user with uuid=" +
+        self.logger.info("Reset Password finished successfully " +
+                         "for user with uuid=" +
                          user.uuid + " Redirecting to Login")
         return Response(msg)
 
@@ -122,12 +122,13 @@ class SendResetPasswordInstructionMail(VvpApiView):
         self.logger.debug(
             "The login link to reset Password: " + str(data['login_link']))
 
-        if (user != None):
-            body = get_template("{reset_pwd_template_dir}reset_pwd_instructions_mail_body.html"   .format(
-                reset_pwd_template_dir=Constants.reset_pwd_template_dir))
-            subject = get_template("{reset_pwd_template_dir}reset_pwd_instructions_mail_subject.html".format(
-                reset_pwd_template_dir=Constants.reset_pwd_template_dir))
-
+        if (user):
+            body = get_template(
+                Constants.reset_pwd_template_dir +
+                "reset_pwd_instructions_mail_body.html")
+            subject = get_template(
+                Constants.reset_pwd_template_dir +
+                "reset_pwd_instructions_mail_subject.html")
             user.user.temp_password = make_password(data['tempPassword'])
             user.user.save()
             user.save()
@@ -135,8 +136,9 @@ class SendResetPasswordInstructionMail(VvpApiView):
             try:
                 mail.sendMail(data['email'], data, body, subject)
             except Exception as e:
-                msg = "Something went wrong while trying to send reset-password mail to " + \
-                    data['email'] + "\n error: " + e.message
+                msg = "Something went wrong while trying to send \
+                reset-password mail to " \
+                + data['email'] + "\n error: " + e.message
                 self.logger.error(
                     msg + " rolling back the temporary password from the DB")
                 user.user.temp_password = None
@@ -162,7 +164,8 @@ class User(VvpApiView):
         user.phone_number = data['phone_number']
         user.full_name = data['full_name']
         if len(user.full_name) > 30:
-            return Response("first name should be up to 30 characters", status=HTTP_400_BAD_REQUEST)
+            return Response("first name should be up to 30 characters",
+                            status=HTTP_400_BAD_REQUEST)
 
         self.handle_password_change(data, user)
 
@@ -238,4 +241,5 @@ class EngagementLeads(VvpApiView):
 class RGWAAccessKey(VvpApiView):
 
     def get(self, request):
-        return Response({"rgwa_secret_key": UserService().get_user_rgwa_secret()})
+        return Response(
+            {"rgwa_secret_key": UserService().get_user_rgwa_secret()})

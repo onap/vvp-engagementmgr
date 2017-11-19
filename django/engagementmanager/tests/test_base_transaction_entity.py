@@ -1,5 +1,5 @@
-#  
-# ============LICENSE_START========================================== 
+#
+# ============LICENSE_START==========================================
 # org.onap.vvp/engagementmgr
 # ===================================================================
 # Copyright © 2017 AT&T Intellectual Property. All rights reserved.
@@ -52,9 +52,11 @@ class TestBaseTransactionEntity(TransactionTestCase):
     __metaclass__ = ABCMeta
 
     def setUp(self):
-        logger.debug("---------------------- TransactionTestCase " + self.__class__.__name__ + " ----------------------")
+        logger.debug("---------------------- TransactionTestCase " +
+                     self.__class__.__name__ + " ----------------------")
         self.urlPrefix = "/%s/v1/engmgr/" % settings.PROGRAM_NAME_URL_PREFIX
-        self.conn = http.client.HTTPConnection("127.0.0.1", 8000)  # @UndefinedVariable
+        self.conn = http.client.HTTPConnection(
+            "127.0.0.1", 8000)  # @UndefinedVariable
         self.c = Client()
         self.creator = VvpEntitiesCreator()
         settings.IS_SIGNAL_ENABLED = False
@@ -63,7 +65,8 @@ class TestBaseTransactionEntity(TransactionTestCase):
     def tearDown(self):
         settings.IS_SIGNAL_ENABLED = True
         self.conn.close()
-        logger.debug("----------------------  TransactionTestCase " + self.__class__.__name__ + " ---------------------- ")
+        logger.debug("----------------------  TransactionTestCase " +
+                     self.__class__.__name__ + " ---------------------- ")
 
     @abstractmethod
     def childSetup(self):
