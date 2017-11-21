@@ -326,7 +326,7 @@ DEFAULT_FILE_STORAGE = 'vvp.settings.storage.S3MediaStorage'
 STATICFILES_STORAGE = 'vvp.settings.storage.S3StaticStorage'
 
 # These seem to have no effect even when we don't override with custom_domain?
-STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, STATIC_BUCKET)
-MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, MEDIA_BUCKET)
+STATIC_ROOT = os.environ['STATIC_ROOT']
+STATIC_URL = '/static/'
 
 STATIC_ROOT = os.environ['STATIC_ROOT']
