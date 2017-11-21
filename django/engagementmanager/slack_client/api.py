@@ -233,8 +233,10 @@ class SlackClient(object):
             reviewer,
             peer_reviewer,
             bucket_name):
-        str_committed_files = "The following bucket was updated with new image files: %s" % bucket_name
-        message = 'The rgwa bucket for the engagement _{}: {}_ in which you are assigned as a _{}_ was updated. ' + \
+        str_committed_files = "The following bucket was updated with new" \
+                              " image files: %s" % bucket_name
+        message = 'The rgwa bucket for the engagement _{}: {}_ in which you' \
+                  ' are assigned as a _{}_ was updated. ' + \
             str_committed_files
         self.send_message_to_user(
             reviewer,
@@ -253,7 +255,9 @@ class SlackClient(object):
     # checklist
     def send_notification_to_reviewer_when_automation_completes(
             self, engagement_manual_id, vf_name, reviewer, checklist_name):
-        message = 'The automation phase completed for the checklist _{}_ under the engagement _{}: {}_. You can now start your review of it.'
+        message = 'The automation phase completed for the checklist _{}_' \
+                  ' under the engagement _{}: {}_. You can now start your' \
+                  ' review of it.'
         self.send_message_to_user(
             reviewer,
             message.format(

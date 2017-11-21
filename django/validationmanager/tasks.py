@@ -1,6 +1,5 @@
 from celery import Celery
 from django.conf import settings
-from engagementmanager.models import CheckListState
 
 celery_app = Celery(
     broker='redis://redis',

@@ -39,14 +39,17 @@
 import json
 import time
 
-from engagementmanager.bus.messages.hourly_scheduled_message import HourlyScheduledMessage
-from engagementmanager.tests.test_base_transaction_entity import TestBaseTransactionEntity
+from engagementmanager.bus.messages.hourly_scheduled_message \
+    import HourlyScheduledMessage
+from engagementmanager.tests.test_base_transaction_entity \
+    import TestBaseTransactionEntity
 from engagementmanager.apps import bus_service
 from django.conf import settings
 import mock
 from rest_framework.status import HTTP_202_ACCEPTED
 from engagementmanager.models import Vendor, Checklist
-from engagementmanager.utils.constants import Constants, EngagementStage, CheckListState
+from engagementmanager.utils.constants import Constants, EngagementStage,\
+    CheckListState
 from wheel.signatures import assertTrue
 
 
@@ -272,7 +275,7 @@ class RadosGatewayTestCase(TestBaseTransactionEntity):
         self.vf.name = "static-vf-name"
         self.vf.save()
         self.template = self.creator.createDefaultCheckListTemplate()
-        checklist = self.creator.createCheckList(
+        self.creator.createCheckList(
             "cl-name",
             "review",
             1,

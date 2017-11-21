@@ -50,7 +50,8 @@ from engagementmanager.models import Engagement, IceUserProfile, \
     ChecklistTemplate, VF
 from engagementmanager.serializers import VFModelSerializerForSignal
 from engagementmanager.utils.constants import Roles, EngagementStage, \
-    CheckListLineType, JenkinsBuildParametersNames, RGWApermission, CheckListCategory
+    CheckListLineType, JenkinsBuildParametersNames, RGWApermission,\
+    CheckListCategory
 from engagementmanager.utils.cryptography import CryptographyText
 from engagementmanager.utils.validator import logEncoding
 from mocks.gitlab_mock.rest.gitlab_files_respons_rest import \
@@ -105,16 +106,17 @@ def cl_from_pending_to_automation_callback(vf, checklist):
         logger.debug(
             "Engagement Manager has signaled that a checklist state was " +
             "changed from pending to automation")
-        if checklist.template and checklist.template.category == CheckListCategory.glance.name:
-            logger.debug("Triggering image scan")
-            request_scan(vf, checklist)
-        elif checklist.template and checklist.template.category == CheckListCategory.heat.name:
-            logger.debug("Triggering heat template validation")
-            get_jenkins_client().build_job(
-                vf.jenkins_job_name(), {
-                    'checklist_uuid': checklist.uuid,
-                    'git_repo_url': vf.git_repo_url,
-                })
+        if checklist.template:
+            if checklist.template.category == CheckListCategory.glance.name:
+                logger.debug("Triggering image scan")
+                request_scan(vf, checklist)
+            elif checklist.template.category == CheckListCategory.heat.name:
+                logger.debug("Triggering heat template validation")
+                get_jenkins_client().build_job(
+                    vf.jenkins_job_name(), {
+                        'checklist_uuid': checklist.uuid,
+                        'git_repo_url': vf.git_repo_url,
+                    })
 
 
 def provision_new_vf_callback(vf):
