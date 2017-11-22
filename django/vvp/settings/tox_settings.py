@@ -22,7 +22,7 @@ Environment variables that must exist in production:
 
 import os
 from corsheaders.defaults import default_headers
-from boto.s3.connection import OrdinaryCallingFormat
+# from boto.s3.connection import OrdinaryCallingFormat
 import datetime
 
 # With this file at ice/settings/__init__.py, we need three applications of
@@ -321,9 +321,9 @@ AWS_PRELOAD_METADATA = True
 
 # Set by custom subclass.
 # AWS_STORAGE_BUCKET_NAME = "em-static"
-AWS_S3_CALLING_FORMAT = OrdinaryCallingFormat()
-DEFAULT_FILE_STORAGE = 'vvp.settings.storage.S3MediaStorage'
-STATICFILES_STORAGE = 'vvp.settings.storage.S3StaticStorage'
+# AWS_S3_CALLING_FORMAT = OrdinaryCallingFormat()
+# DEFAULT_FILE_STORAGE = 'vvp.settings.storage.S3MediaStorage'
+# STATICFILES_STORAGE = 'vvp.settings.storage.S3StaticStorage'
 
 # These seem to have no effect even when we don't override with custom_domain?
 STATIC_ROOT = os.environ['STATIC_ROOT']
