@@ -25,9 +25,28 @@
         <docker.latest.tag>${project.version}-latest</docker.latest.tag>
         <docker.pull.registry>nexus3.onap.org:10001</docker.pull.registry>
         <docker.push.registry>nexus3.onap.org:10003</docker.push.registry>
+        <!--sonar-->
+        <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
+        <sonar.sources>.</sonar.sources>
+        <sonar.python.coverage.reportPath>django/reports/coverage.xml</sonar.python.coverage.reportPath>
+        <sonar.language>py</sonar.language>
+        <sonar.pluginName>python</sonar.pluginName>
+        <sonar.inclusions>django/**.py</sonar.inclusions>
   </properties>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.2.1</version>
+            <configuration>
+              <executable>${session.executionRootDirectory}/mvn-phase-script.sh</executable>
+            </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
         <plugin>
             <groupId>org.sonatype.plugins</groupId>
@@ -96,6 +115,26 @@
                     </configuration>
                 </execution>
             </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.2.1</version>
+          <executions>
+            <execution>
+              <id>test script</id>
+              <phase>test</phase>
+              <goals>
+                <goal>exec</goal>
+              </goals>
+              <configuration>
+                <arguments>
+                  <argument>__</argument>
+                  <argument>test</argument>
+                </arguments>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
     </plugins>
   </build>

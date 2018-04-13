@@ -99,6 +99,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'engagementmanager.apps.EngagementmanagerConfig',
     'validationmanager.apps.ValidationmanagerConfig',
+    'django_jenkins',
 ]
 
 MIDDLEWARE_CLASSES = [

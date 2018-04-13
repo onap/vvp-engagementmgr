@@ -323,7 +323,7 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
                 urlStr = self.urlPrefix + 'vf' + str(vf.uuid) + '/vfcs/'
                 vfc_of_x_response = self.c.get(
                     urlStr, **{'HTTP_AUTHORIZATION': "token " + self.token})
-                vfc_list = json.loads(vfc_of_x_response.content)
+                vfc_list = json.loads(vfc_of_x_response.content) or {}
                 for vfc in vfc_list:
                     if (vfc['name'] == self.random_keyword):
                         bool_flag = True
