@@ -32,6 +32,7 @@
         <sonar.language>py</sonar.language>
         <sonar.pluginName>python</sonar.pluginName>
         <sonar.inclusions>django/**.py</sonar.inclusions>
+        <sonar.exclusions>django/vvp/settings/__init__.py</sonar.exclusions>
   </properties>
 
   <build>
