@@ -50,6 +50,7 @@ RUN apk add --no-cache \
     linux-headers \
     musl-dev \
     postgresql-dev \
+    libffi-dev \
     && :
 
 COPY docker-entrypoint.sh /
