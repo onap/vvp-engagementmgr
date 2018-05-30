@@ -76,23 +76,13 @@ class Command(BaseCommand):
 
 
 companies = [
-    'Affirmed Networks',
-    'Amdocs',
-    'Brocade',
-    'Ciena',
-    'Cisco',
-    'Ericsson',
-    'Fujitsu',
-    'Juniper',
-    'Metaswitch',
-    'Nokia'
+    'Test Company 1',
+    'Test Company 2'
 ]
 
 companies_not_public = [
-    'Adtran',
-    'Velocloud',
-    'Spirent',
-    'Mitel',
+    'Private Company 1',
+    'Private Company 2'
 ]
 
 admin_dummy_users = [['admin bogus user',
@@ -105,16 +95,16 @@ admin_ro_dummy_users = [
 
 dummy_users = [
     ['Bugs Bunny', 'bb@' + Constants.service_provider_mail_domain[0],
-     '+1-404-986-9624'],
+     '+1-555-555-5555'],
     ['CI Standard 1', 'ci_standard_1@' +
-        Constants.service_provider_mail_domain[0], '+1-404-986-9624'],
+        Constants.service_provider_mail_domain[0], '+1-555-555-5555'],
 ]
 
 el_dummy_users = [
     ['Donald Duck', 'dd1122@' +
-        Constants.service_provider_mail_domain[0], '+1-404-986-9624'],
+        Constants.service_provider_mail_domain[0], '+1-555-555-5555'],
     ['Homer Simpson', 'hs0007@' +
-        Constants.service_provider_mail_domain[0], '+1-425-281-3547']
+        Constants.service_provider_mail_domain[0], '+1-555-555-5555']
 ]
 
 checklist_templates = [
@@ -448,7 +438,7 @@ checklist_templates = [
         ]
     },
     {
-        'name': 'AIC Instantiation',
+        'name': 'OpenStack Instantiation',
         'category': 'instantiation',
         'version': 1,
         'sections': [
@@ -483,7 +473,7 @@ checklist_templates = [
                 ]
             },
             {
-                'name': 'Manual Instantiation in AIC',
+                'name': 'Manual Instantiation in OpenStack',
                 'weight': 1,
                 'description': 'section description',
                 'validation_instructions': 'validation instructions',
@@ -515,8 +505,8 @@ checklist_templates = [
         ]
     },
     {
-        'name': 'ASDC Onboarding',
-        'category': 'asdc',
+        'name': 'SDC Onboarding',
+        'category': 'sdc',
         'version': 1,
         'sections': [
             {
@@ -561,7 +551,7 @@ checklist_templates = [
                 ]
             },
             {
-                'name': 'Onboard The VNF To The Target ASDC Environment',
+                'name': 'Onboard The VNF To The Target SDC Environment',
                 'weight': 1,
                 'description': 'section description',
                 'validation_instructions': 'validation instructions',
@@ -685,11 +675,11 @@ glance_validation_tests = [
 ]
 
 deployment_targets = [
-    ['AIC', '2.5'],
-    ['AIC', '3.0'],
-    ['AIC', '3.5'],
-    ['AIC', '4.0'],
-    ['Other', 'No version number available']
+    ['OpenStack', 'Kilo'],
+    ['OpenStack', 'Liberty'],
+    ['OpenStack', 'Mitaka'],
+    ['OpenStack', 'Newton'],
+    ['Other', 'No version available']
 ]
 
 ecomps = [
@@ -697,13 +687,10 @@ ecomps = [
 ]
 
 deployment_targets_sites = [
-    "Alpharetta (PDK2)",
-    "Willows (RDM2)",
-    "Willows (RDM3)",
-    "Middletown (ICENJ)",
-    "Lisle (DPA2)",
-    "Lisle (DPA3)",
-    "Palo Alto (PAO21)"
+    "Site 1",
+    "Site 2",
+    "Site 3",
+    "Site 4"
 ]
 
 

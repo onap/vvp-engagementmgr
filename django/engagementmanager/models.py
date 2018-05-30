@@ -132,7 +132,6 @@ def create_user_profile(sender, instance, created, **kwargs):
 post_save.connect(create_user_profile, sender=CustomUser)
 
 
-# Represents Deployment Target Cloud Version. For example name=AIC version=2.0
 class DeploymentTarget(models.Model):
     uuid = models.CharField(
         default=uuid.uuid4, max_length=36, primary_key=True)
