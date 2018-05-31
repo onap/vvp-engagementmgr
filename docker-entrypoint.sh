@@ -62,7 +62,7 @@ echo >&2 $0: Checking if collectstatic is needed
 if [ "$STATIC_ROOT" ]; then
 	echo >&2 $0: Running collectstatic...
 	mkdir -p "$STATIC_ROOT"
-	python /srv/manage.py collectstatic --no-input
+	#python /srv/manage.py collectstatic --no-input
 fi
 echo >&2 $0: Running manage.py check...
 python /srv/manage.py check
