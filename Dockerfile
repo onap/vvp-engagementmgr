@@ -61,7 +61,6 @@ RUN ln -s -f /opt/configmaps/settings/__init__.py /srv/vvp/settings/__init__.py;
     ln -s -f /opt/configmaps/settings/envbool.py /srv/vvp/settings/envbool.py;
 
 RUN pip install --upgrade setuptools && \
-    #pip install uwsgi && \
     pip install gunicorn && \
     pip install -r /srv/requirements.txt
 
