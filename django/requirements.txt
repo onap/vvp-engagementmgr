@@ -60,7 +60,7 @@ sshpubkeys
 tap.py
 validate-email-address
 validate_email
-wheel
+wheel==0.31.1
 oauthlib
 requests_oauthlib
 itsdangerous
