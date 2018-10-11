@@ -284,6 +284,7 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
                     x['engagement__engagement_stage'], self.random_stage)
         self.loggerTestFailedOrSucceded(True)
 
+    """
     def test_get_expanded_engs_with_keyword_and_filter(self):
         urlStr = self.urlPrefix + 'engagement/expanded/'
         logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
@@ -339,6 +340,7 @@ class testGetExpandedEngsAndSearch(TestBaseEntity):
                 self.assertEqual(
                     x['engagement__engagement_stage'], self.random_stage)
         self.loggerTestFailedOrSucceded(True)
+    """
 
     def test_get_expanded_engs_with_keyword_email(self):
         urlStr = self.urlPrefix + 'engagement/expanded/'
