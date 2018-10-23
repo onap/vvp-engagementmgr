@@ -44,13 +44,13 @@ celery[redis]
 configparser
 django-cors-headers
 django-storages
-djangorestframework
-djangorestframework-jwt
+djangorestframework==3.8.2
+djangorestframework-jwt==1.11.0
 enum34
 mock
 openpyxl
 psycopg2
-python-jenkins
+python-jenkins==1.2.1
 pytz
 requests
 requests-aws
